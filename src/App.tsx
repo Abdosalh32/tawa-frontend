@@ -54,6 +54,7 @@ import { MerchantDiscountsList } from './features/merchant/discounts/MerchantDis
 import { MerchantInventoryList } from './features/merchant/inventory/MerchantInventoryList'
 import { MerchantOrderDetail } from './features/merchant/orders/MerchantOrderDetail'
 import { MerchantStoreSetupWizard } from './features/merchant/store-setup/MerchantStoreSetupWizard'
+import { MerchantAppearance } from './features/merchant/appearance/MerchantAppearance'
 import { MerchantStoreSettings } from './features/merchant/store-settings/MerchantStoreSettings'
 import { MerchantOrdersList } from './features/merchant/orders/MerchantOrdersList'
 import { MerchantProductForm } from './features/merchant/products/MerchantProductForm'
@@ -860,6 +861,7 @@ type DevScreen =
   | 'orders'
   | 'order-detail'
   | 'discounts'
+  | 'appearance'
   | 'store-settings'
   | 'preview'
 
@@ -873,6 +875,7 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'orders', label: 'لوحة التاجر — الطلبات' },
   { key: 'order-detail', label: 'لوحة التاجر — تفاصيل طلب' },
   { key: 'discounts', label: 'لوحة التاجر — الخصومات' },
+  { key: 'appearance', label: 'لوحة التاجر — المظهر والقوالب' },
   { key: 'store-settings', label: 'لوحة التاجر — إعدادات المتجر' },
   { key: 'preview', label: 'معاينة نظام التصميم' },
 ]
@@ -915,6 +918,8 @@ export default function App() {
           <MerchantOrderDetail />
         ) : screen === 'discounts' ? (
           <MerchantDiscountsList />
+        ) : screen === 'appearance' ? (
+          <MerchantAppearance />
         ) : screen === 'store-settings' ? (
           <MerchantStoreSettings />
         ) : (

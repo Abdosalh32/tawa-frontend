@@ -1,0 +1,305 @@
+/* شاشة «المظهر والقوالب» — تخطيط فقط؛ ألوان المعاينة من اختيار التاجر تُمرر
+   كمتغيرات --pv-* من الحالة (D6 محسوم: حرية كاملة + نص مشتق + تحذير تباين) */
+
+.appr-shell {
+  height: 100%;
+}
+
+.appr-columns {
+  display: grid;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.appr-columns > * {
+  min-width: 0;
+}
+
+@container (min-width: 1024px) {
+  .appr-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .appr-preview-col {
+    position: sticky;
+    top: 0;
+  }
+}
+
+.appr-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.appr-card > h2 {
+  font-size: var(--type-h3);
+}
+
+/* بطاقات القوالب (1.3.1) */
+.appr-templates {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.appr-template input:focus-visible + .appr-template__card {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.appr-template__card {
+  display: grid;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: border-color var(--motion-fast), background var(--motion-fast);
+}
+
+.appr-template input:checked + .appr-template__card {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.appr-template__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.appr-template__name {
+  font-weight: 700;
+}
+
+.appr-template__desc {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+.appr-template__tags {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* مصغّر شكلي للقالب */
+.appr-thumb {
+  height: 64px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-raised);
+  display: grid;
+  gap: 4px;
+  padding: 6px;
+}
+
+.appr-thumb__bar {
+  border-radius: 3px;
+  background: var(--surface-sunken);
+}
+
+.appr-thumb--modern .appr-thumb__hero {
+  flex: 1;
+  border-radius: 6px;
+  background: var(--accent-soft);
+}
+
+.appr-thumb--modern {
+  grid-template-rows: 8px 1fr 14px;
+}
+
+.appr-thumb--classic {
+  grid-template-rows: 10px 8px 8px 8px;
+}
+
+/* صف دور لوني */
+.appr-role {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.appr-role__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.appr-role__picker {
+  width: 44px;
+  height: 40px;
+  padding: 2px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface-raised);
+  cursor: pointer;
+}
+
+.appr-role__hex {
+  width: 120px;
+  font-variant-numeric: tabular-nums;
+}
+
+.appr-role__hint {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* ═══ المعاينة الحية — تُصبغ بمتغيرات --pv-* من اختيار التاجر ═══ */
+
+.pv-frame {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.pv-chrome {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--surface-sunken);
+  border-block-end: 1px solid var(--border-default);
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+.pv-chrome__dots {
+  display: flex;
+  gap: 4px;
+}
+
+.pv-chrome__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+}
+
+.pv-body {
+  background: var(--pv-background);
+  color: var(--pv-text);
+  padding: var(--space-lg);
+  display: grid;
+  gap: var(--space-md);
+}
+
+.pv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  background: var(--pv-surface);
+  border-radius: var(--radius-control);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.pv-header__name {
+  font-weight: 700;
+}
+
+.pv-header__cart {
+  border: none;
+  border-radius: var(--radius-control);
+  padding: 5px var(--space-md);
+  background: var(--pv-primary);
+  color: var(--pv-on-primary);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  cursor: default;
+}
+
+.pv-hero {
+  background: var(--pv-primary);
+  color: var(--pv-on-primary);
+  border-radius: var(--radius-control);
+  padding: var(--space-lg);
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.pv-hero__title {
+  font-weight: 700;
+}
+
+.pv-hero__sub {
+  font-size: var(--type-caption);
+  opacity: 0.9;
+}
+
+.pv-link {
+  color: var(--pv-secondary);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.pv-grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.pv-card {
+  background: var(--pv-surface);
+  border-radius: var(--radius-control);
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.pv-card__img {
+  height: 44px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--pv-text) 8%, transparent);
+}
+
+.pv-card__name {
+  font-size: var(--type-caption);
+  font-weight: 600;
+}
+
+.pv-card__price {
+  font-weight: 700;
+  color: var(--pv-primary);
+}
+
+.pv-card__btn {
+  border: none;
+  border-radius: var(--radius-control);
+  padding: 4px var(--space-sm);
+  background: var(--pv-primary);
+  color: var(--pv-on-primary);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  cursor: default;
+  justify-self: start;
+}
+
+/* القالب العصري: شبكة عمودين وبنر بارز */
+.pv-body--modern .pv-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* القالب الكلاسيكي: ترويسة مركزية، بلا بنر، قائمة صفوف بحدود */
+.pv-body--classic .pv-header {
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.pv-body--classic .pv-card {
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--pv-text) 14%, transparent);
+  border-radius: 6px;
+}
+
+.pv-body--classic .pv-card__img {
+  height: 36px;
+}
