@@ -1,0 +1,158 @@
+/* شاشة «إعدادات المتجر» — تخطيط فقط، Tokens حصراً (برومت 10 / P9) */
+
+.sset-shell {
+  height: 100%;
+}
+
+.sset-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+  max-width: 640px;
+}
+
+.sset-card > h2 {
+  font-size: var(--type-h3);
+}
+
+.sset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.sset-note {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* الشعار — Placeholder مؤجل */
+.sset-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.sset-logo__circle {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+}
+
+/* النطاق */
+.sset-domain-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.sset-domain-value {
+  font-size: var(--type-h3);
+  font-weight: 700;
+}
+
+/* بطاقة حالة النشر الكبيرة (برومت 10) */
+.sset-status-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--surface-raised);
+  font-weight: 700;
+}
+
+.sset-status-hero__dot {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-radius: var(--radius-pill);
+}
+
+.sset-status-hero--published .sset-status-hero__dot {
+  background: var(--status-success);
+  animation: sset-pulse 1.6s ease-in-out infinite;
+}
+
+.sset-status-hero--maintenance .sset-status-hero__dot {
+  background: var(--status-warning);
+}
+
+.sset-status-hero--pending .sset-status-hero__dot {
+  background: var(--status-warning);
+}
+
+.sset-status-hero--approved .sset-status-hero__dot {
+  background: var(--status-info);
+}
+
+.sset-status-hero--rejected .sset-status-hero__dot {
+  background: var(--status-critical);
+}
+
+@keyframes sset-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Checklist متطلبات النشر (1.2.4) */
+.sset-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.sset-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.sset-check__mark {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.sset-check--met .sset-check__mark {
+  background: var(--status-success-soft);
+  border-color: var(--status-success);
+  color: var(--status-success-text);
+}
+
+.sset-check--unmet .sset-check__mark {
+  background: var(--status-critical-soft);
+  border-color: var(--status-critical);
+  color: var(--status-critical-text);
+}
+
+.sset-check__text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sset-check__hint {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
