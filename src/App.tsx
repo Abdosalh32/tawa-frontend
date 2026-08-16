@@ -1,27 +1,42 @@
 import { useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import './styles/preview.css'
 import {
   Alert,
+  AppShell,
   Badge,
+  Breadcrumbs,
   Button,
   Checkbox,
   ConfirmDialog,
+  DataTable,
   EmptyState,
   ErrorState,
+  FilterBar,
   IconButton,
   Input,
+  KeyValueList,
   LoadingState,
   Modal,
+  PageHeader,
+  Pagination,
   PermissionDeniedState,
   Radio,
+  SearchField,
   Select,
+  Sidebar,
   Skeleton,
+  SummaryCard,
   Switch,
+  Tabs,
   Textarea,
   Toast,
   Tooltip,
+  Topbar,
 } from './components/ui'
+import type { DataTableColumn, SidebarGroup, SortDirection } from './components/ui'
 import { APPROVAL_STATUS, ORDER_STATUS, PAYMENT_STATUS, STOCK_STATUS } from './types/status'
+import type { OrderStatus, PaymentStatus } from './types/status'
 
 /* أيقونات المعاينة (خطية 2px) */
 
@@ -81,7 +96,7 @@ export default function App() {
     <>
       <header className="preview-header">
         <h1>توا — معاينة نظام التصميم</h1>
-        <Badge variant="info">نسخة تطويرية — المرحلة 1</Badge>
+        <Badge variant="info">نسخة تطويرية — المرحلتان 1 و2</Badge>
         <Badge variant="neutral" dot={false}>
           accent: أزرق التاجر
         </Badge>
@@ -391,6 +406,31 @@ export default function App() {
             </div>
           </div>
         </section>
+
+        {/* ─── المرحلة 2: الهيكل والملاحة ─── */}
+        <section className="preview-section" aria-labelledby="s-shells">
+          <h2 id="s-shells">هيكل التطبيق (AppShell) — بيانات معاينة ثابتة</h2>
+          <p className="preview-section__hint">
+            الهيكل يستجيب لعرض إطاره لا لعرض النافذة: الإطار الضيق أدناه يُظهر زر درج الملاحة، وضيّق النافذة لرؤية السلوك نفسه في
+            الإطارات العريضة. هذه معاينة مكونات — ليست لوحة توا فعلية.
+          </p>
+          <ShellsDemo />
+        </section>
+
+        <section className="preview-section" aria-labelledby="s-nav">
+          <h2 id="s-nav">ترويسة الصفحة والمسار والتبويبات والقائمة الجانبية</h2>
+          <NavigationDemo />
+        </section>
+
+        <section className="preview-section" aria-labelledby="s-data">
+          <h2 id="s-data">البحث والفلاتر وجدول البيانات والترقيم — بيانات معاينة ثابتة</h2>
+          <TableDemo />
+        </section>
+
+        <section className="preview-section" aria-labelledby="s-metrics">
+          <h2 id="s-metrics">بطاقات المؤشرات وقائمة مفتاح-قيمة — بيانات معاينة ثابتة</h2>
+          <MetricsDemo />
+        </section>
       </main>
 
       <Modal
@@ -433,5 +473,450 @@ export default function App() {
 
       {toastMessage && <Toast variant="success" message={toastMessage} floating onClose={() => setToastMessage(null)} />}
     </>
+  )
+}
+
+/* ═══════════════ أقسام المرحلة 2 — مكونات عرض داخلية ═══════════════ */
+
+function HomeGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+      <path d="M3 8l6-5 6 5v7H3V8z" />
+    </svg>
+  )
+}
+
+function OrdersGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+      <path d="M3 6l6-3 6 3v6l-6 3-6-3V6zM3 6l6 3 6-3M9 9v6" />
+    </svg>
+  )
+}
+
+function TagGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+      <path d="M9 2h6v6l-7 7-6-6 7-7z" />
+      <circle cx="12" cy="5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function LayersGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+      <path d="M9 2l7 4-7 4-7-4 7-4zM2 10l7 4 7-4" />
+    </svg>
+  )
+}
+
+function GearGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="9" cy="9" r="2.5" />
+      <path d="M9 2v2.5M9 13.5V16M2 9h2.5M13.5 9H16M4 4l1.8 1.8M12.2 12.2L14 14M14 4l-1.8 1.8M5.8 12.2L4 14" />
+    </svg>
+  )
+}
+
+function UsersGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="7" cy="6" r="3" />
+      <path d="M2 15c0-2.5 2.2-4 5-4s5 1.5 5 4M13 3.5a3 3 0 010 5M16 15c0-2-1.2-3.3-3-3.8" />
+    </svg>
+  )
+}
+
+function ShieldGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+      <path d="M9 2l6 2v5c0 3.5-2.5 6-6 7-3.5-1-6-3.5-6-7V4l6-2z" />
+    </svg>
+  )
+}
+
+function ScrollGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M5 2h9v14H5a2 2 0 01-2-2V4a2 2 0 012-2zM7 6h5M7 9h5M7 12h3" />
+    </svg>
+  )
+}
+
+/* بيانات معاينة ثابتة — للعرض البصري فقط، ليست بيانات فعلية */
+
+interface PreviewOrder {
+  id: string
+  customer: string
+  phone: string
+  total: string
+  payment: PaymentStatus
+  status: OrderStatus
+}
+
+const PREVIEW_ORDERS: readonly PreviewOrder[] = [
+  { id: 'TW-2481-9X', customer: 'فاطمة إدريس', phone: '+218 91 234 5678', total: '173 د.ل', payment: 'paid', status: 'preparing' },
+  { id: 'TW-2480-4K', customer: 'محمد الشريف', phone: '+218 92 111 2233', total: '45 د.ل', payment: 'cod', status: 'confirmed' },
+  { id: 'TW-2479-7M', customer: 'سالم بن عامر', phone: '+218 94 555 8899', total: '260 د.ل', payment: 'cod', status: 'ready' },
+  { id: 'TW-2478-2B', customer: 'آمنة الفيتوري', phone: '+218 91 777 4455', total: '89 د.ل', payment: 'paid', status: 'delivered' },
+]
+
+const ORDER_COLUMNS: ReadonlyArray<DataTableColumn<PreviewOrder>> = [
+  { key: 'id', header: 'رقم الطلب', numeric: true, sortable: true, cell: (row) => row.id },
+  { key: 'customer', header: 'الزبون', cell: (row) => row.customer },
+  { key: 'phone', header: 'الهاتف', cell: (row) => <span className="ltr">{row.phone}</span> },
+  { key: 'total', header: 'الإجمالي', numeric: true, sortable: true, cell: (row) => row.total },
+  {
+    key: 'payment',
+    header: 'الدفع',
+    cell: (row) => <Badge variant={PAYMENT_STATUS[row.payment].variant}>{PAYMENT_STATUS[row.payment].label}</Badge>,
+  },
+  {
+    key: 'status',
+    header: 'الحالة',
+    cell: (row) => <Badge variant={ORDER_STATUS[row.status].variant}>{ORDER_STATUS[row.status].label}</Badge>,
+  },
+]
+
+function buildMerchantGroups(activeKey: string, onSelect: (key: string) => void): SidebarGroup[] {
+  const item = (key: string, label: string, icon: ReactNode, count?: number, disabled?: boolean) => ({
+    key,
+    label,
+    icon,
+    count,
+    disabled,
+    active: key === activeKey,
+    onSelect,
+  })
+  return [
+    {
+      title: 'التشغيل',
+      items: [
+        item('home', 'الرئيسية', <HomeGlyph />),
+        item('orders', 'الطلبات', <OrdersGlyph />, 8),
+        item('products', 'المنتجات', <TagGlyph />),
+        item('inventory', 'المخزون', <LayersGlyph />, 3),
+      ],
+    },
+    {
+      title: 'المتجر',
+      items: [
+        item('appearance', 'المظهر والقوالب', <GearGlyph />),
+        item('team', 'فريق العمل', <UsersGlyph />, undefined, true),
+        item('settings', 'الإعدادات', <GearGlyph />),
+      ],
+    },
+  ]
+}
+
+function buildAdminGroups(activeKey: string, onSelect: (key: string) => void): SidebarGroup[] {
+  return [
+    {
+      title: 'الطوابير',
+      items: [
+        { key: 'home', label: 'الرئيسية', icon: <HomeGlyph />, active: activeKey === 'home', onSelect },
+        { key: 'approvals', label: 'طلبات الاعتماد', icon: <ShieldGlyph />, count: 5, active: activeKey === 'approvals', onSelect },
+        { key: 'moderation', label: 'فحص المنتجات', icon: <TagGlyph />, count: 12, active: activeKey === 'moderation', onSelect },
+      ],
+    },
+    {
+      title: 'الإدارة',
+      items: [
+        { key: 'stores', label: 'المتاجر', icon: <LayersGlyph />, active: activeKey === 'stores', onSelect },
+        { key: 'plans', label: 'باقات الاشتراك', icon: <OrdersGlyph />, active: activeKey === 'plans', onSelect },
+        { key: 'audit', label: 'سجل التدقيق', icon: <ScrollGlyph />, active: activeKey === 'audit', onSelect },
+      ],
+    },
+  ]
+}
+
+function MerchantBrand() {
+  return (
+    <div>
+      <p style={{ fontWeight: 700 }}>متجر العافية</p>
+      <p className="ltr" style={{ fontSize: 'var(--type-caption)', color: 'var(--text-muted)' }}>
+        alafya.tawa.ly
+      </p>
+    </div>
+  )
+}
+
+function ShellsDemo() {
+  const [merchantActive, setMerchantActive] = useState('home')
+  const [adminActive, setAdminActive] = useState('approvals')
+  const [mobileActive, setMobileActive] = useState('orders')
+
+  return (
+    <div className="demo-stack">
+      <div className="shell-frame">
+        <AppShell
+          context="merchant"
+          sidebar={<Sidebar brand={<MerchantBrand />} groups={buildMerchantGroups(merchantActive, setMerchantActive)} />}
+          topbar={
+            <Topbar
+              title="لوحة التاجر"
+              storeContext={
+                <>
+                  متجر العافية — <span className="ltr">alafya.tawa.ly</span>
+                </>
+              }
+              userName="فاطمة"
+              actions={
+                <Button variant="primary" size="sm">
+                  + منتج جديد
+                </Button>
+              }
+            />
+          }
+        >
+          <PageHeader
+            as="h3"
+            title="الرئيسية"
+            description="نظرة عامة على متجرك اليوم"
+            meta={<Badge variant="success">المتجر منشور</Badge>}
+          />
+          <div className="summary-grid">
+            <SummaryCard label="طلبات جديدة" value={<span className="numeric">8</span>} change="آخر طلب قبل 25 دقيقة" />
+            <SummaryCard
+              label="مخزون منخفض"
+              value={<span className="numeric">3</span>}
+              tone="warning"
+              change="3 منتجات تحت حد التنبيه"
+            />
+          </div>
+        </AppShell>
+      </div>
+
+      <div className="shell-frame">
+        <AppShell
+          context="admin"
+          sidebar={<Sidebar brand={<p style={{ fontWeight: 700 }}>توا — إدارة المنصة</p>} groups={buildAdminGroups(adminActive, setAdminActive)} />}
+          topbar={<Topbar title="لوحة مدير المنصة" userName="جواد" />}
+        >
+          <PageHeader
+            as="h3"
+            title="طلبات الاعتماد"
+            meta={<Badge variant="warning">5 بانتظار المراجعة</Badge>}
+            description="راجع طلبات انضمام التجار الجدد ووثائقهم"
+          />
+          <Alert variant="warning" title="طلبان تجاوزا يومين في الانتظار">
+            أقدم طلب معلّق: «مكتبة الأندلس» — قُدّم قبل 3 أيام.
+          </Alert>
+        </AppShell>
+      </div>
+
+      <div className="demo-row" style={{ alignItems: 'stretch' }}>
+        <div className="shell-frame shell-frame--mobile" style={{ flex: '1 1 300px' }}>
+          <AppShell
+            context="merchant"
+            sidebar={<Sidebar brand={<MerchantBrand />} groups={buildMerchantGroups(mobileActive, setMobileActive)} />}
+            topbar={<Topbar title="لوحة التاجر" userName="فاطمة" />}
+          >
+            <PageHeader as="h3" title="الطلبات" meta={<Badge variant="info">8 جديدة</Badge>} />
+            <p className="preview-section__hint">إطار ضيق (390px) — زر الدرج أعلى اليمين يفتح قائمة التنقل.</p>
+          </AppShell>
+        </div>
+
+        <div className="shell-frame shell-frame--mobile" style={{ flex: '1 1 300px', maxWidth: 480 }}>
+          <AppShell context="storefront" topbar={<Topbar title="متجر العافية" actions={<Button variant="ghost" size="sm">تتبع طلبي</Button>} />}>
+            <p className="preview-section__hint">
+              سياق الستورفرونت: بلا قائمة جانبية، وaccent يبقى افتراضياً — صبغه بلون التاجر معلّق على قرار D6.
+            </p>
+          </AppShell>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function NavigationDemo() {
+  const [tab, setTab] = useState('all')
+  const [collapsed, setCollapsed] = useState(false)
+
+  return (
+    <div className="demo-stack">
+      <div className="demo-card">
+        <h3>PageHeader مع Breadcrumbs</h3>
+        <PageHeader
+          as="h3"
+          title="شامبو أرغان 400مل"
+          description="عدّل بيانات المنتج ومتغيراته ومخزونه"
+          meta={<Badge variant="neutral">مسودة</Badge>}
+          breadcrumbs={
+            <Breadcrumbs
+              items={[
+                { label: 'الرئيسية', onSelect: () => undefined },
+                { label: 'المنتجات', onSelect: () => undefined },
+                { label: 'شامبو أرغان 400مل' },
+              ]}
+            />
+          }
+          primaryAction={<Button variant="primary">حفظ المنتج</Button>}
+          secondaryActions={<Button variant="secondary">معاينة بالمتجر</Button>}
+        />
+      </div>
+
+      <div className="demo-card">
+        <h3>تبويبات بعدّادات (لوحة المفاتيح: الأسهم وHome/End)</h3>
+        <Tabs
+          label="حالات الطلبات"
+          value={tab}
+          onChange={setTab}
+          items={[
+            { key: 'all', label: 'الكل', count: 46 },
+            { key: 'new', label: 'جديدة', count: 8 },
+            { key: 'preparing', label: 'قيد التجهيز', count: 5 },
+            { key: 'ready', label: 'جاهزة', count: 3 },
+            { key: 'cancelled', label: 'ملغاة', disabled: true },
+          ]}
+        />
+        <p className="preview-section__hint">التبويب النشط: {tab}</p>
+      </div>
+
+      <div className="demo-card">
+        <h3>القائمة الجانبية مستقلة — وضع مطوٍ (Rail)</h3>
+        <div className="demo-row">
+          <Switch label="طي القائمة (تبقى التسميات للقارئات وTooltip النظام)" checked={collapsed} onChange={setCollapsed} />
+        </div>
+        <div style={{ border: '1px solid var(--border-default)', borderRadius: 'var(--radius-card)', overflow: 'hidden', height: 320, display: 'inline-block' }}>
+          <Sidebar collapsed={collapsed} brand={<MerchantBrand />} groups={buildMerchantGroups('products', () => undefined)} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+type TableDemoView = 'data' | 'loading' | 'empty' | 'error'
+
+function TableDemo() {
+  const [view, setView] = useState<TableDemoView>('data')
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [page, setPage] = useState(2)
+  const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<string>>(new Set())
+  const [sort, setSort] = useState<{ key: string; direction: SortDirection }>({ key: 'id', direction: 'desc' })
+
+  return (
+    <div className="demo-stack">
+      <Tabs
+        label="حالة الجدول المعروضة"
+        value={view}
+        onChange={(key) => setView(key as TableDemoView)}
+        items={[
+          { key: 'data', label: 'ببيانات', count: PREVIEW_ORDERS.length },
+          { key: 'loading', label: 'تحميل' },
+          { key: 'empty', label: 'فارغ' },
+          { key: 'error', label: 'خطأ' },
+        ]}
+      />
+
+      <FilterBar
+        search={<SearchField label="بحث في الطلبات" value={search} onChange={setSearch} placeholder="رقم الطلب أو اسم الزبون…" />}
+        filters={
+          <Select label="حالة الطلب" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+            <option value="all">الكل</option>
+            {Object.entries(ORDER_STATUS).map(([key, meta]) => (
+              <option key={key} value={key}>
+                {meta.label}
+              </option>
+            ))}
+          </Select>
+        }
+        actions={
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setSearch('')
+              setStatusFilter('all')
+            }}
+          >
+            مسح الفلاتر
+          </Button>
+        }
+      />
+
+      {selectedKeys.size > 0 && (
+        <Alert variant="info" title={`تم تحديد ${selectedKeys.size} من الطلبات`}>
+          شريط الإجراءات الجماعية يُبنى في مرحلة الشاشات الفعلية.
+        </Alert>
+      )}
+
+      <DataTable
+        caption="جدول طلبات — بيانات معاينة ثابتة"
+        columns={ORDER_COLUMNS}
+        rows={view === 'data' ? PREVIEW_ORDERS : []}
+        rowKey={(row) => row.id}
+        loading={view === 'loading'}
+        error={view === 'error' ? 'انقطع الاتصال أثناء جلب الطلبات.' : undefined}
+        onRetry={() => setView('data')}
+        emptyState={
+          <EmptyState
+            title="لا توجد طلبات مطابقة"
+            description="جرّب تعديل كلمات البحث أو امسح الفلاتر."
+            action={
+              <Button variant="secondary" onClick={() => setView('data')}>
+                مسح الفلاتر
+              </Button>
+            }
+          />
+        }
+        sort={sort}
+        onSortChange={(key) =>
+          setSort((current) => ({ key, direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc' }))
+        }
+        selectable
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+
+      <Pagination page={page} pageCount={7} onPageChange={setPage} disabled={view !== 'data'} />
+    </div>
+  )
+}
+
+function MetricsDemo() {
+  return (
+    <div className="demo-stack">
+      <div className="summary-grid">
+        <SummaryCard
+          label="مبيعات اليوم"
+          value={<span className="numeric">1,250 د.ل</span>}
+          tone="positive"
+          change="ارتفاع 12% عن أمس"
+          icon={<OrdersGlyph />}
+        />
+        <SummaryCard label="طلبات جديدة" value={<span className="numeric">8</span>} change="آخر طلب قبل 25 دقيقة" icon={<OrdersGlyph />} />
+        <SummaryCard
+          label="مخزون منخفض"
+          value={<span className="numeric">3</span>}
+          tone="warning"
+          change="3 منتجات تحت حد التنبيه"
+          icon={<LayersGlyph />}
+        />
+        <SummaryCard
+          label="طلبات ملغاة هذا الأسبوع"
+          value={<span className="numeric">1</span>}
+          tone="negative"
+          change="انخفاض مقابل الأسبوع الماضي"
+          icon={<TagGlyph />}
+        />
+      </div>
+
+      <div className="demo-card" style={{ maxWidth: 520 }}>
+        <h3>تفاصيل الطلب TW-2481-9X (قائمة مفتاح-قيمة)</h3>
+        <KeyValueList
+          items={[
+            { label: 'الزبون', value: 'فاطمة إدريس' },
+            { label: 'رقم الهاتف', value: '+218 91 234 5678', ltr: true },
+            { label: 'رقم التتبع', value: 'TW-2481-9X', numeric: true },
+            { label: 'طريقة الدفع', value: PAYMENT_STATUS.paid.label },
+            { label: 'الإجمالي', value: '173 د.ل', numeric: true },
+            { label: 'مكان الاستلام', value: 'طرابلس — حي الأندلس، شارع الجمهورية' },
+          ]}
+        />
+      </div>
+    </div>
   )
 }

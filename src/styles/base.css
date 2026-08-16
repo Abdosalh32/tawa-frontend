@@ -83,6 +83,18 @@ textarea {
   font-weight: 600;
 }
 
+/* إخفاء بصري مع بقاء العنصر للقارئات (تسميات الحقول المدمجة) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* حركة محترمة */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -1,7 +1,8 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react'
 import { cx } from './cx'
 
 export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'aria-label'> {
+  ref?: Ref<HTMLButtonElement>
   /** التسمية الوصولية إلزامية — تظهر للقارئات وكـ Tooltip نظام */
   label: string
   /** الأيقونة (زخرفية — التسمية هي حاملة المعنى) */

@@ -32,6 +32,9 @@
   --accent: #2a78d6;
   --accent-strong: #1c5cab;
   --accent-soft: #cde2fb;
+  --accent-admin: #4a3aa7;
+  --accent-admin-strong: #2b2263;
+  --accent-admin-soft: #e9e6f9;
 
   /* ── ألوان الحالات (محجوزة للدلالة فقط) ──
      قاعدة ملزمة: success/warning لا يُستخدمان نصاً على أبيض —

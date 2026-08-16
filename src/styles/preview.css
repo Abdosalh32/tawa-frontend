@@ -96,6 +96,29 @@
 .type-sample .t-display { font-size: var(--type-display); font-weight: 700; line-height: var(--line-height-heading); }
 .type-sample .t-caption { font-size: var(--type-caption); color: var(--text-secondary); }
 
+/* إطارات معاينة الهيكل — الهيكل يستجيب لعرض الإطار (Container queries) */
+.shell-frame {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  height: 400px;
+}
+
+.shell-frame .tw-shell {
+  height: 100%;
+}
+
+.shell-frame--mobile {
+  max-width: 390px;
+  height: 460px;
+}
+
+.summary-grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
 @media (max-width: 639px) {
   .preview-main {
     padding-inline: var(--space-md);

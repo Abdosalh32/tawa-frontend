@@ -1,0 +1,290 @@
+/* توا — مكونات عرض البيانات: البحث والفلاتر والجداول والترقيم والمؤشرات */
+
+/* ═══════════════ SearchField ═══════════════ */
+
+.tw-search {
+  position: relative;
+  display: block;
+}
+
+.tw-search__icon {
+  position: absolute;
+  inset-inline-start: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  display: inline-flex;
+}
+
+.tw-search .tw-control {
+  padding-inline-start: 38px;
+  padding-inline-end: 38px;
+}
+
+.tw-search .tw-control::-webkit-search-cancel-button {
+  display: none;
+}
+
+.tw-search__clear {
+  position: absolute;
+  inset-inline-end: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ═══════════════ FilterBar ═══════════════ */
+
+.tw-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-md);
+}
+
+.tw-filterbar__search {
+  flex: 1;
+  min-width: min(220px, 100%);
+}
+
+.tw-filterbar__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-md);
+}
+
+.tw-filterbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-inline-start: auto;
+}
+
+/* ═══════════════ Table ═══════════════ */
+
+.tw-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--surface-card);
+}
+
+.tw-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: var(--type-body);
+}
+
+.tw-table th {
+  text-align: start;
+  font-size: var(--type-caption);
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: var(--space-md) var(--space-lg);
+  border-block-end: 1px solid var(--border-default);
+  white-space: nowrap;
+}
+
+.tw-table td {
+  padding: var(--space-md) var(--space-lg);
+  border-block-end: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.tw-table tbody tr:last-child td {
+  border-block-end: none;
+}
+
+.tw-table tbody tr:hover {
+  background: var(--surface-page);
+}
+
+.tw-table tbody tr.is-selected {
+  background: var(--accent-soft);
+}
+
+.tw-table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  display: block;
+}
+
+.tw-table__check-col {
+  width: 44px;
+}
+
+.tw-table__state-cell {
+  padding: 0;
+}
+
+/* رأس عمود قابل للفرز (حالة بصرية فقط في هذه المرحلة) */
+.tw-th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  border: none;
+  background: none;
+  padding: 2px var(--space-xs);
+  margin: -2px calc(-1 * var(--space-xs));
+  border-radius: var(--radius-control);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tw-th-sort:hover {
+  color: var(--text-primary);
+}
+
+.tw-th-sort__arrow {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.tw-th-sort.is-sorted,
+.tw-th-sort.is-sorted .tw-th-sort__arrow {
+  color: var(--accent-strong);
+}
+
+/* ═══════════════ Pagination ═══════════════ */
+
+.tw-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.tw-pagination__pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.tw-page-btn {
+  min-width: 34px;
+  height: 34px;
+  padding-inline: var(--space-xs);
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--text-secondary);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  cursor: pointer;
+  direction: ltr;
+}
+
+.tw-page-btn:hover:enabled {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+.tw-page-btn[aria-current="page"] {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.tw-pagination__gap {
+  color: var(--text-muted);
+  padding-inline: var(--space-xs);
+}
+
+.tw-pagination__info {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  margin-inline-start: auto;
+}
+
+@media (max-width: 639px) {
+  .tw-pagination__pages {
+    display: none;
+  }
+}
+
+/* ═══════════════ SummaryCard ═══════════════ */
+
+.tw-summary {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg) var(--space-xl);
+  display: grid;
+  gap: var(--space-xs);
+  align-content: start;
+}
+
+.tw-summary__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.tw-summary__label {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.tw-summary__icon {
+  display: inline-flex;
+  color: var(--text-muted);
+}
+
+.tw-summary__value {
+  font-size: var(--type-h1);
+  font-weight: 700;
+  line-height: var(--line-height-heading);
+}
+
+.tw-summary__change {
+  font-size: var(--type-caption);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.tw-summary--positive .tw-summary__change { color: var(--status-success-text); }
+.tw-summary--warning .tw-summary__change { color: var(--status-warning-text); }
+.tw-summary--negative .tw-summary__change { color: var(--status-critical-text); }
+
+/* ═══════════════ KeyValueList ═══════════════ */
+
+.tw-kv {
+  margin: 0;
+  display: grid;
+}
+
+.tw-kv__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding-block: var(--space-md);
+  border-block-end: 1px solid var(--border-subtle);
+}
+
+.tw-kv__row:last-child {
+  border-block-end: none;
+}
+
+.tw-kv dt {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  flex: none;
+}
+
+.tw-kv dd {
+  margin: 0;
+  font-weight: 500;
+  text-align: end;
+  overflow-wrap: anywhere;
+}
