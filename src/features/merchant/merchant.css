@@ -1,0 +1,10 @@
+/* عناصر مشتركة بين شاشات لوحة التاجر */
+
+.merchant-brand__name {
+  font-weight: 700;
+}
+
+.merchant-brand__domain {
+  font-size: var(--type-caption);
+  color: var(--text-muted);
+}

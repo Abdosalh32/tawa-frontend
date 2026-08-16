@@ -5,28 +5,6 @@
   height: 100%;
 }
 
-/* أداة المعاينة التطويرية — مظهر متعمد الاختلاف (حد متقطع) كي لا تُقرأ جزءاً من الشاشة */
-.dash-dev {
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-card);
-  padding: var(--space-sm) var(--space-lg) var(--space-md);
-  margin: 0;
-  min-inline-size: 0; /* fieldset الافتراضي min-content — يسبب فيضاً أفقياً في الهاتف */
-}
-
-.dash-dev legend {
-  font-size: var(--type-caption);
-  font-weight: 600;
-  color: var(--text-secondary);
-  padding-inline: var(--space-xs);
-}
-
-.dash-dev__options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-lg);
-}
-
 .dash-summary-grid {
   display: grid;
   gap: var(--space-lg);
@@ -121,13 +99,4 @@
   flex-wrap: wrap;
   gap: var(--space-md);
   padding-block: var(--space-lg);
-}
-
-.dash-brand__name {
-  font-weight: 700;
-}
-
-.dash-brand__domain {
-  font-size: var(--type-caption);
-  color: var(--text-muted);
 }

@@ -13,47 +13,13 @@ import {
   SummaryCard,
   Topbar,
 } from '../../../components/ui'
-import type { DataTableColumn, SidebarGroup } from '../../../components/ui'
-import {
-  GearGlyph,
-  HomeGlyph,
-  LayersGlyph,
-  OrdersGlyph,
-  PaletteGlyph,
-  PercentGlyph,
-  PlusGlyph,
-  TagGlyph,
-  UsersGlyph,
-} from '../../../components/ui/icons'
+import type { DataTableColumn } from '../../../components/ui'
+import { LayersGlyph, OrdersGlyph, PlusGlyph } from '../../../components/ui/icons'
 import { ORDER_STATUS, PAYMENT_STATUS, STOCK_STATUS } from '../../../types/status'
+import { StoreBrand } from '../StoreBrand'
+import { buildMerchantNav } from '../merchant-nav'
 import { DASHBOARD_METRICS, RECENT_ORDERS, STOCK_ALERTS } from './mock-data'
 import type { RecentOrder } from './mock-data'
-
-/**
- * بنود الملاحة بحسب البنية المعلوماتية الموثقة (information-architecture §1.1) —
- * «نظرة عامة» وحدها نشطة والبقية عرضية في هذه المرحلة.
- * لا جرس إشعارات (D7) ولا مبدّل متاجر (D5) ولا قسم عملاء (لا حسابات زبائن — A2).
- */
-const NAV_GROUPS: SidebarGroup[] = [
-  {
-    title: 'التشغيل',
-    items: [
-      { key: 'overview', label: 'نظرة عامة', icon: <HomeGlyph />, active: true },
-      { key: 'orders', label: 'الطلبات', icon: <OrdersGlyph />, count: 8 },
-      { key: 'products', label: 'المنتجات', icon: <TagGlyph /> },
-      { key: 'inventory', label: 'المخزون', icon: <LayersGlyph />, count: 3 },
-      { key: 'discounts', label: 'الخصومات', icon: <PercentGlyph /> },
-    ],
-  },
-  {
-    title: 'المتجر',
-    items: [
-      { key: 'appearance', label: 'المظهر والقوالب', icon: <PaletteGlyph /> },
-      { key: 'team', label: 'فريق العمل', icon: <UsersGlyph /> },
-      { key: 'settings', label: 'إعدادات المتجر', icon: <GearGlyph /> },
-    ],
-  },
-]
 
 /** أعمدة جدول الطلبات الحديثة — أزرار «عرض» غير موصولة بأي خلفية */
 const ORDER_COLUMNS: ReadonlyArray<DataTableColumn<RecentOrder>> = [
@@ -82,15 +48,6 @@ const ORDER_COLUMNS: ReadonlyArray<DataTableColumn<RecentOrder>> = [
   },
 ]
 
-function StoreBrand() {
-  return (
-    <div>
-      <p className="dash-brand__name">متجر العافية</p>
-      <p className="dash-brand__domain ltr">alafya.tawa.ly</p>
-    </div>
-  )
-}
-
 /** حالة عرض تطويرية محلية — الافتراضي «عادية» */
 type DashboardView = 'normal' | 'loading' | 'empty' | 'error'
 
@@ -110,7 +67,7 @@ export function MerchantDashboardOverview() {
     <AppShell
       context="merchant"
       className="dash-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={NAV_GROUPS} />}
+      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('overview')} />}
       topbar={
         <Topbar
           title="لوحة التاجر"
@@ -135,9 +92,9 @@ export function MerchantDashboardOverview() {
         secondaryActions={<Button variant="secondary">معاينة المتجر</Button>}
       />
 
-      <fieldset className="dash-dev">
+      <fieldset className="dev-fieldset">
         <legend>أداة معاينة تطويرية — حالة البيانات المعروضة (بيانات تجريبية، لا سلوك فعلياً)</legend>
-        <div className="dash-dev__options">
+        <div className="dev-fieldset__options">
           {VIEW_OPTIONS.map((option) => (
             <Radio
               key={option.value}

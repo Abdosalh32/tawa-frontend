@@ -1,0 +1,33 @@
+/* شاشة «المنتجات» للتاجر — تخطيط فقط، القيم من الـ Tokens حصراً */
+
+.plist-shell {
+  height: 100%;
+}
+
+/* خلية هوية المنتج: صورة مصغرة بديلة + الاسم */
+.plist-product {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.plist-thumb {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-control);
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.plist-name {
+  font-weight: 600;
+}
+
+.plist-muted {
+  color: var(--text-muted);
+}

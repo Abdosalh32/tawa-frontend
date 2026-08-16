@@ -122,6 +122,28 @@
   overflow-y: auto;
 }
 
+/* أداة المعاينة التطويرية داخل الشاشات — حد متقطع متعمد كي لا تُقرأ جزءاً من الشاشة */
+.dev-fieldset {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-card);
+  padding: var(--space-sm) var(--space-lg) var(--space-md);
+  margin: 0;
+  min-inline-size: 0; /* fieldset الافتراضي min-content — يسبب فيضاً أفقياً في الهاتف */
+}
+
+.dev-fieldset legend {
+  font-size: var(--type-caption);
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding-inline: var(--space-xs);
+}
+
+.dev-fieldset__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+
 /* إطارات معاينة الهيكل — الهيكل يستجيب لعرض الإطار (Container queries) */
 .shell-frame {
   border: 1px solid var(--border-default);

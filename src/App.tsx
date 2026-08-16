@@ -49,6 +49,7 @@ import {
   UsersGlyph,
 } from './components/ui/icons'
 import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
+import { MerchantProductsList } from './features/merchant/products/MerchantProductsList'
 import { APPROVAL_STATUS, ORDER_STATUS, PAYMENT_STATUS, STOCK_STATUS } from './types/status'
 import type { OrderStatus, PaymentStatus } from './types/status'
 
@@ -841,7 +842,13 @@ function MetricsDemo() {
 
 /* ═══════════════ جذر التطبيق — مبدّل عرض تطويري ═══════════════ */
 
-type DevScreen = 'dashboard' | 'preview'
+type DevScreen = 'dashboard' | 'products' | 'preview'
+
+const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
+  { key: 'dashboard', label: 'لوحة التاجر — نظرة عامة' },
+  { key: 'products', label: 'لوحة التاجر — المنتجات' },
+  { key: 'preview', label: 'معاينة نظام التصميم' },
+]
 
 export default function App() {
   const [screen, setScreen] = useState<DevScreen>('dashboard')
@@ -850,24 +857,21 @@ export default function App() {
     <div className="dev-root">
       <div className="dev-bar">
         <span>عرض تطويري:</span>
-        <Button
-          size="sm"
-          variant={screen === 'dashboard' ? 'primary' : 'secondary'}
-          aria-pressed={screen === 'dashboard'}
-          onClick={() => setScreen('dashboard')}
-        >
-          لوحة التاجر — نظرة عامة
-        </Button>
-        <Button
-          size="sm"
-          variant={screen === 'preview' ? 'primary' : 'secondary'}
-          aria-pressed={screen === 'preview'}
-          onClick={() => setScreen('preview')}
-        >
-          معاينة نظام التصميم
-        </Button>
+        {DEV_SCREENS.map((item) => (
+          <Button
+            key={item.key}
+            size="sm"
+            variant={screen === item.key ? 'primary' : 'secondary'}
+            aria-pressed={screen === item.key}
+            onClick={() => setScreen(item.key)}
+          >
+            {item.label}
+          </Button>
+        ))}
       </div>
-      <div className="dev-content">{screen === 'dashboard' ? <MerchantDashboardOverview /> : <DesignSystemPreview />}</div>
+      <div className="dev-content">
+        {screen === 'dashboard' ? <MerchantDashboardOverview /> : screen === 'products' ? <MerchantProductsList /> : <DesignSystemPreview />}
+      </div>
     </div>
   )
 }

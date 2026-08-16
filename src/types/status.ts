@@ -42,6 +42,15 @@ export const PAYMENT_STATUS: Record<PaymentStatus, StatusMeta> = {
   paid: { label: 'مدفوع', variant: 'success' },
 }
 
+/** حالات المنتج (1.4.5، برومت 4: منشور/مسودة/مؤرشف) — «محظور» إداريةٌ تُضاف مع شاشات المدير */
+export type ProductStatus = 'published' | 'draft' | 'archived'
+
+export const PRODUCT_STATUS: Record<ProductStatus, StatusMeta> = {
+  published: { label: 'منشور', variant: 'success' },
+  draft: { label: 'مسودة', variant: 'neutral' },
+  archived: { label: 'مؤرشف', variant: 'neutral' },
+}
+
 /** حالات الاعتماد والرقابة (م.1.3.1 – م.1.3.5) */
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected' | 'suspended' | 'banned'
 
