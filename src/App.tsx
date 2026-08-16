@@ -53,6 +53,7 @@ import { MerchantAuth } from './features/auth/MerchantAuth'
 import { MerchantDiscountsList } from './features/merchant/discounts/MerchantDiscountsList'
 import { MerchantInventoryList } from './features/merchant/inventory/MerchantInventoryList'
 import { MerchantOrderDetail } from './features/merchant/orders/MerchantOrderDetail'
+import { MerchantStoreSetupWizard } from './features/merchant/store-setup/MerchantStoreSetupWizard'
 import { MerchantOrdersList } from './features/merchant/orders/MerchantOrdersList'
 import { MerchantProductForm } from './features/merchant/products/MerchantProductForm'
 import { MerchantProductsList } from './features/merchant/products/MerchantProductsList'
@@ -848,10 +849,21 @@ function MetricsDemo() {
 
 /* ═══════════════ جذر التطبيق — مبدّل عرض تطويري ═══════════════ */
 
-type DevScreen = 'auth' | 'dashboard' | 'products' | 'product-form' | 'inventory' | 'orders' | 'order-detail' | 'discounts' | 'preview'
+type DevScreen =
+  | 'auth'
+  | 'store-setup'
+  | 'dashboard'
+  | 'products'
+  | 'product-form'
+  | 'inventory'
+  | 'orders'
+  | 'order-detail'
+  | 'discounts'
+  | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'auth', label: 'المصادقة — دخول وتسجيل' },
+  { key: 'store-setup', label: 'إعداد المتجر (معالج)' },
   { key: 'dashboard', label: 'لوحة التاجر — نظرة عامة' },
   { key: 'products', label: 'لوحة التاجر — المنتجات' },
   { key: 'product-form', label: 'لوحة التاجر — نموذج منتج' },
@@ -884,6 +896,8 @@ export default function App() {
       <div className="dev-content">
         {screen === 'auth' ? (
           <MerchantAuth />
+        ) : screen === 'store-setup' ? (
+          <MerchantStoreSetupWizard />
         ) : screen === 'dashboard' ? (
           <MerchantDashboardOverview />
         ) : screen === 'products' ? (

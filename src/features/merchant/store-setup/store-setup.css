@@ -1,0 +1,168 @@
+/* معالج إعداد المتجر (برومت 2) — ملء الشاشة، بطاقة مركزية، Tokens حصراً */
+
+.setup-root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-page);
+  container-type: inline-size;
+}
+
+.setup-dev {
+  padding: var(--space-lg) var(--space-lg) 0;
+}
+
+.setup-main {
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+.setup-card {
+  width: min(600px, 100%);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-1);
+  padding: var(--space-2xl);
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.setup-head {
+  display: grid;
+  gap: var(--space-xs);
+  text-align: center;
+  justify-items: center;
+}
+
+.setup-head__logo {
+  font-size: var(--type-h2);
+  font-weight: 700;
+  color: var(--accent-strong);
+}
+
+.setup-step {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.setup-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: space-between;
+  border-block-start: 1px solid var(--border-subtle);
+  padding-block-start: var(--space-lg);
+}
+
+/* شعار المتجر — Placeholder مؤجل دائري (آلية الرفع غير مخصصة) */
+.setup-logo-deferred {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.setup-logo-deferred__circle {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  background: var(--surface-sunken);
+}
+
+.setup-logo-deferred__text {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* بطاقتا اللغة (برومت 2) — راديو أصلي بخانة مخفية بصرياً */
+.setup-langs {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.setup-lang input:focus-visible + .setup-lang__card {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.setup-lang__card {
+  display: grid;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  transition: border-color var(--motion-fast), background var(--motion-fast);
+}
+
+.setup-lang input:checked + .setup-lang__card {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.setup-lang__name {
+  font-weight: 700;
+}
+
+.setup-lang__preview {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-control);
+  padding: var(--space-sm) var(--space-md);
+}
+
+/* حقل النطاق مع اللاحقة الثابتة */
+.setup-domain {
+  display: flex;
+  align-items: stretch;
+  direction: ltr;
+}
+
+.setup-domain input {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.setup-domain__suffix {
+  display: grid;
+  place-items: center;
+  padding-inline: var(--space-md);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-strong);
+  border-inline-end: none;
+  border-start-start-radius: var(--radius-control);
+  border-end-start-radius: var(--radius-control);
+  color: var(--text-secondary);
+  font-size: var(--type-caption);
+  white-space: nowrap;
+}
+
+/* شاشة النجاح */
+.setup-success {
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: center;
+  text-align: center;
+  padding-block: var(--space-lg);
+}
+
+.setup-success__icon {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--status-success-soft);
+  color: var(--status-success-text);
+}
