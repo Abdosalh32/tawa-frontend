@@ -1,0 +1,42 @@
+/* شاشة «المخزون» — تخطيط فقط، القيم من الـ Tokens حصراً (برومت 6) */
+
+.inv-shell {
+  height: 100%;
+}
+
+.inv-summary {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 260px));
+}
+
+.inv-product {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.inv-product__name {
+  font-weight: 600;
+}
+
+.inv-product__variant {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* «المتاح للبيع» بارز مغاير (برومت 6) */
+.inv-available {
+  font-size: var(--type-h3);
+}
+
+/* الصف الحرج (نفد) بخلفية حمراء خافتة جداً (برومت 6) */
+.tw-table tbody tr.inv-row-critical {
+  background: var(--status-critical-soft);
+}
+
+.inv-header-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}

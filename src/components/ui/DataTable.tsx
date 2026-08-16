@@ -7,7 +7,8 @@ import { cx } from './cx'
 
 export interface DataTableColumn<T> {
   key: string
-  header: string
+  /** نص الرأس، أو عقدة (نص + تلميح توضيحي…) */
+  header: ReactNode
   cell: (row: T) => ReactNode
   /** قيم LTR (مبالغ، أكواد، هواتف) — تُعزل اتجاهياً بأرقام ثابتة العرض */
   numeric?: boolean
@@ -35,6 +36,8 @@ export interface DataTableProps<T> {
   selectable?: boolean
   selectedKeys?: ReadonlySet<string>
   onSelectionChange?: (keys: Set<string>) => void
+  /** فئة CSS إضافية للصف (تمييز الصفوف الحرجة بخلفية خافتة…) */
+  rowClassName?: (row: T) => string | undefined
 }
 
 const SKELETON_ROWS = 5
@@ -54,6 +57,7 @@ export function DataTable<T>({
   selectable = false,
   selectedKeys,
   onSelectionChange,
+  rowClassName,
 }: DataTableProps<T>) {
   const columnCount = columns.length + (selectable ? 1 : 0)
   const selected = selectedKeys ?? new Set<string>()
@@ -135,7 +139,7 @@ export function DataTable<T>({
             const key = rowKey(row)
             const isSelected = selected.has(key)
             return (
-              <tr key={key} className={cx(isSelected && 'is-selected')}>
+              <tr key={key} className={cx(isSelected && 'is-selected', rowClassName?.(row))}>
                 {selectable && (
                   <td className="tw-table__check-col">
                     <input type="checkbox" aria-label={`تحديد الصف ${key}`} checked={isSelected} onChange={() => toggleRow(key)} />
