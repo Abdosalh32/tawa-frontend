@@ -50,6 +50,7 @@ import {
 } from './components/ui/icons'
 import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
 import { MerchantInventoryList } from './features/merchant/inventory/MerchantInventoryList'
+import { MerchantOrderDetail } from './features/merchant/orders/MerchantOrderDetail'
 import { MerchantOrdersList } from './features/merchant/orders/MerchantOrdersList'
 import { MerchantProductForm } from './features/merchant/products/MerchantProductForm'
 import { MerchantProductsList } from './features/merchant/products/MerchantProductsList'
@@ -845,7 +846,7 @@ function MetricsDemo() {
 
 /* ═══════════════ جذر التطبيق — مبدّل عرض تطويري ═══════════════ */
 
-type DevScreen = 'dashboard' | 'products' | 'product-form' | 'inventory' | 'orders' | 'preview'
+type DevScreen = 'dashboard' | 'products' | 'product-form' | 'inventory' | 'orders' | 'order-detail' | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'dashboard', label: 'لوحة التاجر — نظرة عامة' },
@@ -853,6 +854,7 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'product-form', label: 'لوحة التاجر — نموذج منتج' },
   { key: 'inventory', label: 'لوحة التاجر — المخزون' },
   { key: 'orders', label: 'لوحة التاجر — الطلبات' },
+  { key: 'order-detail', label: 'لوحة التاجر — تفاصيل طلب' },
   { key: 'preview', label: 'معاينة نظام التصميم' },
 ]
 
@@ -886,6 +888,8 @@ export default function App() {
           <MerchantInventoryList />
         ) : screen === 'orders' ? (
           <MerchantOrdersList />
+        ) : screen === 'order-detail' ? (
+          <MerchantOrderDetail />
         ) : (
           <DesignSystemPreview />
         )}

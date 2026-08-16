@@ -1,0 +1,96 @@
+/* شاشة «تفاصيل الطلب» — تخطيط فقط، القيم من الـ Tokens حصراً (برومت 7 / P5) */
+
+.odet-shell {
+  height: 100%;
+}
+
+.odet-columns {
+  display: grid;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.odet-columns > * {
+  min-width: 0;
+}
+
+@container (min-width: 960px) {
+  .odet-columns {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.odet-main,
+.odet-side {
+  display: grid;
+  gap: var(--space-xl);
+  min-width: 0;
+}
+
+.odet-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.odet-card > h2 {
+  font-size: var(--type-h3);
+}
+
+/* بطاقة المسار: Stepper + زر النقل */
+.odet-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+/* خلية المنتج في جدول العناصر */
+.odet-item {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.odet-item__name {
+  font-weight: 600;
+}
+
+.odet-item__meta {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* ملخص الطلب */
+.odet-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-lg);
+  padding-block: var(--space-sm);
+}
+
+.odet-summary-row--total {
+  border-block-start: 1px solid var(--border-subtle);
+  padding-block-start: var(--space-md);
+  font-weight: 700;
+}
+
+.odet-summary-row__label {
+  color: var(--text-secondary);
+  font-size: var(--type-caption);
+}
+
+.odet-summary-row--total .odet-summary-row__label {
+  color: var(--text-primary);
+  font-size: var(--type-body);
+}
+
+.odet-summary-note {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}

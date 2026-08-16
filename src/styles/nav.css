@@ -368,6 +368,87 @@
   gap: var(--space-sm);
 }
 
+/* ═══════════════ Stepper (مؤشر خطوات — عرض فقط) ═══════════════ */
+
+.tw-stepper {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-xs);
+}
+
+.tw-stepper__step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-muted);
+  font-size: var(--type-caption);
+  font-weight: 500;
+}
+
+/* الخط الواصل بين الخطوات */
+.tw-stepper__step + .tw-stepper__step::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--border-strong);
+  margin-inline-end: var(--space-sm);
+}
+
+.tw-stepper__marker {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-raised);
+}
+
+.tw-stepper__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+}
+
+.tw-stepper__step.is-done {
+  color: var(--status-success-text);
+}
+
+.tw-stepper__step.is-done .tw-stepper__marker {
+  background: var(--status-success-soft);
+  border-color: var(--status-success);
+  color: var(--status-success-text);
+}
+
+.tw-stepper__step.is-current {
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: var(--type-body);
+}
+
+.tw-stepper__step.is-current .tw-stepper__marker {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.tw-stepper__step.is-current .tw-stepper__dot {
+  background: var(--accent-strong);
+}
+
+.tw-stepper--muted .tw-stepper__step,
+.tw-stepper--muted .tw-stepper__step.is-current,
+.tw-stepper--muted .tw-stepper__step.is-done {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: var(--type-caption);
+}
+
 /* ═══════════════ Tabs ═══════════════ */
 
 .tw-tabs {
