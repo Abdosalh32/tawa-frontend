@@ -1,0 +1,633 @@
+/* توا — أنماط مكونات نظام التصميم (تستهلك Tokens فقط) */
+
+/* ═══════════════ Spinner ═══════════════ */
+
+.tw-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-inline-start-color: transparent;
+  border-radius: var(--radius-pill);
+  animation: tw-spin 0.7s linear infinite;
+  flex: none;
+}
+
+@keyframes tw-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ═══════════════ Button ═══════════════ */
+
+.tw-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 9px var(--space-lg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  font-size: var(--type-body);
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background var(--motion-fast), border-color var(--motion-fast);
+  user-select: none;
+}
+
+.tw-btn--sm {
+  padding: 5px var(--space-md);
+  font-size: var(--type-caption);
+}
+
+.tw-btn--primary {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.tw-btn--primary:hover:enabled {
+  background: var(--accent-strong);
+}
+
+.tw-btn--secondary {
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.tw-btn--secondary:hover:enabled {
+  background: var(--surface-sunken);
+}
+
+.tw-btn--ghost {
+  background: transparent;
+  color: var(--accent-strong);
+}
+
+.tw-btn--ghost:hover:enabled {
+  background: var(--accent-soft);
+}
+
+.tw-btn--danger {
+  background: var(--status-critical);
+  color: var(--text-on-accent);
+}
+
+.tw-btn--danger:hover:enabled {
+  background: var(--status-critical-text);
+}
+
+.tw-btn:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+.tw-btn.is-loading .tw-btn__label,
+.tw-btn.is-loading .tw-btn__icon {
+  visibility: hidden;
+}
+
+.tw-btn.is-loading .tw-spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+.tw-btn__icon {
+  display: inline-flex;
+  flex: none;
+}
+
+/* ═══════════════ IconButton ═══════════════ */
+
+.tw-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--motion-fast);
+  flex: none;
+}
+
+.tw-iconbtn--sm {
+  width: 30px;
+  height: 30px;
+}
+
+.tw-iconbtn:hover:enabled {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+.tw-iconbtn--danger {
+  color: var(--status-critical);
+}
+
+.tw-iconbtn--danger:hover:enabled {
+  background: var(--status-critical-soft);
+  color: var(--status-critical-text);
+}
+
+.tw-iconbtn:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* ═══════════════ Field (غلاف الحقل) ═══════════════ */
+
+.tw-field {
+  display: grid;
+  gap: 6px;
+}
+
+.tw-field__label {
+  font-size: var(--type-caption);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tw-field__optional {
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-inline-start: var(--space-xs);
+}
+
+.tw-field__helper {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+.tw-field__error {
+  font-size: var(--type-caption);
+  color: var(--status-critical-text);
+  font-weight: 500;
+}
+
+.tw-field.is-disabled .tw-field__label,
+.tw-field.is-disabled .tw-field__helper {
+  opacity: var(--disabled-opacity);
+}
+
+/* ═══════════════ الحقول (Input / Select / Textarea) ═══════════════ */
+
+.tw-control {
+  width: 100%;
+  padding: 9px var(--space-md);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface-raised);
+  font-size: var(--type-body);
+  line-height: 1.5;
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.tw-control::placeholder {
+  color: var(--text-muted);
+}
+
+.tw-control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.tw-field.has-error .tw-control {
+  border-color: var(--status-critical);
+}
+
+.tw-field.has-error .tw-control:focus {
+  box-shadow: 0 0 0 3px var(--status-critical-soft);
+}
+
+.tw-control:disabled {
+  background: var(--surface-sunken);
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+textarea.tw-control {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.tw-select-wrap {
+  position: relative;
+}
+
+.tw-select-wrap select.tw-control {
+  appearance: none;
+  padding-inline-end: var(--space-2xl);
+  cursor: pointer;
+}
+
+.tw-select-wrap::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: var(--space-md);
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-inline-end: 2px solid var(--text-secondary);
+  border-block-end: 2px solid var(--text-secondary);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+/* ═══════════════ Checkbox / Radio ═══════════════ */
+
+.tw-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.tw-check input[type="checkbox"],
+.tw-check input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin-block-start: 3px;
+  accent-color: var(--accent);
+  flex: none;
+  cursor: pointer;
+}
+
+.tw-check input:disabled {
+  cursor: not-allowed;
+}
+
+.tw-check__label {
+  cursor: pointer;
+  user-select: none;
+}
+
+.tw-check.is-disabled .tw-check__label {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+.tw-check__description {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* ═══════════════ Switch ═══════════════ */
+
+.tw-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 2px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--radius-control);
+}
+
+.tw-switch__track {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+  transition: background var(--motion-base);
+  flex: none;
+}
+
+.tw-switch__thumb {
+  position: absolute;
+  top: 2px;
+  inset-inline-start: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-raised);
+  box-shadow: var(--elevation-1);
+  transition: inset-inline-start var(--motion-base);
+}
+
+.tw-switch[aria-checked="true"] .tw-switch__track {
+  background: var(--accent);
+}
+
+.tw-switch[aria-checked="true"] .tw-switch__thumb {
+  inset-inline-start: 20px;
+}
+
+.tw-switch:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* ═══════════════ Badge (شارة حالة) ═══════════════ */
+
+.tw-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px var(--space-md);
+  border-radius: var(--radius-pill);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.tw-badge__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  flex: none;
+}
+
+.tw-badge--neutral {
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+}
+.tw-badge--neutral .tw-badge__dot { background: var(--text-muted); }
+
+.tw-badge--success {
+  background: var(--status-success-soft);
+  color: var(--status-success-text);
+}
+.tw-badge--success .tw-badge__dot { background: var(--status-success); }
+
+.tw-badge--warning {
+  background: var(--status-warning-soft);
+  color: var(--status-warning-text);
+}
+.tw-badge--warning .tw-badge__dot { background: var(--status-warning); }
+
+.tw-badge--progress {
+  background: var(--status-progress-soft);
+  color: var(--status-progress-text);
+}
+.tw-badge--progress .tw-badge__dot { background: var(--status-progress); }
+
+.tw-badge--error {
+  background: var(--status-critical-soft);
+  color: var(--status-critical-text);
+}
+.tw-badge--error .tw-badge__dot { background: var(--status-critical); }
+
+.tw-badge--info {
+  background: var(--status-info-soft);
+  color: var(--status-info-text);
+}
+.tw-badge--info .tw-badge__dot { background: var(--status-info); }
+
+/* ═══════════════ Alert ═══════════════ */
+
+.tw-alert {
+  display: grid;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-default);
+  border-inline-start-width: 3px;
+  background: var(--surface-card);
+}
+
+.tw-alert__title {
+  font-weight: 700;
+  font-size: var(--type-body);
+}
+
+.tw-alert__body {
+  color: var(--text-secondary);
+  font-size: var(--type-caption);
+}
+
+.tw-alert__action {
+  margin-block-start: var(--space-sm);
+}
+
+.tw-alert--info {
+  border-inline-start-color: var(--status-info);
+  background: var(--status-info-soft);
+}
+.tw-alert--info .tw-alert__title { color: var(--status-info-text); }
+
+.tw-alert--success {
+  border-inline-start-color: var(--status-success);
+  background: var(--status-success-soft);
+}
+.tw-alert--success .tw-alert__title { color: var(--status-success-text); }
+
+.tw-alert--warning {
+  border-inline-start-color: var(--status-warning);
+  background: var(--status-warning-soft);
+}
+.tw-alert--warning .tw-alert__title { color: var(--status-warning-text); }
+
+.tw-alert--error {
+  border-inline-start-color: var(--status-critical);
+  background: var(--status-critical-soft);
+}
+.tw-alert--error .tw-alert__title { color: var(--status-critical-text); }
+
+.tw-alert--info .tw-alert__body,
+.tw-alert--success .tw-alert__body,
+.tw-alert--warning .tw-alert__body,
+.tw-alert--error .tw-alert__body {
+  color: var(--text-primary);
+}
+
+/* ═══════════════ Toast ═══════════════ */
+
+.tw-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-card);
+  background: var(--text-primary);
+  color: var(--surface-raised);
+  font-size: var(--type-caption);
+  font-weight: 500;
+  box-shadow: var(--elevation-2);
+  max-width: min(360px, calc(100vw - var(--space-2xl)));
+}
+
+.tw-toast__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  flex: none;
+}
+
+.tw-toast--success .tw-toast__dot { background: var(--status-success); }
+.tw-toast--error .tw-toast__dot { background: var(--status-critical); }
+.tw-toast--neutral .tw-toast__dot { background: var(--text-muted); }
+
+.tw-toast .tw-iconbtn {
+  color: var(--surface-raised);
+  width: 28px;
+  height: 28px;
+}
+
+.tw-toast .tw-iconbtn:hover:enabled {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--surface-raised);
+}
+
+/* «أعلى اليسار في RTL» = inset-inline-end */
+.tw-toast--floating {
+  position: fixed;
+  top: var(--space-lg);
+  inset-inline-end: var(--space-lg);
+  z-index: 200;
+}
+
+/* ═══════════════ Modal ═══════════════ */
+
+.tw-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--space-lg);
+  background: rgba(11, 11, 11, 0.45);
+}
+
+.tw-modal {
+  width: min(480px, 100%);
+  max-height: 85dvh;
+  overflow-y: auto;
+  border-radius: var(--radius-card);
+  background: var(--surface-raised);
+  box-shadow: var(--elevation-2);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.tw-modal:focus {
+  outline: none;
+}
+
+.tw-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.tw-modal__title {
+  font-size: var(--type-h2);
+}
+
+.tw-modal__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: flex-end; /* الأساسي جهة اليسار في RTL */
+}
+
+/* ═══════════════ Tooltip ═══════════════ */
+
+.tw-tooltip-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.tw-tooltip {
+  position: absolute;
+  bottom: calc(100% + var(--space-sm));
+  inset-inline-start: 50%;
+  transform: translateX(50%);
+  background: var(--text-primary);
+  color: var(--surface-raised);
+  font-size: var(--type-caption);
+  line-height: 1.5;
+  padding: 5px var(--space-md);
+  border-radius: var(--radius-control);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--motion-fast);
+  pointer-events: none;
+  z-index: 50;
+}
+
+.tw-tooltip-wrap:hover .tw-tooltip,
+.tw-tooltip-wrap:focus-within .tw-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ═══════════════ Skeleton ═══════════════ */
+
+.tw-skeleton {
+  display: block;
+  background: var(--surface-sunken);
+  animation: tw-pulse 1.4s ease-in-out infinite;
+}
+
+.tw-skeleton--text {
+  height: 14px;
+  border-radius: 6px;
+}
+
+.tw-skeleton--rect {
+  border-radius: var(--radius-card);
+}
+
+.tw-skeleton--circle {
+  border-radius: var(--radius-pill);
+}
+
+@keyframes tw-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ═══════════════ مكونات الحالات ═══════════════ */
+
+.tw-state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-md);
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+}
+
+.tw-state__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  display: grid;
+  place-items: center;
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+}
+
+.tw-state--error .tw-state__icon {
+  background: var(--status-critical-soft);
+  color: var(--status-critical-text);
+}
+
+.tw-state__title {
+  font-size: var(--type-h3);
+  font-weight: 700;
+}
+
+.tw-state__description {
+  color: var(--text-secondary);
+  font-size: var(--type-caption);
+  max-width: 44ch;
+}
+
+.tw-state__action {
+  margin-block-start: var(--space-xs);
+}

@@ -1,0 +1,91 @@
+/**
+ * توا — Tokens دلالية (المصدر: docs/design/design-system-foundations.md)
+ * لا تُستخدم قيم خام في المكونات — الأدوار فقط.
+ *
+ * نقاط التحول (لا يمكن تمثيلها كمتغيرات في media queries — مرجع موثّق):
+ *   bp.mobile  < 640px · bp.tablet ≥ 640px · bp.desktop ≥ 1024px · bp.wide ≥ 1280px
+ */
+:root {
+  color-scheme: light;
+
+  /* ── الأسطح ─────────────────────────────── */
+  --surface-page: #f9f9f7;
+  --surface-card: #fcfcfb;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f0efec;
+
+  /* ── النص ───────────────────────────────── */
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --text-on-accent: #ffffff;
+
+  /* ── الحدود ─────────────────────────────── */
+  --border-default: rgba(11, 11, 11, 0.1);
+  --border-strong: rgba(11, 11, 11, 0.22);
+  --border-subtle: #f0efec;
+
+  /* ── لون الهوية (accent.current) ─────────
+     المعاينة تستخدم أزرق التاجر افتراضاً.
+     لوحة المدير تعيد تعريف الثلاثي بـ #4a3aa7/#2b2263/#e9e6f9،
+     والستورفرونت يصبغه لون التاجر (accent.store — قرار D6 معلّق). */
+  --accent: #2a78d6;
+  --accent-strong: #1c5cab;
+  --accent-soft: #cde2fb;
+
+  /* ── ألوان الحالات (محجوزة للدلالة فقط) ──
+     قاعدة ملزمة: success/warning لا يُستخدمان نصاً على أبيض —
+     النص دائماً من درجة *-text فوق خلفية *-soft. */
+  --status-success: #0ca30c;
+  --status-success-text: #006300;
+  --status-success-soft: #e3f5e3;
+  --status-warning: #fab219;
+  --status-warning-text: #7a5200;
+  --status-warning-soft: #fdf0d2;
+  --status-progress: #ec835a; /* danger-mid: تمييز مرحلي (جاهز للتسليم) */
+  --status-progress-text: #8a3413;
+  --status-progress-soft: #fbe8e0;
+  --status-critical: #d03b3b;
+  --status-critical-text: #a52222;
+  --status-critical-soft: #f9e2e2;
+  --status-info: #2a78d6;
+  --status-info-text: #1c5cab;
+  --status-info-soft: #cde2fb;
+
+  /* ── التفاعل ────────────────────────────── */
+  --focus-ring: var(--accent);
+  --disabled-opacity: 0.5;
+
+  /* ── الطباعة ────────────────────────────── */
+  --font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+  --type-display: 30px; /* لحظات كبرى: رقم التتبع، شاشات المعالج */
+  --type-h1: 23px;      /* عنوان الصفحة — واحد لكل شاشة */
+  --type-h2: 18px;      /* عنوان بطاقة/قسم */
+  --type-h3: 16px;      /* عنوان فرعي */
+  --type-body: 15px;    /* النص الأساسي وخلايا الجداول */
+  --type-caption: 13px; /* نص مساعد، رؤوس جداول، تسميات ثانوية */
+  --line-height-body: 1.6;  /* حد أدنى ملزم للنص العربي */
+  --line-height-heading: 1.3;
+
+  /* ── المسافات (أساس 4px) ────────────────── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
+  /* ── الزوايا ────────────────────────────── */
+  --radius-card: 12px;
+  --radius-control: 10px;
+  --radius-pill: 999px;
+
+  /* ── الارتفاع ───────────────────────────── */
+  --elevation-1: 0 2px 8px rgba(11, 11, 11, 0.08);
+  --elevation-2: 0 12px 32px rgba(11, 11, 11, 0.18);
+
+  /* ── الحركة ─────────────────────────────── */
+  --motion-fast: 120ms ease;
+  --motion-base: 180ms ease;
+}
