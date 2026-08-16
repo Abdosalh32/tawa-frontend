@@ -3,7 +3,7 @@ import './product-detail.css'
 import { Badge, Breadcrumbs, Button, EmptyState, ErrorState, Radio, Skeleton, Toast } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
 import { StorefrontShell } from '../storefront/StorefrontShell'
-import { addToPreviewCart } from '../storefront/preview-config'
+import { addCartLine } from '../storefront/preview-config'
 import { OUT_PRODUCT, SIMPLE_PRODUCT, VARIANT_PRODUCT, comboFor, optionAvailable } from './mock-data'
 import type { DetailProduct } from './mock-data'
 
@@ -62,8 +62,15 @@ function ProductBody({ product }: { product: DetailProduct }) {
 
   const addToCart = () => {
     if (!canAdd) return
-    addToPreviewCart(quantity)
-    setToast(`أُضيف إلى السلة (${quantity}×) — معاينة محلية، لا سلة فعلية بعد`)
+    addCartLine({
+      id: [product.id, size ?? '', type ?? ''].filter(Boolean).join('|'),
+      name: product.name,
+      variant: hasVariants ? [size, type].filter(Boolean).join(' / ') : undefined,
+      unitPrice: price,
+      quantity,
+      maxQuantity: availability === 'low' ? remaining : undefined,
+    })
+    setToast(`أُضيف إلى السلة (${quantity}×) — معاينة محلية، لا حفظ فعلياً`)
   }
 
   const selectAxis = (axis: 'size' | 'type', value: string) => {

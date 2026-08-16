@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import './storefront.css'
 import { Radio } from '../../../components/ui'
 import { TEMPLATES, readableOn } from '../../../types/store-theme'
-import { BRAND_PRESETS, presetOf, setPreviewConfig, useStorePreviewConfig } from './preview-config'
+import { BRAND_PRESETS, cartQuantityOf, presetOf, setPreviewConfig, useStorePreviewConfig } from './preview-config'
 
 export interface StorefrontShellProps {
   /** أدوات حالة الشاشة الخاصة (fieldset تطويري) */
@@ -18,7 +18,9 @@ export interface StorefrontShellProps {
  * تستهلكها شاشتا التصفح وتفاصيل المنتج دون تكرار.
  */
 export function StorefrontShell({ devStateControls, headerMiddle, children }: StorefrontShellProps) {
-  const { template, presetKey, cartCount } = useStorePreviewConfig()
+  const config = useStorePreviewConfig()
+  const { template, presetKey } = config
+  const cartCount = cartQuantityOf(config)
   const preset = presetOf(presetKey)
   const onPrimary = readableOn(preset.colors.primary)
 
