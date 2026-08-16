@@ -51,6 +51,7 @@ import {
 import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
 import { MerchantAuth } from './features/auth/MerchantAuth'
 import { CustomerCart } from './features/customer/cart/CustomerCart'
+import { CustomerCheckout } from './features/customer/checkout/CustomerCheckout'
 import { CustomerProductDetail } from './features/customer/product-detail/CustomerProductDetail'
 import { CustomerStorefrontBrowse } from './features/customer/storefront/CustomerStorefrontBrowse'
 import { MerchantDiscountsList } from './features/merchant/discounts/MerchantDiscountsList'
@@ -869,6 +870,7 @@ type DevScreen =
   | 'storefront'
   | 'product-detail-customer'
   | 'cart'
+  | 'checkout'
   | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
@@ -886,6 +888,7 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'storefront', label: 'واجهة الزبون — التصفح' },
   { key: 'product-detail-customer', label: 'واجهة الزبون — صفحة منتج' },
   { key: 'cart', label: 'واجهة الزبون — السلة' },
+  { key: 'checkout', label: 'واجهة الزبون — إتمام الشراء' },
   { key: 'preview', label: 'معاينة نظام التصميم' },
 ]
 
@@ -937,6 +940,8 @@ export default function App() {
           <CustomerProductDetail />
         ) : screen === 'cart' ? (
           <CustomerCart />
+        ) : screen === 'checkout' ? (
+          <CustomerCheckout />
         ) : (
           <DesignSystemPreview />
         )}
