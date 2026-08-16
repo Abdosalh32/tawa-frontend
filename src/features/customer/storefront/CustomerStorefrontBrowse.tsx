@@ -1,30 +1,9 @@
 import { useMemo, useState } from 'react'
-import type { CSSProperties } from 'react'
-import './storefront.css'
 import { Badge, Button, Checkbox, EmptyState, ErrorState, Radio, SearchField, Skeleton } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
-import { DEFAULT_COLORS, TEMPLATES, readableOn } from '../../../types/store-theme'
-import type { ColorRole, TemplateKey } from '../../../types/store-theme'
+import { StorefrontShell } from './StorefrontShell'
 import { CATEGORIES, COLOR_SWATCHES, SIZE_OPTIONS, STOREFRONT_PRODUCTS } from './mock-data'
 import type { StorefrontCategory } from './mock-data'
-
-/**
- * إعدادات معاينة يحددها التاجر (قالب + ألوان) — محاكاة محلية لأن لا استمرارية بعد.
- * لوحات جاهزة للعرض فقط؛ حرية الألوان الكاملة نفسها في شاشة «المظهر والقوالب».
- */
-const BRAND_PRESETS: ReadonlyArray<{ key: string; label: string; colors: Record<ColorRole, string> }> = [
-  { key: 'default', label: 'الأزرق الافتراضي', colors: DEFAULT_COLORS },
-  {
-    key: 'ruby',
-    label: 'عنابي دافئ',
-    colors: { primary: '#8a2432', secondary: '#5c1622', background: '#faf6f4', surface: '#ffffff', text: '#221418' },
-  },
-  {
-    key: 'forest',
-    label: 'أخضر زيتوني',
-    colors: { primary: '#2f6b3a', secondary: '#1d4726', background: '#f7f9f5', surface: '#fdfffc', text: '#101a12' },
-  },
-]
 
 /** حالة عرض تطويرية محلية — الافتراضي «عادية» */
 type ScreenView = 'normal' | 'loading' | 'empty' | 'error'
@@ -42,9 +21,6 @@ function formatPrice(value: number): string {
 
 export function CustomerStorefrontBrowse() {
   const [view, setView] = useState<ScreenView>('normal')
-  const [template, setTemplate] = useState<TemplateKey>('modern')
-  const [preset, setPreset] = useState(BRAND_PRESETS[0])
-
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<'all' | StorefrontCategory>('all')
   const [priceMin, setPriceMin] = useState('')
@@ -81,16 +57,6 @@ export function CustomerStorefrontBrowse() {
     })
   }, [search, category, priceMin, priceMax, selectedColors, selectedSizes])
 
-  const onPrimary = readableOn(preset.colors.primary)
-  const themeStyle = {
-    '--sf-primary': preset.colors.primary,
-    '--sf-secondary': preset.colors.secondary,
-    '--sf-background': preset.colors.background,
-    '--sf-surface': preset.colors.surface,
-    '--sf-text': preset.colors.text,
-    '--sf-on-primary': onPrimary,
-  } as CSSProperties
-
   const toggleInSet = (set: ReadonlySet<string>, value: string): Set<string> => {
     const next = new Set(set)
     if (next.has(value)) next.delete(value)
@@ -101,8 +67,9 @@ export function CustomerStorefrontBrowse() {
   const products = view === 'empty' ? [] : filtered
 
   return (
-    <div className={`sf-root sf-root--${template}`} style={themeStyle} dir="rtl">
-      <div className="sf-dev">
+    <StorefrontShell
+      headerMiddle={<SearchField label="ابحث في المتجر" placeholder="ابحث عن منتج…" value={search} onChange={setSearch} />}
+      devStateControls={
         <fieldset className="dev-fieldset">
           <legend>أداة معاينة تطويرية — حالة الشاشة (بيانات تجريبية، لا سلوك فعلياً)</legend>
           <div className="dev-fieldset__options">
@@ -117,52 +84,8 @@ export function CustomerStorefrontBrowse() {
             ))}
           </div>
         </fieldset>
-        <fieldset className="dev-fieldset" style={{ marginBlockStart: 'var(--space-sm)' }}>
-          <legend>محاكاة إعدادات التاجر (قالب وألوان محلية — لا استمرارية بعد؛ الحرية الكاملة في شاشة المظهر)</legend>
-          <div className="dev-fieldset__options">
-            {TEMPLATES.map((item) => (
-              <Radio
-                key={item.key}
-                name="sf-template"
-                label={`قالب ${item.name}`}
-                checked={template === item.key}
-                onChange={() => setTemplate(item.key)}
-              />
-            ))}
-            {BRAND_PRESETS.map((item) => (
-              <Radio
-                key={item.key}
-                name="sf-preset"
-                label={item.label}
-                checked={preset.key === item.key}
-                onChange={() => setPreset(item)}
-              />
-            ))}
-          </div>
-        </fieldset>
-      </div>
-
-      <header className="sf-header">
-        <span className="sf-brand">
-          {/* الشعار Placeholder — رفع الشعار الفعلي مؤجل */}
-          <span className="sf-brand__logo" aria-hidden="true">
-            ع
-          </span>
-          متجر العافية
-        </span>
-        <div className="sf-header__search">
-          <SearchField label="ابحث في المتجر" placeholder="ابحث عن منتج…" value={search} onChange={setSearch} />
-        </div>
-        <div className="sf-header__actions">
-          <button type="button" className="sf-track">
-            تتبع طلبي
-          </button>
-          <button type="button" className="sf-cart" aria-label="السلة — عنصران (مؤشر غير موصول)">
-            السلة (<span className="numeric">2</span>)
-          </button>
-        </div>
-      </header>
-
+      }
+    >
       <nav className="sf-cats" aria-label="تصنيفات المتجر">
         <button type="button" className="sf-cat" aria-pressed={category === 'all'} onClick={() => setCategory('all')}>
           الكل
@@ -262,7 +185,7 @@ export function CustomerStorefrontBrowse() {
             </aside>
 
             <div className="sf-products">
-              {template === 'modern' && view === 'normal' && products.length > 0 && (
+              {view === 'normal' && products.length > 0 && (
                 <div className="sf-hero">
                   <span className="sf-hero__title">أهلاً بكم في متجر العافية</span>
                   <span className="sf-hero__sub">منتجات أصلية وتوصيل لكل المدن — تسوقوا أحدث المنتجات</span>
@@ -319,18 +242,6 @@ export function CustomerStorefrontBrowse() {
           </>
         )}
       </main>
-
-      <footer className="sf-footer">
-        <div className="sf-footer__links">
-          <button type="button" className="sf-footer__link">
-            سياسة الاسترجاع
-          </button>
-          <button type="button" className="sf-footer__link">
-            تواصل معنا
-          </button>
-        </div>
-        <span className="sf-footer__tawa">متجر مرخّص على منصة توا</span>
-      </footer>
-    </div>
+    </StorefrontShell>
   )
 }

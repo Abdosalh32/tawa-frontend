@@ -282,6 +282,11 @@
   flex-wrap: wrap;
 }
 
+/* القالب الكلاسيكي: بلا بنر ترويجي */
+.sf-root--classic .sf-hero {
+  display: none;
+}
+
 /* القالب الكلاسيكي: صفوف مهيكلة بدل الشبكة */
 .sf-root--classic .sf-grid {
   grid-template-columns: 1fr;
