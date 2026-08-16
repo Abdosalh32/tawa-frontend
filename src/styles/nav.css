@@ -61,6 +61,11 @@
   align-content: start;
 }
 
+/* منع الفيض الأفقي: بنود المحتوى تنكمش والجداول تمرر داخل حاوياتها */
+.tw-shell__content > * {
+  min-width: 0;
+}
+
 @container (min-width: 1024px) {
   .tw-shell__sidebar {
     display: block;

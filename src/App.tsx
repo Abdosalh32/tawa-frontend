@@ -35,37 +35,22 @@ import {
   Topbar,
 } from './components/ui'
 import type { DataTableColumn, SidebarGroup, SortDirection } from './components/ui'
+import {
+  DotsGlyph,
+  GearGlyph,
+  HomeGlyph,
+  InfoGlyph,
+  LayersGlyph,
+  OrdersGlyph,
+  PlusGlyph,
+  ScrollGlyph,
+  ShieldGlyph,
+  TagGlyph,
+  UsersGlyph,
+} from './components/ui/icons'
+import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
 import { APPROVAL_STATUS, ORDER_STATUS, PAYMENT_STATUS, STOCK_STATUS } from './types/status'
 import type { OrderStatus, PaymentStatus } from './types/status'
-
-/* أيقونات المعاينة (خطية 2px) */
-
-function PlusGlyph() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <path d="M8 3v10M3 8h10" />
-    </svg>
-  )
-}
-
-function DotsGlyph() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-      <circle cx="8" cy="3" r="1.5" />
-      <circle cx="8" cy="8" r="1.5" />
-      <circle cx="8" cy="13" r="1.5" />
-    </svg>
-  )
-}
-
-function InfoGlyph() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <circle cx="8" cy="8" r="6" />
-      <path d="M8 7.5v3M8 5v.5" />
-    </svg>
-  )
-}
 
 const COLOR_SWATCHES = [
   { name: 'accent', varName: '--accent' },
@@ -78,7 +63,7 @@ const COLOR_SWATCHES = [
   { name: 'info-soft', varName: '--status-info-soft' },
 ]
 
-export default function App() {
+function DesignSystemPreview() {
   const [previewModalOpen, setPreviewModalOpen] = useState(false)
   const [cancelOrderOpen, setCancelOrderOpen] = useState(false)
   const [showOffersSection, setShowOffersSection] = useState(true)
@@ -478,73 +463,6 @@ export default function App() {
 
 /* ═══════════════ أقسام المرحلة 2 — مكونات عرض داخلية ═══════════════ */
 
-function HomeGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-      <path d="M3 8l6-5 6 5v7H3V8z" />
-    </svg>
-  )
-}
-
-function OrdersGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-      <path d="M3 6l6-3 6 3v6l-6 3-6-3V6zM3 6l6 3 6-3M9 9v6" />
-    </svg>
-  )
-}
-
-function TagGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-      <path d="M9 2h6v6l-7 7-6-6 7-7z" />
-      <circle cx="12" cy="5" r="1" fill="currentColor" stroke="none" />
-    </svg>
-  )
-}
-
-function LayersGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-      <path d="M9 2l7 4-7 4-7-4 7-4zM2 10l7 4 7-4" />
-    </svg>
-  )
-}
-
-function GearGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <circle cx="9" cy="9" r="2.5" />
-      <path d="M9 2v2.5M9 13.5V16M2 9h2.5M13.5 9H16M4 4l1.8 1.8M12.2 12.2L14 14M14 4l-1.8 1.8M5.8 12.2L4 14" />
-    </svg>
-  )
-}
-
-function UsersGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <circle cx="7" cy="6" r="3" />
-      <path d="M2 15c0-2.5 2.2-4 5-4s5 1.5 5 4M13 3.5a3 3 0 010 5M16 15c0-2-1.2-3.3-3-3.8" />
-    </svg>
-  )
-}
-
-function ShieldGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-      <path d="M9 2l6 2v5c0 3.5-2.5 6-6 7-3.5-1-6-3.5-6-7V4l6-2z" />
-    </svg>
-  )
-}
-
-function ScrollGlyph() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <path d="M5 2h9v14H5a2 2 0 01-2-2V4a2 2 0 012-2zM7 6h5M7 9h5M7 12h3" />
-    </svg>
-  )
-}
-
 /* بيانات معاينة ثابتة — للعرض البصري فقط، ليست بيانات فعلية */
 
 interface PreviewOrder {
@@ -917,6 +835,39 @@ function MetricsDemo() {
           ]}
         />
       </div>
+    </div>
+  )
+}
+
+/* ═══════════════ جذر التطبيق — مبدّل عرض تطويري ═══════════════ */
+
+type DevScreen = 'dashboard' | 'preview'
+
+export default function App() {
+  const [screen, setScreen] = useState<DevScreen>('dashboard')
+
+  return (
+    <div className="dev-root">
+      <div className="dev-bar">
+        <span>عرض تطويري:</span>
+        <Button
+          size="sm"
+          variant={screen === 'dashboard' ? 'primary' : 'secondary'}
+          aria-pressed={screen === 'dashboard'}
+          onClick={() => setScreen('dashboard')}
+        >
+          لوحة التاجر — نظرة عامة
+        </Button>
+        <Button
+          size="sm"
+          variant={screen === 'preview' ? 'primary' : 'secondary'}
+          aria-pressed={screen === 'preview'}
+          onClick={() => setScreen('preview')}
+        >
+          معاينة نظام التصميم
+        </Button>
+      </div>
+      <div className="dev-content">{screen === 'dashboard' ? <MerchantDashboardOverview /> : <DesignSystemPreview />}</div>
     </div>
   )
 }

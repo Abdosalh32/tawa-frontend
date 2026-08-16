@@ -66,6 +66,8 @@
 
 .tw-table-wrap {
   overflow-x: auto;
+  max-width: 100%;
+  min-width: 0; /* يلغي الحد الأدنى التلقائي كعنصر Grid/Flex كي يمرر الجدول داخلياً بدل دفع الصفحة */
   border: 1px solid var(--border-default);
   border-radius: var(--radius-card);
   background: var(--surface-card);
@@ -92,6 +94,7 @@
   padding: var(--space-md) var(--space-lg);
   border-block-end: 1px solid var(--border-subtle);
   vertical-align: middle;
+  white-space: nowrap; /* بيانات مضغوطة — التمرير الأفقي داخل الحاوية بدل الالتفاف */
 }
 
 .tw-table tbody tr:last-child td {
