@@ -50,6 +50,7 @@ import {
 } from './components/ui/icons'
 import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
 import { MerchantAuth } from './features/auth/MerchantAuth'
+import { CustomerStorefrontBrowse } from './features/customer/storefront/CustomerStorefrontBrowse'
 import { MerchantDiscountsList } from './features/merchant/discounts/MerchantDiscountsList'
 import { MerchantInventoryList } from './features/merchant/inventory/MerchantInventoryList'
 import { MerchantOrderDetail } from './features/merchant/orders/MerchantOrderDetail'
@@ -863,6 +864,7 @@ type DevScreen =
   | 'discounts'
   | 'appearance'
   | 'store-settings'
+  | 'storefront'
   | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
@@ -877,6 +879,7 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'discounts', label: 'لوحة التاجر — الخصومات' },
   { key: 'appearance', label: 'لوحة التاجر — المظهر والقوالب' },
   { key: 'store-settings', label: 'لوحة التاجر — إعدادات المتجر' },
+  { key: 'storefront', label: 'واجهة الزبون — التصفح' },
   { key: 'preview', label: 'معاينة نظام التصميم' },
 ]
 
@@ -922,6 +925,8 @@ export default function App() {
           <MerchantAppearance />
         ) : screen === 'store-settings' ? (
           <MerchantStoreSettings />
+        ) : screen === 'storefront' ? (
+          <CustomerStorefrontBrowse />
         ) : (
           <DesignSystemPreview />
         )}

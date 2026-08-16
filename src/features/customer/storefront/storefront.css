@@ -1,0 +1,331 @@
+/* واجهة الزبون — تصميم مميز عن اللوحة، يشرب من ألوان التاجر عبر --sf-*
+   (D6 محسوم؛ ألوان الحالات الدلالية تبقى نظامية). Mobile-first + Container queries */
+
+.sf-root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--sf-background);
+  color: var(--sf-text);
+  container-type: inline-size;
+}
+
+.sf-dev {
+  padding: var(--space-lg) var(--space-lg) 0;
+  background: var(--surface-page);
+}
+
+/* ═══ الهيدر (برومت 12) ═══ */
+.sf-header {
+  background: var(--sf-surface);
+  border-block-end: 1px solid color-mix(in srgb, var(--sf-text) 12%, transparent);
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.sf-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-weight: 700;
+  font-size: var(--type-h3);
+}
+
+.sf-brand__logo {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--sf-primary);
+  color: var(--sf-on-primary);
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+
+.sf-header__search {
+  flex: 1;
+  min-width: min(240px, 100%);
+}
+
+.sf-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.sf-cart {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  border: none;
+  border-radius: var(--radius-control);
+  padding: 7px var(--space-md);
+  background: var(--sf-primary);
+  color: var(--sf-on-primary);
+  font-weight: 600;
+  font-size: var(--type-caption);
+  cursor: pointer;
+}
+
+.sf-track {
+  border: 1px solid color-mix(in srgb, var(--sf-text) 25%, transparent);
+  background: transparent;
+  color: inherit;
+  border-radius: var(--radius-control);
+  padding: 6px var(--space-md);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* القالب الكلاسيكي: ترويسة مركزية (برومت/تكامل القالبين) */
+.sf-root--classic .sf-header {
+  flex-direction: column;
+  text-align: center;
+}
+
+.sf-root--classic .sf-header__search {
+  width: min(480px, 100%);
+  flex: none;
+}
+
+/* ═══ شريط التصنيفات (2.1.3 / برومت 12) ═══ */
+.sf-cats {
+  display: flex;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--sf-surface);
+  border-block-end: 1px solid color-mix(in srgb, var(--sf-text) 8%, transparent);
+  overflow-x: auto;
+}
+
+.sf-cat {
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 6px var(--space-md);
+  border-radius: var(--radius-pill);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sf-cat[aria-pressed='true'] {
+  background: var(--sf-primary);
+  color: var(--sf-on-primary);
+}
+
+/* ═══ المحتوى ═══ */
+.sf-main {
+  flex: 1;
+  padding: var(--space-lg);
+  display: grid;
+  gap: var(--space-xl);
+  align-content: start;
+}
+
+@container (min-width: 1024px) {
+  .sf-main {
+    grid-template-columns: 260px minmax(0, 1fr);
+    padding: var(--space-xl);
+  }
+}
+
+.sf-hero {
+  background: var(--sf-primary);
+  color: var(--sf-on-primary);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.sf-hero__title {
+  font-size: var(--type-h2);
+  font-weight: 700;
+}
+
+.sf-hero__sub {
+  font-size: var(--type-caption);
+  opacity: 0.92;
+}
+
+/* الفلاتر (2.1.4) */
+.sf-filters {
+  background: var(--sf-surface);
+  border: 1px solid color-mix(in srgb, var(--sf-text) 10%, transparent);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  display: grid;
+  gap: var(--space-lg);
+  align-self: start;
+  align-content: start;
+}
+
+.sf-filters h2 {
+  font-size: var(--type-h3);
+}
+
+.sf-filter-group {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.sf-filter-group > p {
+  font-size: var(--type-caption);
+  font-weight: 700;
+}
+
+.sf-price-row {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.sf-price-row .tw-control {
+  width: 90px;
+}
+
+.sf-color-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--type-caption);
+}
+
+.sf-color-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid color-mix(in srgb, var(--sf-text) 30%, transparent);
+  flex: none;
+}
+
+.sf-sizes {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.sf-size {
+  border: 1px solid color-mix(in srgb, var(--sf-text) 25%, transparent);
+  background: transparent;
+  color: inherit;
+  min-width: 38px;
+  padding: 5px var(--space-sm);
+  border-radius: var(--radius-control);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  cursor: pointer;
+  direction: ltr;
+}
+
+.sf-size[aria-pressed='true'] {
+  background: var(--sf-primary);
+  color: var(--sf-on-primary);
+  border-color: var(--sf-primary);
+}
+
+/* شبكة/قائمة المنتجات */
+.sf-products {
+  display: grid;
+  gap: var(--space-lg);
+  align-content: start;
+}
+
+.sf-grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.sf-card {
+  background: var(--sf-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid color-mix(in srgb, var(--sf-text) 8%, transparent);
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-sm);
+  align-content: start;
+}
+
+.sf-card__img {
+  aspect-ratio: 1;
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--sf-text) 7%, transparent);
+  display: grid;
+  place-items: center;
+  color: color-mix(in srgb, var(--sf-text) 40%, transparent);
+}
+
+.sf-card__name {
+  font-weight: 600;
+  font-size: var(--type-body);
+}
+
+.sf-card__price {
+  color: var(--sf-primary);
+  font-weight: 700;
+}
+
+.sf-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* القالب الكلاسيكي: صفوف مهيكلة بدل الشبكة */
+.sf-root--classic .sf-grid {
+  grid-template-columns: 1fr;
+}
+
+.sf-root--classic .sf-card {
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.sf-root--classic .sf-card__img {
+  aspect-ratio: 1;
+  width: 72px;
+}
+
+/* الفوتر (برومت 12) */
+.sf-footer {
+  background: var(--sf-surface);
+  border-block-start: 1px solid color-mix(in srgb, var(--sf-text) 10%, transparent);
+  padding: var(--space-lg);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--type-caption);
+}
+
+.sf-footer__links {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.sf-footer__link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--sf-secondary);
+  font-size: var(--type-caption);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.sf-footer__tawa {
+  color: color-mix(in srgb, var(--sf-text) 60%, transparent);
+}
