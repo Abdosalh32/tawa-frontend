@@ -1,0 +1,9 @@
+/* شاشة «الخصومات» — تخطيط فقط، القيم من الـ Tokens حصراً */
+
+.disc-shell {
+  height: 100%;
+}
+
+.disc-period {
+  white-space: nowrap;
+}

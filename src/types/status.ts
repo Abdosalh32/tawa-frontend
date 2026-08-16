@@ -51,6 +51,14 @@ export const PRODUCT_STATUS: Record<ProductStatus, StatusMeta> = {
   archived: { label: 'مؤرشف', variant: 'neutral' },
 }
 
+/** حالتا الخصم الموثقتان (برومت 8: نشطة/منتهية) — «مجدول» وغيرها غير منصوصة */
+export type DiscountStatus = 'active' | 'ended'
+
+export const DISCOUNT_STATUS: Record<DiscountStatus, StatusMeta> = {
+  active: { label: 'نشط', variant: 'success' },
+  ended: { label: 'منتهٍ', variant: 'neutral' },
+}
+
 /** حالات الاعتماد والرقابة (م.1.3.1 – م.1.3.5) */
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected' | 'suspended' | 'banned'
 

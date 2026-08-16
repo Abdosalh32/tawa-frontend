@@ -49,6 +49,7 @@ import {
   UsersGlyph,
 } from './components/ui/icons'
 import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
+import { MerchantDiscountsList } from './features/merchant/discounts/MerchantDiscountsList'
 import { MerchantInventoryList } from './features/merchant/inventory/MerchantInventoryList'
 import { MerchantOrderDetail } from './features/merchant/orders/MerchantOrderDetail'
 import { MerchantOrdersList } from './features/merchant/orders/MerchantOrdersList'
@@ -846,7 +847,7 @@ function MetricsDemo() {
 
 /* ═══════════════ جذر التطبيق — مبدّل عرض تطويري ═══════════════ */
 
-type DevScreen = 'dashboard' | 'products' | 'product-form' | 'inventory' | 'orders' | 'order-detail' | 'preview'
+type DevScreen = 'dashboard' | 'products' | 'product-form' | 'inventory' | 'orders' | 'order-detail' | 'discounts' | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'dashboard', label: 'لوحة التاجر — نظرة عامة' },
@@ -855,6 +856,7 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'inventory', label: 'لوحة التاجر — المخزون' },
   { key: 'orders', label: 'لوحة التاجر — الطلبات' },
   { key: 'order-detail', label: 'لوحة التاجر — تفاصيل طلب' },
+  { key: 'discounts', label: 'لوحة التاجر — الخصومات' },
   { key: 'preview', label: 'معاينة نظام التصميم' },
 ]
 
@@ -890,6 +892,8 @@ export default function App() {
           <MerchantOrdersList />
         ) : screen === 'order-detail' ? (
           <MerchantOrderDetail />
+        ) : screen === 'discounts' ? (
+          <MerchantDiscountsList />
         ) : (
           <DesignSystemPreview />
         )}
