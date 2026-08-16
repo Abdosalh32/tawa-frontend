@@ -1,0 +1,195 @@
+/* شاشات المصادقة — تخطيط برومت 1: بطاقة 440px + لوحة ترويجية مكتبية.
+   القيم من الـ Tokens حصراً، والاستجابة بـ Container queries. */
+
+.auth-root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-page);
+  container-type: inline-size;
+}
+
+.auth-dev {
+  padding: var(--space-lg) var(--space-lg) 0;
+}
+
+.auth-main {
+  flex: 1;
+  width: 100%;
+  display: grid;
+  gap: var(--space-2xl);
+  padding: var(--space-2xl) var(--space-lg);
+  align-content: center;
+  justify-items: center;
+}
+
+/* اللوحة الترويجية تظهر مكتبياً فقط (برومت 1) */
+.auth-promo {
+  display: none;
+}
+
+@container (min-width: 1024px) {
+  .auth-main {
+    max-width: 1024px;
+    margin-inline: auto;
+    grid-template-columns: 1fr 440px;
+    align-items: center;
+    justify-items: stretch;
+  }
+
+  .auth-promo {
+    display: grid;
+    gap: var(--space-xl);
+    align-content: center;
+    padding: var(--space-3xl);
+    border-radius: var(--radius-card);
+    background: linear-gradient(160deg, var(--accent-soft), var(--surface-card));
+  }
+}
+
+.auth-promo__title {
+  font-size: var(--type-h1);
+  color: var(--accent-strong);
+}
+
+.auth-features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.auth-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.auth-feature__icon {
+  flex: none;
+  color: var(--accent-strong);
+  margin-block-start: 2px;
+}
+
+.auth-feature__text {
+  display: grid;
+  gap: 2px;
+}
+
+.auth-feature__name {
+  font-weight: 700;
+}
+
+.auth-feature__hint {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* البطاقة المركزية */
+.auth-card {
+  width: min(440px, 100%);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-1);
+  padding: var(--space-2xl);
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.auth-brand {
+  display: grid;
+  gap: var(--space-xs);
+  justify-items: center;
+  text-align: center;
+}
+
+.auth-brand__logo {
+  font-size: var(--type-display);
+  font-weight: 700;
+  color: var(--accent-strong);
+  line-height: var(--line-height-heading);
+}
+
+.auth-brand__tagline {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+.auth-form {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.auth-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.auth-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  border-block-start: 1px solid var(--border-subtle);
+  padding-block-start: var(--space-lg);
+}
+
+/* حقل كلمة المرور مع زر الإظهار */
+.auth-password {
+  position: relative;
+  display: block;
+}
+
+.auth-password__input {
+  padding-inline-end: 44px;
+}
+
+.auth-password__toggle {
+  position: absolute;
+  inset-inline-end: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* مؤشر قوة كلمة المرور (برومت 1) */
+.auth-strength {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.auth-strength__bars {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.auth-strength__bar {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+}
+
+.auth-strength--weak .auth-strength__bar:nth-child(1) {
+  background: var(--status-critical);
+}
+
+.auth-strength--medium .auth-strength__bar:nth-child(-n + 2) {
+  background: var(--status-warning);
+}
+
+.auth-strength--strong .auth-strength__bar {
+  background: var(--status-success);
+}
+
+.auth-strength__label {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}

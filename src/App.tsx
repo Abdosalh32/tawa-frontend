@@ -49,6 +49,7 @@ import {
   UsersGlyph,
 } from './components/ui/icons'
 import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
+import { MerchantAuth } from './features/auth/MerchantAuth'
 import { MerchantDiscountsList } from './features/merchant/discounts/MerchantDiscountsList'
 import { MerchantInventoryList } from './features/merchant/inventory/MerchantInventoryList'
 import { MerchantOrderDetail } from './features/merchant/orders/MerchantOrderDetail'
@@ -847,9 +848,10 @@ function MetricsDemo() {
 
 /* ═══════════════ جذر التطبيق — مبدّل عرض تطويري ═══════════════ */
 
-type DevScreen = 'dashboard' | 'products' | 'product-form' | 'inventory' | 'orders' | 'order-detail' | 'discounts' | 'preview'
+type DevScreen = 'auth' | 'dashboard' | 'products' | 'product-form' | 'inventory' | 'orders' | 'order-detail' | 'discounts' | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
+  { key: 'auth', label: 'المصادقة — دخول وتسجيل' },
   { key: 'dashboard', label: 'لوحة التاجر — نظرة عامة' },
   { key: 'products', label: 'لوحة التاجر — المنتجات' },
   { key: 'product-form', label: 'لوحة التاجر — نموذج منتج' },
@@ -880,7 +882,9 @@ export default function App() {
         ))}
       </div>
       <div className="dev-content">
-        {screen === 'dashboard' ? (
+        {screen === 'auth' ? (
+          <MerchantAuth />
+        ) : screen === 'dashboard' ? (
           <MerchantDashboardOverview />
         ) : screen === 'products' ? (
           <MerchantProductsList />
