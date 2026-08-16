@@ -65,6 +65,39 @@ export function validateRegistration(form: RegistrationFormState): RegistrationE
   return errors
 }
 
+/** رمز التفعيل: 6 أرقام (برومت 1) */
+export function validateOtp(code: string, length: number): string | undefined {
+  if (!new RegExp(`^\\d{${length}}$`).test(code)) {
+    return `أدخل رمز التحقق المكوَّن من ${length} أرقام كاملاً`
+  }
+  return undefined
+}
+
+/** معرّف الاستعادة: بريد أو هاتف (1.1.4) */
+export function validateRecoveryIdentifier(identifier: string): string | undefined {
+  if (identifier.trim() === '') {
+    return 'أدخل بريدك الإلكتروني أو رقم هاتفك لإرسال رابط الاستعادة'
+  }
+  return undefined
+}
+
+export interface ResetPasswordErrors {
+  password?: string
+  confirm?: string
+}
+
+/** تعيين كلمة مرور جديدة (1.1.5): حقلان متطابقان بنفس سياسة الطول الموثقة */
+export function validateResetPassword(password: string, confirm: string): ResetPasswordErrors {
+  const errors: ResetPasswordErrors = {}
+  if (password.length < 8) {
+    errors.password = 'كلمة المرور ثمانية أحرف على الأقل'
+  }
+  if (confirm !== password || confirm === '') {
+    errors.confirm = 'كلمتا المرور غير متطابقتين — أعد كتابة الكلمة نفسها'
+  }
+  return errors
+}
+
 export type PasswordStrength = 'weak' | 'medium' | 'strong'
 
 /** مؤشر قوة مبسّط (برومت 1) — طول + تنوع أحرف، للعرض المحلي فقط */

@@ -1,92 +1,12 @@
-import { useEffect, useId, useRef, useState } from 'react'
-import { Alert, Button, Checkbox, Field, IconButton, Input, Radio, Toast, fieldDescribedBy } from '../../components/ui'
+import { useEffect, useRef, useState } from 'react'
+import { Alert, Button, Checkbox, Input, Radio, Toast } from '../../components/ui'
 import { AuthLayout } from './AuthLayout'
-import {
-  STRENGTH_LABEL,
-  passwordStrength,
-  validateLogin,
-  validateRegistration,
-} from './auth-validation'
+import { PasswordInput, StrengthMeter } from './PasswordField'
+import { ForgotPasswordForm, OtpActivationForm, ResetPasswordForm } from './RecoveryScreens'
+import { validateLogin, validateRegistration } from './auth-validation'
 import type { LoginErrors, LoginFormState, RegistrationErrors, RegistrationFormState } from './auth-validation'
 
-type AuthMode = 'login' | 'register'
-
-function EyeGlyph({ off }: { off: boolean }) {
-  return off ? (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <path d="M2 8s2.2-3.8 6-3.8S14 8 14 8s-2.2 3.8-6 3.8S2 8 2 8z" />
-      <circle cx="8" cy="8" r="1.8" />
-      <path d="M3 13L13 3" />
-    </svg>
-  ) : (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <path d="M2 8s2.2-3.8 6-3.8S14 8 14 8s-2.2 3.8-6 3.8S2 8 2 8z" />
-      <circle cx="8" cy="8" r="1.8" />
-    </svg>
-  )
-}
-
-/** حقل كلمة مرور بزر إظهار/إخفاء — مركّب فوق Field المشترك دون تكرار سلوك */
-function PasswordInput({
-  label,
-  value,
-  onChange,
-  helperText,
-  error,
-  autoComplete,
-}: {
-  label: string
-  value: string
-  onChange: (value: string) => void
-  helperText?: string
-  error?: string
-  autoComplete?: string
-}) {
-  const id = useId()
-  const [visible, setVisible] = useState(false)
-
-  return (
-    <Field id={id} label={label} helperText={helperText} error={error}>
-      <span className="auth-password">
-        <input
-          id={id}
-          className="tw-control auth-password__input"
-          type={visible ? 'text' : 'password'}
-          dir="ltr"
-          value={value}
-          autoComplete={autoComplete}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={fieldDescribedBy(id, helperText, error)}
-          onChange={(event) => onChange(event.target.value)}
-        />
-        <IconButton
-          label={visible ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
-          size="sm"
-          className="auth-password__toggle"
-          onClick={() => setVisible((current) => !current)}
-        >
-          <EyeGlyph off={visible} />
-        </IconButton>
-      </span>
-    </Field>
-  )
-}
-
-/** مؤشر قوة كلمة المرور (برومت 1) — نص + أشرطة، اللون ليس حامل المعنى الوحيد */
-function StrengthMeter({ password }: { password: string }) {
-  if (password === '') return null
-  const strength = passwordStrength(password)
-  return (
-    <div className={`auth-strength auth-strength--${strength}`}>
-      <div className="auth-strength__bars" aria-hidden="true">
-        <span className="auth-strength__bar" />
-        <span className="auth-strength__bar" />
-        <span className="auth-strength__bar" />
-      </div>
-      <p className="auth-strength__label">قوة كلمة المرور: {STRENGTH_LABEL[strength]}</p>
-    </div>
-  )
-}
+type AuthMode = 'login' | 'register' | 'otp' | 'forgot' | 'reset'
 
 const EMPTY_LOGIN: LoginFormState = { identifier: '', password: '', remember: false }
 const EMPTY_REGISTRATION: RegistrationFormState = { name: '', email: '', phone: '', password: '', termsAccepted: false }
@@ -101,6 +21,11 @@ export function MerchantAuth() {
   const [registered, setRegistered] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const summaryRef = useRef<HTMLDivElement>(null)
+  /** دالة الإرسال الحالية — تربطها كل شاشة لزر «إظهار أخطاء التحقق» التطويري */
+  const devSubmitRef = useRef<() => void>(() => undefined)
+  const bindSubmit = (submit: () => void) => {
+    devSubmitRef.current = submit
+  }
 
   useEffect(() => {
     if (!toast) return
@@ -138,8 +63,14 @@ export function MerchantAuth() {
     setRegistered(false)
   }
 
+  /* ربط زر الأخطاء التطويري بوضعي الدخول/التسجيل (الشاشات الأخرى تربط نفسها) */
+  useEffect(() => {
+    if (mode === 'login') devSubmitRef.current = submitLogin
+    else if (mode === 'register') devSubmitRef.current = submitRegistration
+  })
+
   const activeErrors: string[] =
-    mode === 'login' ? Object.values(loginErrors) : Object.values(registrationErrors)
+    mode === 'login' ? Object.values(loginErrors) : mode === 'register' ? Object.values(registrationErrors) : []
 
   const devControls = (
     <fieldset className="dev-fieldset">
@@ -147,7 +78,10 @@ export function MerchantAuth() {
       <div className="dev-fieldset__options">
         <Radio name="auth-mode" label="تسجيل الدخول (الافتراضي)" checked={mode === 'login'} onChange={() => switchMode('login')} />
         <Radio name="auth-mode" label="إنشاء حساب" checked={mode === 'register'} onChange={() => switchMode('register')} />
-        <Button variant="secondary" size="sm" onClick={mode === 'login' ? submitLogin : submitRegistration}>
+        <Radio name="auth-mode" label="تفعيل OTP" checked={mode === 'otp'} onChange={() => switchMode('otp')} />
+        <Radio name="auth-mode" label="نسيت كلمة المرور" checked={mode === 'forgot'} onChange={() => switchMode('forgot')} />
+        <Radio name="auth-mode" label="تعيين كلمة مرور جديدة" checked={mode === 'reset'} onChange={() => switchMode('reset')} />
+        <Button variant="secondary" size="sm" onClick={() => devSubmitRef.current()}>
           إظهار أخطاء التحقق
         </Button>
         <Button variant="secondary" size="sm" onClick={() => setToast('معاينة النجاح المحلي — لا سلوك فعلياً')}>
@@ -202,8 +136,7 @@ export function MerchantAuth() {
               checked={login.remember}
               onChange={(event) => setLogin((prev) => ({ ...prev, remember: event.target.checked }))}
             />
-            {/* الاستعادة موثقة (1.1.4) — شاشاتها تُبنى في مرحلة لاحقة */}
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => switchMode('forgot')}>
               نسيت كلمة المرور؟
             </Button>
           </div>
@@ -217,17 +150,35 @@ export function MerchantAuth() {
             </Button>
           </p>
         </form>
+      ) : mode === 'otp' ? (
+        <OtpActivationForm
+          phone={registration.phone || '+218 91 234 5678'}
+          notify={setToast}
+          onBackToLogin={() => switchMode('login')}
+          bindSubmit={bindSubmit}
+        />
+      ) : mode === 'forgot' ? (
+        <ForgotPasswordForm
+          notify={setToast}
+          onBackToLogin={() => switchMode('login')}
+          onOpenReset={() => switchMode('reset')}
+          bindSubmit={bindSubmit}
+        />
+      ) : mode === 'reset' ? (
+        <ResetPasswordForm notify={setToast} onBackToLogin={() => switchMode('login')} bindSubmit={bindSubmit} />
       ) : registered ? (
         <div className="auth-form">
           <Alert variant="success" title="تم إنشاء الحساب (معاينة محلية)">
-            الخطوة الموثقة التالية: تفعيل حسابك برمز OTP يُرسل برسالة نصية إلى هاتفك (1.1.2) — شاشة إدخال الرمز تُبنى في
-            مرحلة لاحقة، ولا حساب فعلياً الآن.
+            الخطوة الموثقة التالية: تفعيل حسابك برمز OTP يُرسل برسالة نصية إلى هاتفك (1.1.2) — ولا حساب فعلياً الآن.
           </Alert>
           <div className="auth-row">
-            <Button variant="primary" onClick={() => switchMode('login')}>
+            <Button variant="primary" onClick={() => setMode('otp')}>
+              المتابعة لتفعيل الحساب (معاينة)
+            </Button>
+            <Button variant="secondary" onClick={() => switchMode('login')}>
               العودة لتسجيل الدخول
             </Button>
-            <Button variant="secondary" onClick={() => setRegistered(false)}>
+            <Button variant="ghost" onClick={() => setRegistered(false)}>
               تعديل البيانات
             </Button>
           </div>
