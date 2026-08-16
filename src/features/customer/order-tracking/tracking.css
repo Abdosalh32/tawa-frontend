@@ -1,0 +1,165 @@
+/* تتبع الطلب (برومت 15) — بطاقة مركزية Mobile-first، خط زمني عمودي، ثيم --sf-* */
+
+.ot-main {
+  flex: 1;
+  padding: var(--space-lg);
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--space-xl);
+}
+
+.ot-card {
+  width: min(560px, 100%);
+  background: var(--sf-surface);
+  border: 1px solid color-mix(in srgb, var(--sf-text) 10%, transparent);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.ot-title {
+  font-size: var(--type-h1);
+  font-weight: 700;
+  text-align: center;
+}
+
+.ot-help {
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 65%, transparent);
+  text-align: center;
+}
+
+.ot-submit {
+  border: none;
+  border-radius: var(--radius-control);
+  padding: 11px var(--space-lg);
+  background: var(--sf-primary);
+  color: var(--sf-on-primary);
+  font-weight: 700;
+  font-size: var(--type-body);
+  cursor: pointer;
+}
+
+/* رأس النتيجة */
+.ot-result-head {
+  display: grid;
+  gap: var(--space-xs);
+  text-align: center;
+}
+
+.ot-result-head__id {
+  font-size: var(--type-h2);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.ot-result-head__meta {
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 65%, transparent);
+}
+
+/* الخط الزمني العمودي (برومت 15) */
+.ot-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.ot-step {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: var(--space-md);
+  padding-block: var(--space-sm);
+  position: relative;
+}
+
+/* الخط الواصل */
+.ot-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 13.5px;
+  top: 34px;
+  bottom: -6px;
+  width: 1px;
+  background: color-mix(in srgb, var(--sf-text) 20%, transparent);
+}
+
+.ot-step__marker {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  border: 1px solid color-mix(in srgb, var(--sf-text) 25%, transparent);
+  background: var(--sf-surface);
+  display: grid;
+  place-items: center;
+  color: color-mix(in srgb, var(--sf-text) 40%, transparent);
+  font-weight: 700;
+  z-index: 1;
+}
+
+.ot-step--done .ot-step__marker {
+  background: var(--status-success-soft);
+  border-color: var(--status-success);
+  color: var(--status-success-text);
+}
+
+.ot-step--current .ot-step__marker {
+  background: var(--sf-primary);
+  border-color: var(--sf-primary);
+  color: var(--sf-on-primary);
+}
+
+.ot-step--cancelled .ot-step__marker {
+  background: var(--status-critical-soft);
+  border-color: var(--status-critical);
+  color: var(--status-critical-text);
+}
+
+.ot-step__body {
+  display: grid;
+  gap: 2px;
+}
+
+.ot-step__label {
+  font-weight: 600;
+  color: color-mix(in srgb, var(--sf-text) 55%, transparent);
+}
+
+.ot-step--done .ot-step__label,
+.ot-step--current .ot-step__label,
+.ot-step--cancelled .ot-step__label {
+  color: var(--sf-text);
+}
+
+.ot-step--current .ot-step__label {
+  font-weight: 700;
+}
+
+.ot-step__time {
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 60%, transparent);
+}
+
+/* ملخص مصغر */
+.ot-summary {
+  display: grid;
+  gap: var(--space-sm);
+  border-block-start: 1px solid color-mix(in srgb, var(--sf-text) 12%, transparent);
+  padding-block-start: var(--space-md);
+}
+
+.ot-summary__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  font-size: var(--type-caption);
+}
+
+.ot-summary__note {
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 60%, transparent);
+}

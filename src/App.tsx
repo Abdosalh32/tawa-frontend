@@ -52,6 +52,7 @@ import { MerchantDashboardOverview } from './features/merchant/dashboard/Merchan
 import { MerchantAuth } from './features/auth/MerchantAuth'
 import { CustomerCart } from './features/customer/cart/CustomerCart'
 import { CustomerCheckout } from './features/customer/checkout/CustomerCheckout'
+import { CustomerOrderTracking } from './features/customer/order-tracking/CustomerOrderTracking'
 import { CustomerProductDetail } from './features/customer/product-detail/CustomerProductDetail'
 import { CustomerStorefrontBrowse } from './features/customer/storefront/CustomerStorefrontBrowse'
 import { MerchantDiscountsList } from './features/merchant/discounts/MerchantDiscountsList'
@@ -871,6 +872,7 @@ type DevScreen =
   | 'product-detail-customer'
   | 'cart'
   | 'checkout'
+  | 'order-tracking'
   | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
@@ -889,6 +891,7 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'product-detail-customer', label: 'واجهة الزبون — صفحة منتج' },
   { key: 'cart', label: 'واجهة الزبون — السلة' },
   { key: 'checkout', label: 'واجهة الزبون — إتمام الشراء' },
+  { key: 'order-tracking', label: 'واجهة الزبون — تتبع الطلب' },
   { key: 'preview', label: 'معاينة نظام التصميم' },
 ]
 
@@ -942,6 +945,8 @@ export default function App() {
           <CustomerCart />
         ) : screen === 'checkout' ? (
           <CustomerCheckout />
+        ) : screen === 'order-tracking' ? (
+          <CustomerOrderTracking />
         ) : (
           <DesignSystemPreview />
         )}
