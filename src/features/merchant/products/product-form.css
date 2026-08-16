@@ -1,0 +1,163 @@
+/* نموذج المنتج — تخطيط فقط، القيم من الـ Tokens حصراً (نمط P6) */
+
+.pform-shell {
+  height: 100%;
+}
+
+.pform-columns {
+  display: grid;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.pform-columns > * {
+  min-width: 0;
+}
+
+@container (min-width: 960px) {
+  .pform-columns {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.pform-main,
+.pform-side {
+  display: grid;
+  gap: var(--space-xl);
+  min-width: 0;
+}
+
+.pform-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.pform-card > h2 {
+  font-size: var(--type-h3);
+}
+
+.pform-card__hint {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  margin-block-start: calc(-1 * var(--space-md));
+}
+
+/* Placeholder مؤجل (الصور) — مظهر متعمد التمييز */
+.pform-deferred {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-sm);
+  justify-items: center;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--type-caption);
+}
+
+/* محرر محاور المتغيرات */
+.pform-axis {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.pform-axis__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.pform-axis__input {
+  max-width: 160px;
+}
+
+.pform-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.pform-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 2px var(--space-xs) 2px var(--space-md);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  background: var(--surface-raised);
+  font-size: var(--type-caption);
+  font-weight: 600;
+}
+
+/* جدول التركيبات */
+.pform-combo-input {
+  width: 96px;
+}
+
+.pform-combo-input--sku {
+  width: 132px;
+}
+
+.pform-combo-label {
+  font-weight: 600;
+}
+
+.pform-combo-input[aria-invalid='true'] {
+  border-color: var(--status-critical);
+}
+
+tr.is-removed .pform-combo-label,
+tr.is-removed td {
+  color: var(--text-muted);
+}
+
+tr.is-removed .pform-combo-label {
+  text-decoration: line-through;
+}
+
+/* شريط الحفظ السفلي الثابت (P6) */
+.pform-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  margin-inline: calc(-1 * var(--space-lg));
+  margin-block-end: calc(-1 * var(--space-xl));
+  background: var(--surface-raised);
+  border-block-start: 1px solid var(--border-default);
+}
+
+.pform-footer__note {
+  font-size: var(--type-caption);
+  color: var(--text-muted);
+  margin-inline-start: auto;
+}
+
+/* المخزون الصافي (1.4.9) */
+.pform-net {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.pform-net__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+.pform-net__row--strong {
+  font-size: var(--type-body);
+  color: var(--text-primary);
+  font-weight: 700;
+}

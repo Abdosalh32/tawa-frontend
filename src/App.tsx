@@ -49,6 +49,7 @@ import {
   UsersGlyph,
 } from './components/ui/icons'
 import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
+import { MerchantProductForm } from './features/merchant/products/MerchantProductForm'
 import { MerchantProductsList } from './features/merchant/products/MerchantProductsList'
 import { APPROVAL_STATUS, ORDER_STATUS, PAYMENT_STATUS, STOCK_STATUS } from './types/status'
 import type { OrderStatus, PaymentStatus } from './types/status'
@@ -842,11 +843,12 @@ function MetricsDemo() {
 
 /* ═══════════════ جذر التطبيق — مبدّل عرض تطويري ═══════════════ */
 
-type DevScreen = 'dashboard' | 'products' | 'preview'
+type DevScreen = 'dashboard' | 'products' | 'product-form' | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'dashboard', label: 'لوحة التاجر — نظرة عامة' },
   { key: 'products', label: 'لوحة التاجر — المنتجات' },
+  { key: 'product-form', label: 'لوحة التاجر — نموذج منتج' },
   { key: 'preview', label: 'معاينة نظام التصميم' },
 ]
 
@@ -870,7 +872,15 @@ export default function App() {
         ))}
       </div>
       <div className="dev-content">
-        {screen === 'dashboard' ? <MerchantDashboardOverview /> : screen === 'products' ? <MerchantProductsList /> : <DesignSystemPreview />}
+        {screen === 'dashboard' ? (
+          <MerchantDashboardOverview />
+        ) : screen === 'products' ? (
+          <MerchantProductsList />
+        ) : screen === 'product-form' ? (
+          <MerchantProductForm />
+        ) : (
+          <DesignSystemPreview />
+        )}
       </div>
     </div>
   )
