@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react'
 import './storefront.css'
 import { Radio } from '../../../components/ui'
-import { TEMPLATES, readableOn } from '../../../types/store-theme'
+import { TEMPLATES, deriveSurface, readableOn } from '../../../types/store-theme'
 import { BRAND_PRESETS, cartQuantityOf, presetOf, setPreviewConfig, useStorePreviewConfig } from './preview-config'
 
 export interface StorefrontShellProps {
@@ -24,13 +24,18 @@ export function StorefrontShell({ devStateControls, headerMiddle, children }: St
   const preset = presetOf(presetKey)
   const onPrimary = readableOn(preset.colors.primary)
 
+  /* الأدوار الستة من العقد + قيمتان مشتقتان محلياً: سطح البطاقات ونصوص الترويسة/التذييل */
   const themeStyle = {
     '--sf-primary': preset.colors.primary,
     '--sf-secondary': preset.colors.secondary,
     '--sf-background': preset.colors.background,
-    '--sf-surface': preset.colors.surface,
-    '--sf-text': preset.colors.text,
+    '--sf-surface': deriveSurface(preset.colors.background),
+    '--sf-text': preset.colors.text_color,
+    '--sf-header-bg': preset.colors.header_bg,
+    '--sf-footer-bg': preset.colors.footer_bg,
     '--sf-on-primary': onPrimary,
+    '--sf-on-header': readableOn(preset.colors.header_bg, preset.colors.background),
+    '--sf-on-footer': readableOn(preset.colors.footer_bg, preset.colors.background),
   } as CSSProperties
 
   return (

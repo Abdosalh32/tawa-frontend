@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
-import { DEFAULT_COLORS } from '../../../types/store-theme'
-import type { ColorRole, TemplateKey } from '../../../types/store-theme'
+import { THEME_DEFAULT_COLORS } from '../../../types/store-theme'
+import type { TemplateKey, ThemeColors } from '../../../types/store-theme'
 import type { DiscountRule } from '../../../types/discount'
 
 /**
@@ -9,17 +9,33 @@ import type { DiscountRule } from '../../../types/discount'
  * لا استمرارية ولا Storage — يُستبدل بربط فعلي لاحقاً.
  */
 
-export const BRAND_PRESETS: ReadonlyArray<{ key: string; label: string; colors: Record<ColorRole, string> }> = [
-  { key: 'default', label: 'الأزرق الافتراضي', colors: DEFAULT_COLORS },
+/** لوحات تجريبية بمفاتيح `colors` الستة نفسها التي يخزّنها الباكند */
+export const BRAND_PRESETS: ReadonlyArray<{ key: string; label: string; colors: ThemeColors }> = [
+  { key: 'classic', label: 'ألوان كلاسيك الافتراضية', colors: THEME_DEFAULT_COLORS.classic },
+  { key: 'modern', label: 'ألوان مودرن الافتراضية (داكنة)', colors: THEME_DEFAULT_COLORS.modern },
   {
     key: 'ruby',
     label: 'عنابي دافئ',
-    colors: { primary: '#8a2432', secondary: '#5c1622', background: '#faf6f4', surface: '#ffffff', text: '#221418' },
+    colors: {
+      primary: '#8a2432',
+      secondary: '#5c1622',
+      header_bg: '#8a2432',
+      footer_bg: '#3b0e17',
+      text_color: '#221418',
+      background: '#faf6f4',
+    },
   },
   {
     key: 'forest',
     label: 'أخضر زيتوني',
-    colors: { primary: '#2f6b3a', secondary: '#1d4726', background: '#f7f9f5', surface: '#fdfffc', text: '#101a12' },
+    colors: {
+      primary: '#2f6b3a',
+      secondary: '#1d4726',
+      header_bg: '#ffffff',
+      footer_bg: '#12301a',
+      text_color: '#101a12',
+      background: '#f7f9f5',
+    },
   },
 ]
 
@@ -59,7 +75,7 @@ function seedLines(): CartLine[] {
   ]
 }
 
-let config: StorePreviewConfig = { template: 'modern', presetKey: 'default', lines: seedLines(), discount: null }
+let config: StorePreviewConfig = { template: 'classic', presetKey: 'classic', lines: seedLines(), discount: null }
 const listeners = new Set<() => void>()
 
 function emit(next: StorePreviewConfig): void {

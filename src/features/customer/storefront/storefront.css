@@ -13,12 +13,17 @@
 .sf-dev {
   padding: var(--space-lg) var(--space-lg) 0;
   background: var(--surface-page);
+  /* أدوات المعاينة التطويرية تبقى بألوان النظام — لا تتبع ثيم التاجر
+     (لوحة مودرن الداكنة تجعل نص التاجر شبه أبيض) */
+  color: var(--text-primary);
 }
 
 /* ═══ الهيدر (برومت 12) ═══ */
 .sf-header {
-  background: var(--sf-surface);
-  border-block-end: 1px solid color-mix(in srgb, var(--sf-text) 12%, transparent);
+  /* خلفية الترويسة دور لوني مستقل (colors.header_bg) — ونصها مشتق آلياً */
+  background: var(--sf-header-bg);
+  color: var(--sf-on-header);
+  border-block-end: 1px solid color-mix(in srgb, var(--sf-on-header) 18%, transparent);
   padding: var(--space-md) var(--space-lg);
   display: flex;
   align-items: center;
@@ -74,7 +79,8 @@
 }
 
 .sf-track {
-  border: 1px solid color-mix(in srgb, var(--sf-text) 25%, transparent);
+  /* داخل الترويسة: الحد والنص يتبعان نص الترويسة المشتق لا نص الصفحة */
+  border: 1px solid color-mix(in srgb, var(--sf-on-header) 35%, transparent);
   background: transparent;
   color: inherit;
   border-radius: var(--radius-control);
@@ -304,8 +310,10 @@
 
 /* الفوتر (برومت 12) */
 .sf-footer {
-  background: var(--sf-surface);
-  border-block-start: 1px solid color-mix(in srgb, var(--sf-text) 10%, transparent);
+  /* خلفية التذييل دور لوني مستقل (colors.footer_bg) — ونصه مشتق آلياً */
+  background: var(--sf-footer-bg);
+  color: var(--sf-on-footer);
+  border-block-start: 1px solid color-mix(in srgb, var(--sf-on-footer) 15%, transparent);
   padding: var(--space-lg);
   display: flex;
   flex-wrap: wrap;
@@ -325,14 +333,14 @@
   border: none;
   background: none;
   padding: 0;
-  color: var(--sf-secondary);
+  color: var(--sf-on-footer);
   font-size: var(--type-caption);
   text-decoration: underline;
   cursor: pointer;
 }
 
 .sf-footer__tawa {
-  color: color-mix(in srgb, var(--sf-text) 60%, transparent);
+  color: color-mix(in srgb, var(--sf-on-footer) 70%, transparent);
 }
 
 /* السعر قبل الخصم — products.compare_at_price */
