@@ -37,6 +37,13 @@
   gap: var(--space-sm);
   font-weight: 700;
   font-size: var(--type-h3);
+  /* الشعار زر تنقّل للرئيسية — بلا أي مظهر زر افتراضي */
+  border: none;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .sf-brand__logo {

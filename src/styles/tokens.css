@@ -60,7 +60,8 @@
   --disabled-opacity: 0.5;
 
   /* ── الطباعة ────────────────────────────── */
-  --font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+  /* IBM Plex Sans Arabic (قرار 17 أغسطس 2026) مع سلسلة نظام احتياطية */
+  --font-family: "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
   --type-display: 30px; /* لحظات كبرى: رقم التتبع، شاشات المعالج */
   --type-h1: 23px;      /* عنوان الصفحة — واحد لكل شاشة */
   --type-h2: 18px;      /* عنوان بطاقة/قسم */
@@ -85,8 +86,9 @@
   --radius-pill: 999px;
 
   /* ── الارتفاع ───────────────────────────── */
-  --elevation-1: 0 2px 8px rgba(11, 11, 11, 0.08);
-  --elevation-2: 0 12px 32px rgba(11, 11, 11, 0.18);
+  /* ظلال طبقية ناعمة: قريب حاد خفيف + بعيد منتشر — أهدأ من ظل واحد ثقيل */
+  --elevation-1: 0 1px 2px rgba(11, 11, 11, 0.05), 0 2px 10px rgba(11, 11, 11, 0.06);
+  --elevation-2: 0 4px 12px rgba(11, 11, 11, 0.07), 0 18px 44px rgba(11, 11, 11, 0.13);
 
   /* ── الحركة ─────────────────────────────── */
   --motion-fast: 120ms ease;

@@ -22,6 +22,8 @@
 
 .tw-btn {
   position: relative;
+  /* الصنف يُستخدم على <a> أيضاً (روابط بمظهر زر) — لا تسطير ولا لون رابط */
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
