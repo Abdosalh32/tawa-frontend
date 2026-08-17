@@ -1,0 +1,76 @@
+/* شاشة «التصنيفات» — شجرة رئيسي ← فرعي بمحاذاة بادئة RTL */
+
+.clist-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+}
+
+.clist-toolbar {
+  max-width: 360px;
+}
+
+.clist-name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+/* الفرع يُزاح منطقياً (يميناً في RTL) تحت أبيه */
+.clist-name--child {
+  padding-inline-start: var(--space-lg);
+}
+
+.clist-branch {
+  color: var(--text-muted);
+  /* رمز التفرع يُقلب أفقياً ليتجه نحو الاسم في RTL */
+  transform: scaleX(-1);
+  display: inline-block;
+}
+
+.clist-name__label {
+  font-weight: 600;
+}
+
+.clist-name__desc {
+  display: block;
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clist-slug {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+.clist-muted {
+  color: var(--text-muted);
+  font-size: var(--type-caption);
+}
+
+.clist-row--child td {
+  background: color-mix(in srgb, var(--surface-sunken) 45%, transparent);
+}
+
+.clist-actions {
+  display: inline-flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.clist-form {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.clist-slug-note {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  border-block-start: 1px solid var(--border-subtle);
+  padding-block-start: var(--space-md);
+}

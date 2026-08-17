@@ -1,5 +1,6 @@
 import type { SidebarGroup } from '../../components/ui'
 import {
+  FolderTreeGlyph,
   GearGlyph,
   HomeGlyph,
   LayersGlyph,
@@ -14,6 +15,7 @@ export type MerchantNavKey =
   | 'overview'
   | 'orders'
   | 'products'
+  | 'categories'
   | 'inventory'
   | 'discounts'
   | 'appearance'
@@ -34,6 +36,7 @@ export function buildMerchantNav(activeKey: MerchantNavKey): SidebarGroup[] {
         { key: 'overview', label: 'نظرة عامة', icon: <HomeGlyph />, active: active('overview') },
         { key: 'orders', label: 'الطلبات', icon: <OrdersGlyph />, count: 8, active: active('orders') },
         { key: 'products', label: 'المنتجات', icon: <TagGlyph />, active: active('products') },
+        { key: 'categories', label: 'التصنيفات', icon: <FolderTreeGlyph />, active: active('categories') },
         { key: 'inventory', label: 'المخزون', icon: <LayersGlyph />, count: 3, active: active('inventory') },
         { key: 'discounts', label: 'الخصومات', icon: <PercentGlyph />, active: active('discounts') },
       ],

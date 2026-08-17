@@ -65,6 +65,7 @@ import { CustomerOrderTracking } from './features/customer/order-tracking/Custom
 import { CustomerProductDetail } from './features/customer/product-detail/CustomerProductDetail'
 import { CustomerStorefrontBrowse } from './features/customer/storefront/CustomerStorefrontBrowse'
 import { MerchantDiscountsList } from './features/merchant/discounts/MerchantDiscountsList'
+import { MerchantCategoriesList } from './features/merchant/categories/MerchantCategoriesList'
 import { MerchantInventoryList } from './features/merchant/inventory/MerchantInventoryList'
 import { MerchantOrderDetail } from './features/merchant/orders/MerchantOrderDetail'
 import { MerchantStoreSetupWizard } from './features/merchant/store-setup/MerchantStoreSetupWizard'
@@ -877,6 +878,7 @@ type DevScreen =
   | 'auth'
   | 'store-setup'
   | 'dashboard'
+  | 'categories'
   | 'products'
   | 'product-form'
   | 'inventory'
@@ -905,6 +907,7 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'dashboard', label: 'لوحة التاجر — نظرة عامة' },
   { key: 'products', label: 'لوحة التاجر — المنتجات' },
   { key: 'product-form', label: 'لوحة التاجر — نموذج منتج' },
+  { key: 'categories', label: 'لوحة التاجر — التصنيفات' },
   { key: 'inventory', label: 'لوحة التاجر — المخزون' },
   { key: 'orders', label: 'لوحة التاجر — الطلبات' },
   { key: 'order-detail', label: 'لوحة التاجر — تفاصيل طلب' },
@@ -956,6 +959,8 @@ export default function App() {
           <MerchantProductsList />
         ) : screen === 'product-form' ? (
           <MerchantProductForm />
+        ) : screen === 'categories' ? (
+          <MerchantCategoriesList />
         ) : screen === 'inventory' ? (
           <MerchantInventoryList />
         ) : screen === 'orders' ? (

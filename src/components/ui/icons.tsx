@@ -116,3 +116,11 @@ export function ScrollGlyph() {
     </svg>
   )
 }
+
+export function FolderTreeGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 4a1 1 0 011-1h4l2 2h6a1 1 0 011 1v2H2V4zM2 8h14v5a1 1 0 01-1 1H3a1 1 0 01-1-1V8z" />
+    </svg>
+  )
+}
