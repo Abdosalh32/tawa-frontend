@@ -21,11 +21,16 @@ import type { DataTableColumn } from '../../../components/ui'
 import { FULFILLMENT_STATUS, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { FulfillmentStatus, OrderStatus, PaymentStatus } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import { MERCHANT_ORDERS } from './mock-data'
 import type { MerchantOrder } from './mock-data'
 
 const PAGE_SIZE = 5
+
+/** مرجع ثابت لقائمة فارغة — يحفظ استقرار مراجع useMemo */
+const NO_ORDERS: readonly MerchantOrder[] = []
 
 type StatusTab = 'all' | OrderStatus
 type PaymentFilter = 'all' | PaymentStatus
@@ -91,39 +96,44 @@ export function MerchantOrdersList() {
   const [paymentFilter, setPaymentFilter] = useState<PaymentFilter>('all')
   const [fulfillmentFilter, setFulfillmentFilter] = useState<FulfillmentFilter>('all')
   const [page, setPage] = useState(1)
+  /* نطاق البيانات = المتجر النشط (D5) — يقابل GET /stores/{id}/orders */
+  const store = useActiveStore()
+  const source = store.hasSeedData ? MERCHANT_ORDERS : NO_ORDERS
 
   const filtersActive = search.trim() !== '' || paymentFilter !== 'all' || fulfillmentFilter !== 'all' || statusTab !== 'all'
 
   /** عدّادات التبويبات من القائمة التجريبية نفسها — لا أرقام مصطنعة */
   const tabItems = useMemo(() => {
-    const countOf = (status: OrderStatus) => MERCHANT_ORDERS.filter((order) => order.status === status).length
+    const countOf = (status: OrderStatus) => source.filter((order) => order.status === status).length
     return [
-      { key: 'all', label: 'الكل', count: MERCHANT_ORDERS.length },
+      { key: 'all', label: 'الكل', count: source.length },
       ...Object.entries(ORDER_STATUS).map(([key, meta]) => ({
         key,
         label: meta.label,
         count: countOf(key as OrderStatus),
       })),
     ]
-  }, [])
+  }, [source])
 
   /* تصفية محلية بالكامل — لا أي نداء شبكة */
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase()
-    return MERCHANT_ORDERS.filter((order) => {
+    return source.filter((order) => {
       if (statusTab !== 'all' && order.status !== statusTab) return false
       if (paymentFilter !== 'all' && order.payment !== paymentFilter) return false
       if (fulfillmentFilter !== 'all' && order.fulfillment !== fulfillmentFilter) return false
       if (query && !order.id.toLowerCase().includes(query) && !order.customer.includes(search.trim())) return false
       return true
     })
-  }, [statusTab, paymentFilter, fulfillmentFilter, search])
+  }, [source, statusTab, paymentFilter, fulfillmentFilter, search])
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
   const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
-  const rows = view === 'empty' ? [] : pageRows
+  /** لا طلبات إطلاقاً — بأداة المعاينة أو لأن المتجر النشط بلا طلبات */
+  const noOrders = view === 'empty' || source.length === 0
+  const rows = noOrders ? [] : pageRows
   const loading = view === 'loading'
 
   const resetFilters = () => {
@@ -135,7 +145,7 @@ export function MerchantOrdersList() {
   }
 
   const emptyState =
-    view === 'empty' ? (
+    noOrders ? (
       <EmptyState
         title="لا طلبات بعد"
         description="عندما يصل أول طلب من زبائنك سيظهر هنا فوراً مع حالته وطريقة دفعه."
@@ -160,11 +170,7 @@ export function MerchantOrdersList() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }

@@ -4,8 +4,8 @@ export interface TopbarProps {
   /** عنوان السياق الحالي */
   title: string
   /**
-   * Placeholder سياق المتجر (اسم + نطاق) — عرض فقط.
-   * مبدّل المتاجر غير موجود عمداً (Pending product decision — D5).
+   * سياق المتجر: نص عرض، أو مبدّل المتاجر التفاعلي.
+   * D5 محسوم (متاجر متعددة لكل تاجر) — شاشات التاجر تمرّر `<StoreSwitcher />`.
    */
   storeContext?: ReactNode
   /** أزرار سياقية (بحث شامل، إجراء أساسي…) */

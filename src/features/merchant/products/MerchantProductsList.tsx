@@ -21,7 +21,9 @@ import { PlusGlyph, TagGlyph } from '../../../components/ui/icons'
 import { PRODUCT_STATUS, STOCK_STATUS } from '../../../types/status'
 import type { ProductStatus } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import { MERCHANT_PRODUCTS } from './mock-data'
 import type { MerchantProduct } from './mock-data'
 
@@ -32,6 +34,9 @@ import type { MerchantProduct } from './mock-data'
 const LOW_STOCK_THRESHOLD = 5
 
 const PAGE_SIZE = 5
+
+/** مرجع ثابت لقائمة فارغة — يحفظ استقرار مراجع useMemo */
+const NO_PRODUCTS: readonly MerchantProduct[] = []
 
 type StatusFilter = 'all' | ProductStatus
 type StockFilter = 'all' | 'available' | 'low' | 'out'
@@ -111,13 +116,16 @@ export function MerchantProductsList() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [stockFilter, setStockFilter] = useState<StockFilter>('all')
   const [page, setPage] = useState(1)
+  /* نطاق البيانات = المتجر النشط (D5) — يقابل GET /stores/{id}/products */
+  const store = useActiveStore()
+  const source = store.hasSeedData ? MERCHANT_PRODUCTS : NO_PRODUCTS
 
   const filtersActive = search.trim() !== '' || statusFilter !== 'all' || stockFilter !== 'all'
 
   /* التصفية محلية بالكامل على البيانات التجريبية — لا أي نداء شبكة */
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase()
-    return MERCHANT_PRODUCTS.filter((product) => {
+    return source.filter((product) => {
       if (query && !product.name.toLowerCase().includes(query) && !product.sku.toLowerCase().includes(query)) return false
       if (statusFilter !== 'all' && product.status !== statusFilter) return false
       if (stockFilter === 'available' && product.available === 0) return false
@@ -125,13 +133,15 @@ export function MerchantProductsList() {
       if (stockFilter === 'out' && product.available !== 0) return false
       return true
     })
-  }, [search, statusFilter, stockFilter])
+  }, [source, search, statusFilter, stockFilter])
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
   const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
-  const rows = view === 'no-products' ? [] : pageRows
+  /** «لا منتجات إطلاقاً» — إما بأداة المعاينة أو لأن المتجر النشط بلا منتجات */
+  const noProducts = view === 'no-products' || source.length === 0
+  const rows = noProducts ? [] : pageRows
   const loading = view === 'loading'
 
   const resetFilters = () => {
@@ -142,7 +152,7 @@ export function MerchantProductsList() {
   }
 
   const emptyState =
-    view === 'no-products' ? (
+    noProducts ? (
       /* فارغة-حقيقية: متجر بلا منتجات (برومت 4) */
       <EmptyState
         title="ابدأ بإضافة أول منتج"
@@ -174,11 +184,7 @@ export function MerchantProductsList() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
@@ -188,7 +194,7 @@ export function MerchantProductsList() {
         description="أدر كتالوج متجرك: المنشور منه فقط يظهر للزبائن، والأرشفة تحفظ السجلات دون كسر الطلبات القديمة"
         meta={
           <Badge variant="neutral" dot={false}>
-            <span className="numeric">{MERCHANT_PRODUCTS.length}</span> منتجات
+            <span className="numeric">{source.length}</span> منتجات
           </Badge>
         }
         breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المنتجات' }]} />}

@@ -22,7 +22,9 @@ import {
 import { FULFILLMENT_STATUS, ORDER_FLOW, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { OrderStatus } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import { ORDER_DETAIL, itemsSubtotal, lineTotal } from './order-detail-mock-data'
 
 /** حالة عرض تطويرية محلية — الافتراضي «عادية» */
@@ -250,6 +252,9 @@ function LoadingBody() {
 
 export function MerchantOrderDetail() {
   const [view, setView] = useState<ScreenView>('normal')
+  /* الطلب يخصّ متجراً واحداً (D5) — طلبه من متجر آخر يقابل 404 من /stores/{id}/orders/{order} */
+  const store = useActiveStore()
+  const effectiveView: ScreenView = view === 'normal' && !store.hasSeedData ? 'not-found' : view
 
   return (
     <AppShell
@@ -259,11 +264,7 @@ export function MerchantOrderDetail() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
@@ -290,15 +291,19 @@ export function MerchantOrderDetail() {
         </div>
       </fieldset>
 
-      {view === 'normal' ? (
+      {effectiveView === 'normal' ? (
         <OrderDetailBody key="normal" />
-      ) : view === 'loading' ? (
+      ) : effectiveView === 'loading' ? (
         <LoadingBody />
-      ) : view === 'not-found' ? (
+      ) : effectiveView === 'not-found' ? (
         <div className="odet-card">
           <EmptyState
             title="الطلب غير موجود أو غير متاح"
-            description="تأكد من رقم الطلب — قد يكون الرابط قديماً أو الطلب حُذف من مصدره."
+            description={
+              store.hasSeedData
+                ? 'تأكد من رقم الطلب — قد يكون الرابط قديماً أو الطلب حُذف من مصدره.'
+                : `هذا الطلب لا يخصّ «${store.name}» — كل طلب يتبع المتجر الذي أُنشئ فيه.`
+            }
             action={<Button variant="secondary">العودة إلى الطلبات</Button>}
           />
         </div>

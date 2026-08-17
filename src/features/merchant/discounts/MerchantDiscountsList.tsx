@@ -28,9 +28,14 @@ import { DISCOUNT_STATUS } from '../../../types/status'
 import { describeDiscountValue } from '../../../types/discount'
 import type { DiscountType } from '../../../types/discount'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import { MERCHANT_DISCOUNTS, discountState } from './mock-data'
 import type { MerchantDiscount } from './mock-data'
+
+/** مرجع ثابت لقائمة فارغة (متجر بلا أكواد خصم) */
+const NO_DISCOUNTS: readonly MerchantDiscount[] = []
 
 const PAGE_SIZE = 5
 
@@ -89,7 +94,14 @@ export function MerchantDiscountsList() {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [page, setPage] = useState(1)
   /** إضافة وحذف محليان — لا حفظ فعلياً */
-  const [discounts, setDiscounts] = useState<readonly MerchantDiscount[]>(MERCHANT_DISCOUNTS)
+  /* الأكواد تخصّ المتجر النشط (D5) — يقابل GET /stores/{id}/discounts */
+  const store = useActiveStore()
+  const storeDiscounts = store.hasSeedData ? MERCHANT_DISCOUNTS : NO_DISCOUNTS
+  const [discounts, setDiscounts] = useState<readonly MerchantDiscount[]>(storeDiscounts)
+  /* تبديل المتجر يعيد تعيين القائمة المحلية إلى أكواد المتجر الجديد */
+  useEffect(() => {
+    setDiscounts(store.hasSeedData ? MERCHANT_DISCOUNTS : NO_DISCOUNTS)
+  }, [store.id, store.hasSeedData])
   const [createOpen, setCreateOpen] = useState(false)
   const [draft, setDraft] = useState<NewDiscount>(emptyDraft)
   const [draftErrors, setDraftErrors] = useState<ReturnType<typeof validateDraft>>({})
@@ -124,7 +136,9 @@ export function MerchantDiscountsList() {
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
   const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
-  const rows = view === 'empty' ? [] : pageRows
+  /** لا أكواد إطلاقاً — بأداة المعاينة أو لأن المتجر النشط بلا أكواد */
+  const noDiscounts = view === 'empty' || discounts.length === 0
+  const rows = noDiscounts ? [] : pageRows
   const deleteTarget = discounts.find((discount) => discount.id === deleteId) ?? null
 
   const createDiscount = () => {
@@ -216,11 +230,7 @@ export function MerchantDiscountsList() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
@@ -248,8 +258,8 @@ export function MerchantDiscountsList() {
               onChange={() => setView(option.value)}
             />
           ))}
-          {discounts.length !== MERCHANT_DISCOUNTS.length && (
-            <Button variant="secondary" size="sm" onClick={() => setDiscounts(MERCHANT_DISCOUNTS)}>
+          {discounts.length !== storeDiscounts.length && (
+            <Button variant="secondary" size="sm" onClick={() => setDiscounts(storeDiscounts)}>
               إعادة ضبط الخصومات التجريبية
             </Button>
           )}
@@ -330,7 +340,7 @@ export function MerchantDiscountsList() {
             rows={rows}
             rowKey={(row) => row.id}
             emptyState={
-              view === 'empty' ? (
+              noDiscounts ? (
                 <EmptyState
                   title="لا توجد خصومات"
                   description="أنشئ أول كود خصم لزيادة مبيعاتك — مبلغ ثابت أو نسبة مئوية."

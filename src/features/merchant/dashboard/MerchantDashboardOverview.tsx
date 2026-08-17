@@ -15,9 +15,11 @@ import {
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { LayersGlyph, OrdersGlyph, PlusGlyph } from '../../../components/ui/icons'
-import { ORDER_STATUS, PAYMENT_STATUS, STOCK_STATUS } from '../../../types/status'
+import { ORDER_STATUS, PAYMENT_STATUS, STOCK_STATUS, STORE_STATUS } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import { DASHBOARD_METRICS, RECENT_ORDERS, STOCK_ALERTS } from './mock-data'
 import type { RecentOrder } from './mock-data'
 
@@ -61,7 +63,15 @@ const VIEW_OPTIONS: ReadonlyArray<{ value: DashboardView; label: string }> = [
 export function MerchantDashboardOverview() {
   const [view, setView] = useState<DashboardView>('normal')
   const loading = view === 'loading'
-  const orders = view === 'empty' ? [] : RECENT_ORDERS
+  /* كل أرقام هذه الشاشة تخصّ المتجر النشط (D5) — يقابل GET /stores/{id}/dashboard */
+  const store = useActiveStore()
+  const seeded = store.hasSeedData
+  const orders = view === 'empty' || !seeded ? [] : RECENT_ORDERS
+  const stockAlerts = seeded ? STOCK_ALERTS : []
+  /* متجر بلا بيانات: أصفار حقيقية بدل نقل أرقام متجر آخر */
+  const metrics = seeded
+    ? DASHBOARD_METRICS
+    : DASHBOARD_METRICS.map((metric) => ({ ...metric, value: '0', tone: 'neutral' as const, change: undefined }))
 
   return (
     <AppShell
@@ -71,19 +81,15 @@ export function MerchantDashboardOverview() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
     >
       <PageHeader
         title="نظرة عامة"
-        description="أهلاً فاطمة 👋 — هذا ملخص أداء متجرك اليوم"
-        meta={<Badge variant="success">المتجر منشور</Badge>}
+        description={`أهلاً فاطمة 👋 — هذا ملخص أداء «${store.name}» اليوم`}
+        meta={<Badge variant={STORE_STATUS[store.status].variant}>{STORE_STATUS[store.status].label}</Badge>}
         primaryAction={
           <Button variant="primary" icon={<PlusGlyph />}>
             إضافة منتج
@@ -110,13 +116,13 @@ export function MerchantDashboardOverview() {
 
       {loading ? (
         <div className="dash-summary-grid">
-          {DASHBOARD_METRICS.map((metric) => (
+          {metrics.map((metric) => (
             <Skeleton key={metric.key} variant="rect" height={104} />
           ))}
         </div>
       ) : (
         <div className="dash-summary-grid">
-          {DASHBOARD_METRICS.map((metric) => (
+          {metrics.map((metric) => (
             <SummaryCard
               key={metric.key}
               label={metric.label}
@@ -168,8 +174,10 @@ export function MerchantDashboardOverview() {
                   <Skeleton variant="text" width="65%" />
                   <Skeleton variant="text" width="72%" />
                 </div>
+              ) : stockAlerts.length === 0 ? (
+                <EmptyState title="لا تنبيهات مخزون" description="لا توجد منتجات منخفضة أو نافدة في هذا المتجر." />
               ) : (
-                STOCK_ALERTS.map((item) => (
+                stockAlerts.map((item) => (
                   <div className="dash-stock-item" key={item.id}>
                     <div className="dash-stock-item__info">
                       <p className="dash-stock-item__name">{item.product}</p>

@@ -19,7 +19,9 @@ import {
   Topbar,
 } from '../../../components/ui'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import { CATEGORY_OPTIONS, EDIT_MOCK_NET_STOCK, editMockForm, emptyForm, syncCombos } from './product-form-data'
 import type { ProductFormState } from './product-form-data'
 import { validateProductForm } from './product-form-validation'
@@ -420,6 +422,10 @@ function ProductFormBody({ mode }: { mode: FormMode }) {
 
 export function MerchantProductForm() {
   const [mode, setMode] = useState<FormMode>('create')
+  /* المنتج يتبع متجراً واحداً (D5) — لا منتج لتعديله في متجر بلا منتجات */
+  const store = useActiveStore()
+  const canEdit = store.hasSeedData
+  const effectiveMode: FormMode = canEdit ? mode : 'create'
 
   return (
     <AppShell
@@ -429,32 +435,35 @@ export function MerchantProductForm() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
     >
       <PageHeader
-        title={mode === 'create' ? 'إضافة منتج' : 'تعديل منتج'}
-        description={mode === 'create' ? 'أدخل بيانات المنتج ومتغيراته — المنشور يظهر للزبائن فور الحفظ' : 'عدّل بيانات «قميص قطني رجالي» ومتغيراته ومخزونه'}
+        title={effectiveMode === 'create' ? 'إضافة منتج' : 'تعديل منتج'}
+        description={effectiveMode === 'create' ? 'أدخل بيانات المنتج ومتغيراته — المنشور يظهر للزبائن فور الحفظ' : 'عدّل بيانات «قميص قطني رجالي» ومتغيراته ومخزونه'}
         breadcrumbs={
-          <Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المنتجات' }, { label: mode === 'create' ? 'إضافة منتج' : 'تعديل منتج' }]} />
+          <Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المنتجات' }, { label: effectiveMode === 'create' ? 'إضافة منتج' : 'تعديل منتج' }]} />
         }
       />
 
       <fieldset className="dev-fieldset">
         <legend>أداة معاينة تطويرية — وضع النموذج (تبديل الوضع يعيد تهيئة النموذج، لا Routing فعلياً)</legend>
         <div className="dev-fieldset__options">
-          <Radio name="pform-mode" label="إضافة منتج" checked={mode === 'create'} onChange={() => setMode('create')} />
-          <Radio name="pform-mode" label="تعديل منتج (بيانات تجريبية)" checked={mode === 'edit'} onChange={() => setMode('edit')} />
+          <Radio name="pform-mode" label="إضافة منتج" checked={effectiveMode === 'create'} onChange={() => setMode('create')} />
+          <Radio
+            name="pform-mode"
+            label="تعديل منتج (بيانات تجريبية)"
+            description={canEdit ? undefined : `لا منتجات في «${store.name}» بعد — لا شيء لتعديله`}
+            disabled={!canEdit}
+            checked={effectiveMode === 'edit'}
+            onChange={() => setMode('edit')}
+          />
         </div>
       </fieldset>
 
-      <ProductFormBody key={mode} mode={mode} />
+      <ProductFormBody key={effectiveMode} mode={effectiveMode} />
     </AppShell>
   )
 }

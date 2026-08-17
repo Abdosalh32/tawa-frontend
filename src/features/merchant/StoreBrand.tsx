@@ -1,11 +1,13 @@
 import './merchant.css'
+import { useActiveStore } from './store-context'
 
-/** هوية المتجر أعلى القائمة الجانبية — بيانات تجريبية ثابتة (متجر واحد بحسب الافتراض A1) */
+/** هوية المتجر النشط أعلى القائمة الجانبية (D5: التاجر قد يملك عدة متاجر) */
 export function StoreBrand() {
+  const store = useActiveStore()
   return (
     <div>
-      <p className="merchant-brand__name">متجر العافية</p>
-      <p className="merchant-brand__domain ltr">alafya.tawa.ly</p>
+      <p className="merchant-brand__name">{store.name}</p>
+      <p className="merchant-brand__domain ltr">{store.subdomain}</p>
     </div>
   )
 }

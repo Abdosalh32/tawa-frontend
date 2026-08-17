@@ -18,14 +18,18 @@ import {
   Topbar,
 } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
+import { STORE_STATUS } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import {
   ACTIVITY_OPTIONS,
-  INITIAL_SETTINGS,
   LIFECYCLE_META,
   MOCK_PUBLISHED_PRODUCTS,
   MOCK_REJECTION_REASON,
+  lifecycleFor,
+  settingsFor,
   validateSettings,
 } from './store-settings-data'
 import type { SettingsErrors, StoreLifecycle, StoreSettingsForm } from './store-settings-data'
@@ -82,9 +86,18 @@ function CheckItem({
 
 export function MerchantStoreSettings() {
   const [tab, setTab] = useState<SettingsTab>('general')
-  const [form, setForm] = useState<StoreSettingsForm>(INITIAL_SETTINGS)
+  /* كل إعداد هنا يخصّ المتجر النشط (D5) — يقابل PUT /stores/{id} */
+  const store = useActiveStore()
+  const [form, setForm] = useState<StoreSettingsForm>(() => settingsFor(store))
   const [errors, setErrors] = useState<SettingsErrors>({})
-  const [lifecycle, setLifecycle] = useState<StoreLifecycle>('active')
+  const [lifecycle, setLifecycle] = useState<StoreLifecycle>(() => lifecycleFor(store.status))
+
+  /* تبديل المتجر يعيد تحميل إعداداته وحالته المشتقة */
+  useEffect(() => {
+    setForm(settingsFor(store))
+    setErrors({})
+    setLifecycle(lifecycleFor(store.status))
+  }, [store])
   const [pauseOpen, setPauseOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const summaryRef = useRef<HTMLDivElement>(null)
@@ -106,6 +119,7 @@ export function MerchantStoreSettings() {
   }
 
   const approvalMet = lifecycle !== 'pending' && lifecycle !== 'rejected' && lifecycle !== 'suspended'
+  const publishedCount = store.hasSeedData ? MOCK_PUBLISHED_PRODUCTS : 0
   const errorMessages = Object.values(errors)
 
   return (
@@ -116,11 +130,7 @@ export function MerchantStoreSettings() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
@@ -174,6 +184,8 @@ export function MerchantStoreSettings() {
             value={form.category}
             onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))}
           >
+            {/* متجر جديد بلا فئة محددة — لا نختار له فئة تلقائياً */}
+            {form.category === '' && <option value="">اختر فئة النشاط…</option>}
             {ACTIVITY_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -250,8 +262,8 @@ export function MerchantStoreSettings() {
         <section className="sset-card" aria-labelledby="sset-domain-title">
           <h2 id="sset-domain-title">النطاق الفرعي</h2>
           <div className="sset-domain-row">
-            <span className="sset-domain-value ltr">alafya.tawa.ly</span>
-            <Badge variant="success">نشط</Badge>
+            <span className="sset-domain-value ltr">{store.subdomain}</span>
+            <Badge variant={STORE_STATUS[store.status].variant}>{STORE_STATUS[store.status].label}</Badge>
           </div>
           <Alert variant="info" title="حجز النطاق وتغييره عملية خلفية">
             حُجز النطاق فور التسجيل (1.2.1)؛ التحقق من التوفر وطلب التغيير (برومت 10) يُداران مع الربط الخلفي — لا فحص
@@ -303,9 +315,13 @@ export function MerchantStoreSettings() {
                 hint="يفعّل حسابك رسمياً ويتيح النشر (م.1.3.2)"
               />
               <CheckItem
-                state="met"
+                state={publishedCount > 0 ? 'met' : 'unmet'}
                 label="منتج واحد منشور على الأقل"
-                hint={`لديك ${MOCK_PUBLISHED_PRODUCTS} منتجاً منشوراً — الحد الأدنى افتراض موثق (A6)`}
+                hint={
+                  publishedCount > 0
+                    ? `لديك ${publishedCount} منتجاً منشوراً — الحد الأدنى افتراض موثق (A6)`
+                    : 'لا منتجات منشورة في هذا المتجر بعد — أضف منتجاً واحداً على الأقل (A6)'
+                }
               />
               <CheckItem
                 state="pending-decision"

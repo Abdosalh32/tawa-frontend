@@ -8,3 +8,67 @@
   font-size: var(--type-caption);
   color: var(--text-muted);
 }
+
+/* مبدّل المتاجر (D5 محسوم: متاجر متعددة) */
+.merchant-switcher .tw-menu__trigger {
+  font-size: var(--type-caption);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+}
+
+.merchant-switcher__name {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.merchant-switcher__domain {
+  color: var(--text-muted);
+  font-size: var(--type-caption);
+}
+
+.merchant-switcher__option {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* الشريط العلوي يغلّف السياق بحلقة مزخرفة — يُلغى حين يكون المحتوى مبدّلاً تفاعلياً */
+.tw-topbar__store:has(> .merchant-switcher) {
+  border: none;
+  padding: 0;
+}
+
+@container (max-width: 639px) {
+  /* تبديل المتجر يجب أن يبقى متاحاً على الجوال (خلافاً لسياق العرض النصي) */
+  .tw-topbar__store:has(> .merchant-switcher) {
+    display: inline-flex;
+  }
+
+  /* النطاق يظهر داخل القائمة فقط — الزر يضيق لاسم المتجر */
+  .merchant-switcher .tw-menu__trigger .merchant-switcher__domain {
+    display: none;
+  }
+
+  .merchant-switcher .tw-menu__trigger .merchant-switcher__name {
+    max-width: 104px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@container (max-width: 639px) {
+  /* على الجوال تُفتح قائمة المتاجر بعرض الشريط كاملاً — أضيق من أن تتسع بمحاذاة الزر */
+  .tw-topbar:has(.merchant-switcher) {
+    position: relative;
+  }
+
+  .merchant-switcher {
+    position: static;
+  }
+
+  .merchant-switcher .tw-menu__list {
+    inset-inline: 0;
+    min-width: 0;
+  }
+}

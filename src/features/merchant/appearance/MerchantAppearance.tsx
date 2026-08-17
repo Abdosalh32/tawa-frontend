@@ -16,7 +16,9 @@ import {
   Topbar,
 } from '../../../components/ui'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import {
   COLOR_ROLES,
   DEFAULT_COLORS,
@@ -99,6 +101,8 @@ export function MerchantAppearance() {
   const [drafts, setDrafts] = useState<Record<ColorRole, string>>(DEFAULT_COLORS)
   const [errors, setErrors] = useState<Partial<Record<ColorRole, string>>>({})
   const [toast, setToast] = useState<string | null>(null)
+  /* المظهر يخصّ المتجر النشط (D5) — يقابل PUT /stores/{id}/theme */
+  const store = useActiveStore()
 
   useEffect(() => {
     if (!toast) return
@@ -154,11 +158,7 @@ export function MerchantAppearance() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
@@ -349,11 +349,11 @@ export function MerchantAppearance() {
                   <span className="pv-chrome__dot" />
                   <span className="pv-chrome__dot" />
                 </span>
-                <span className="ltr">alafya.tawa.ly</span>
+                <span className="ltr">{store.subdomain}</span>
               </div>
               <div className={`pv-body pv-body--${shownTemplate}`}>
                 <div className="pv-header">
-                  <span className="pv-header__name">متجر العافية</span>
+                  <span className="pv-header__name">{store.name}</span>
                   <button type="button" className="pv-header__cart" tabIndex={-1} aria-hidden="true">
                     السلة (2)
                   </button>

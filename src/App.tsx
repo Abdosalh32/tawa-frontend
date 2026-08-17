@@ -31,6 +31,9 @@ import {
   Tabs,
   Textarea,
   Toast,
+  Menu,
+  MenuItem,
+  MenuSeparator,
   Tooltip,
   Topbar,
 } from './components/ui'
@@ -194,6 +197,13 @@ function DesignSystemPreview() {
                   <InfoGlyph />
                 </IconButton>
               </Tooltip>
+              {/* Menu: قائمة إجراءات — Esc والنقر خارجها يغلقان، والأسهم تنقّل */}
+              <Menu trigger="إجراءات الصف" label="إجراءات على المنتج">
+                <MenuItem>تعديل المنتج</MenuItem>
+                <MenuItem active>نسخ الرابط</MenuItem>
+                <MenuSeparator />
+                <MenuItem disabled>أرشفة (لا صلاحية)</MenuItem>
+              </Menu>
             </div>
           </div>
         </section>

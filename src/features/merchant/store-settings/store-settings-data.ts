@@ -1,4 +1,6 @@
 import type { BadgeVariant } from '../../../components/ui'
+import type { StoreStatus } from '../../../types/status'
+import type { MerchantStore } from '../store-context'
 
 /**
  * بيانات وأنواع شاشة «إعدادات المتجر» — محلية بالكامل، لا حفظ فعلياً.
@@ -79,3 +81,21 @@ export const MOCK_REJECTION_REASON = 'وثائق التوثيق غير مكتم�
 
 /** عدد المنتجات المنشورة التجريبي (متسق مع قائمة المنتجات) */
 export const MOCK_PUBLISHED_PRODUCTS = 42
+
+/**
+ * إعدادات المتجر النشط (D5) — متجر حديث الإنشاء يبدأ بحقول فارغة
+ * بدل إظهار بيانات متجر آخر لنفس التاجر.
+ */
+export function settingsFor(store: MerchantStore): StoreSettingsForm {
+  if (!store.hasSeedData) {
+    return { storeName: store.name, category: '', description: '', contactPhone: '', language: 'ar' }
+  }
+  return { ...INITIAL_SETTINGS, storeName: store.name }
+}
+
+/** حالة الواجهة المركبة مشتقة من `stores.status` وفق جدول المطابقة أعلاه */
+export function lifecycleFor(status: StoreStatus): StoreLifecycle {
+  if (status === 'active') return 'active'
+  if (status === 'maintenance') return 'maintenance'
+  return 'approved'
+}

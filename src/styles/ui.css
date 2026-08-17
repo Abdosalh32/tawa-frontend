@@ -702,3 +702,79 @@ textarea.tw-control {
 .tw-state__action {
   margin-block-start: var(--space-xs);
 }
+
+/* ═══════════════ Menu (قائمة منسدلة) ═══════════════ */
+
+.tw-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.tw-menu__trigger {
+  border: 1px solid var(--border-default);
+  background: var(--surface-raised);
+  color: inherit;
+  border-radius: var(--radius-control);
+  padding: 5px var(--space-md);
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.tw-menu__trigger:hover {
+  background: var(--surface-sunken);
+}
+
+.tw-menu__list {
+  position: absolute;
+  top: calc(100% + var(--space-xs));
+  inset-inline-start: 0;
+  z-index: 60;
+  min-width: max(220px, 100%);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-1);
+  padding: var(--space-xs);
+  display: grid;
+  gap: 2px;
+}
+
+.tw-menu__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  width: 100%;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.tw-menu__item:hover:enabled {
+  background: var(--surface-sunken);
+}
+
+.tw-menu__item.is-active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.tw-menu__item:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+.tw-menu__separator {
+  border: none;
+  border-block-start: 1px solid var(--border-subtle);
+  margin: var(--space-xs) 0;
+}

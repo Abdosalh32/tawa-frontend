@@ -24,7 +24,9 @@ import type { DataTableColumn } from '../../../components/ui'
 import { PlusGlyph } from '../../../components/ui/icons'
 import { STAFF_STATUS } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import { PERMISSION_GROUPS, ROLE_LABEL, ROLE_PERMISSIONS, TEAM_MEMBERS, validateInvite } from './team-data'
 import type { InviteErrors, PermissionKey, TeamMember, TeamRole } from './team-data'
 
@@ -69,7 +71,14 @@ function RolePermissionsPreview({ role }: { role: TeamRole }) {
 export function MerchantTeam() {
   const [view, setView] = useState<ScreenView>('normal')
   /** تعديلات محلية فوق البيانات التجريبية — لا دعوات ولا تعطيل فعلياً */
-  const [members, setMembers] = useState<readonly TeamMember[]>(TEAM_MEMBERS)
+  /* الفريق يخصّ المتجر النشط (D5) — يقابل GET /stores/{id}/staff */
+  const store = useActiveStore()
+  /* متجر جديد: المالك وحده — لا نسخ أعضاء متجر آخر */
+  const storeMembers = useMemo(
+    () => (store.hasSeedData ? TEAM_MEMBERS : TEAM_MEMBERS.filter((member) => member.role === 'Store Owner')),
+    [store.hasSeedData],
+  )
+  const [members, setMembers] = useState<readonly TeamMember[]>(storeMembers)
   const [inviteOpen, setInviteOpen] = useState(false)
   const [inviteName, setInviteName] = useState('')
   const [inviteEmail, setInviteEmail] = useState('')
@@ -80,6 +89,12 @@ export function MerchantTeam() {
   const [editRole, setEditRole] = useState<TeamRole>('Order Processor')
   const [suspendId, setSuspendId] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+
+  /* تبديل المتجر يعيد تحميل فريقه */
+  useEffect(() => {
+    setMembers(storeMembers)
+    setEditingId(null)
+  }, [store.id, storeMembers])
 
   useEffect(() => {
     if (!toast) return
@@ -219,11 +234,7 @@ export function MerchantTeam() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
@@ -251,8 +262,8 @@ export function MerchantTeam() {
               onChange={() => setView(option.value)}
             />
           ))}
-          {members.length !== TEAM_MEMBERS.length && (
-            <Button variant="secondary" size="sm" onClick={() => setMembers(TEAM_MEMBERS)}>
+          {members.length !== storeMembers.length && (
+            <Button variant="secondary" size="sm" onClick={() => setMembers(storeMembers)}>
               إعادة ضبط الفريق التجريبي
             </Button>
           )}

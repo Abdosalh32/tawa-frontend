@@ -24,11 +24,16 @@ import type { DataTableColumn } from '../../../components/ui'
 import { InfoGlyph } from '../../../components/ui/icons'
 import { STOCK_STATUS } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
+import { StoreSwitcher } from '../StoreSwitcher'
 import { buildMerchantNav } from '../merchant-nav'
+import { useActiveStore } from '../store-context'
 import { INVENTORY_ROWS, availableOf, statusOf } from './mock-data'
 import type { InventoryRow } from './mock-data'
 
 const PAGE_SIZE = 6
+
+/** مرجع ثابت لقائمة فارغة — يحفظ استقرار مراجع useMemo */
+const NO_STOCK: readonly InventoryRow[] = []
 
 type StockFilter = 'all' | 'available' | 'low' | 'out' | 'reserved'
 
@@ -100,29 +105,34 @@ export function MerchantInventoryList() {
   const [search, setSearch] = useState('')
   const [stockFilter, setStockFilter] = useState<StockFilter>('all')
   const [page, setPage] = useState(1)
+  /* نطاق البيانات = المتجر النشط (D5) — يقابل GET /stores/{id}/inventory */
+  const store = useActiveStore()
+  const source = store.hasSeedData ? INVENTORY_ROWS : NO_STOCK
 
   const filtersActive = search.trim() !== '' || stockFilter !== 'all'
 
   /* تصفية محلية بالكامل — لا أي نداء شبكة */
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase()
-    return INVENTORY_ROWS.filter((row) => {
+    return source.filter((row) => {
       if (query && !row.product.toLowerCase().includes(query) && !row.sku.toLowerCase().includes(query)) return false
       if (stockFilter === 'reserved') return row.reserved > 0
       if (stockFilter !== 'all' && statusOf(row) !== stockFilter) return false
       return true
     })
-  }, [search, stockFilter])
+  }, [source, search, stockFilter])
 
-  const lowCount = INVENTORY_ROWS.filter((row) => statusOf(row) === 'low').length
-  const outCount = INVENTORY_ROWS.filter((row) => statusOf(row) === 'out').length
-  const firstLow = INVENTORY_ROWS.find((row) => statusOf(row) === 'low')
+  const lowCount = source.filter((row) => statusOf(row) === 'low').length
+  const outCount = source.filter((row) => statusOf(row) === 'out').length
+  const firstLow = source.find((row) => statusOf(row) === 'low')
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
   const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
-  const rows = view === 'empty' ? [] : pageRows
+  /** لا مخزون إطلاقاً — بأداة المعاينة أو لأن المتجر النشط بلا منتجات */
+  const noStock = view === 'empty' || source.length === 0
+  const rows = noStock ? [] : pageRows
   const loading = view === 'loading'
 
   const resetFilters = () => {
@@ -132,7 +142,7 @@ export function MerchantInventoryList() {
   }
 
   const emptyState =
-    view === 'empty' ? (
+    noStock ? (
       <EmptyState
         title="لا مخزون بعد"
         description="أضف منتجات إلى متجرك ليظهر مخزونها هنا مع الكميات المحجوزة والمتاحة."
@@ -157,11 +167,7 @@ export function MerchantInventoryList() {
       topbar={
         <Topbar
           title="لوحة التاجر"
-          storeContext={
-            <>
-              متجر العافية — <span className="ltr">alafya.tawa.ly</span>
-            </>
-          }
+          storeContext={<StoreSwitcher />}
           userName="فاطمة"
         />
       }
