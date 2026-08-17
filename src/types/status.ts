@@ -59,6 +59,24 @@ export const DISCOUNT_STATUS: Record<DiscountStatus, StatusMeta> = {
   ended: { label: 'منتهٍ', variant: 'neutral' },
 }
 
+/** حالة المتجر لدى الإدارة (م.1.3.4 – م.1.3.6) */
+export type StoreStatus = 'active' | 'suspended' | 'banned'
+
+export const STORE_STATUS: Record<StoreStatus, StatusMeta> = {
+  active: { label: 'نشط', variant: 'success' },
+  suspended: { label: 'معلّق', variant: 'warning' },
+  banned: { label: 'محظور', variant: 'error' },
+}
+
+/** حالة فحص المنتج لدى الإدارة (م.1.3.8 – م.1.3.9) */
+export type ModerationStatus = 'pending' | 'ok' | 'violating'
+
+export const MODERATION_STATUS: Record<ModerationStatus, StatusMeta> = {
+  pending: { label: 'بانتظار الفحص', variant: 'warning' },
+  ok: { label: 'سليم', variant: 'success' },
+  violating: { label: 'مخالف', variant: 'error' },
+}
+
 /** حالات الاعتماد والرقابة (م.1.3.1 – م.1.3.5) */
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected' | 'suspended' | 'banned'
 

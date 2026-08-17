@@ -1,0 +1,70 @@
+/* طلبات الاعتماد وشاشة المراجعة (برومت 17 / P7) — تخطيط فقط، Tokens حصراً */
+
+.appr-age {
+  white-space: nowrap;
+}
+
+.appr-age--late {
+  color: var(--status-critical-text);
+  font-weight: 600;
+}
+
+/* شاشة المراجعة */
+.arev-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.arev-head__name {
+  font-size: var(--type-h2);
+  font-weight: 700;
+}
+
+.arev-head__time {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* منطقة الوثائق — Placeholder مؤجل (D3) */
+.arev-docs {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.arev-doc {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  display: grid;
+  gap: var(--space-sm);
+  justify-items: center;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--type-caption);
+  background: var(--surface-page);
+}
+
+/* شريط القرار الثابت أسفل الشاشة (P7) */
+.arev-decision {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  margin-inline: calc(-1 * var(--space-lg));
+  margin-block-end: calc(-1 * var(--space-xl));
+  background: var(--surface-raised);
+  border-block-start: 1px solid var(--border-default);
+}
+
+.arev-decision__note {
+  font-size: var(--type-caption);
+  color: var(--text-muted);
+  margin-inline-start: auto;
+}

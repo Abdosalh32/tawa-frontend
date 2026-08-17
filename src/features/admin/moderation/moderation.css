@@ -1,0 +1,83 @@
+/* فحص المنتجات (برومت 19) — عرض شبكي لأن القرار بصري، Tokens حصراً */
+
+.amod-grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+}
+
+.amod-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-sm);
+  align-content: start;
+}
+
+/* المنتج المخالف بإطار أحمر (برومت 19) */
+.amod-card--violating {
+  border-color: var(--status-critical);
+  background: var(--status-critical-soft);
+}
+
+.amod-card__img {
+  aspect-ratio: 1;
+  border-radius: var(--radius-control);
+  background: var(--surface-sunken);
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+}
+
+.amod-card__name {
+  font-weight: 600;
+}
+
+.amod-card__store {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: var(--type-caption);
+  color: var(--accent-strong);
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: start;
+}
+
+.amod-card__price {
+  font-weight: 700;
+}
+
+.amod-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+/* الشريط الجانبي: متاجر متكررة المخالفات */
+.amod-offender {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block: var(--space-md);
+  border-block-end: 1px solid var(--border-subtle);
+}
+
+.amod-offender:last-child {
+  border-block-end: none;
+}
+
+.amod-offender__info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.amod-offender__count {
+  font-size: var(--type-caption);
+  color: var(--status-critical-text);
+  font-weight: 600;
+}

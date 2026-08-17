@@ -49,6 +49,12 @@ import {
   UsersGlyph,
 } from './components/ui/icons'
 import { MerchantDashboardOverview } from './features/merchant/dashboard/MerchantDashboardOverview'
+import { AdminApprovals } from './features/admin/approvals/AdminApprovals'
+import { AdminAudit } from './features/admin/audit/AdminAudit'
+import { AdminPlans } from './features/admin/plans/AdminPlans'
+import { AdminDashboard } from './features/admin/dashboard/AdminDashboard'
+import { AdminModeration } from './features/admin/moderation/AdminModeration'
+import { AdminStores } from './features/admin/stores/AdminStores'
 import { MerchantAuth } from './features/auth/MerchantAuth'
 import { CustomerCart } from './features/customer/cart/CustomerCart'
 import { CustomerCheckout } from './features/customer/checkout/CustomerCheckout'
@@ -873,6 +879,12 @@ type DevScreen =
   | 'cart'
   | 'checkout'
   | 'order-tracking'
+  | 'admin-dashboard'
+  | 'admin-approvals'
+  | 'admin-stores'
+  | 'admin-moderation'
+  | 'admin-plans'
+  | 'admin-audit'
   | 'preview'
 
 const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
@@ -892,6 +904,12 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'cart', label: 'واجهة الزبون — السلة' },
   { key: 'checkout', label: 'واجهة الزبون — إتمام الشراء' },
   { key: 'order-tracking', label: 'واجهة الزبون — تتبع الطلب' },
+  { key: 'admin-dashboard', label: 'لوحة المدير — الرئيسية' },
+  { key: 'admin-approvals', label: 'لوحة المدير — طلبات الاعتماد' },
+  { key: 'admin-stores', label: 'لوحة المدير — المتاجر' },
+  { key: 'admin-moderation', label: 'لوحة المدير — فحص المنتجات' },
+  { key: 'admin-plans', label: 'لوحة المدير — باقات الاشتراك' },
+  { key: 'admin-audit', label: 'لوحة المدير — سجل التدقيق' },
   { key: 'preview', label: 'معاينة نظام التصميم' },
 ]
 
@@ -947,6 +965,18 @@ export default function App() {
           <CustomerCheckout />
         ) : screen === 'order-tracking' ? (
           <CustomerOrderTracking />
+        ) : screen === 'admin-dashboard' ? (
+          <AdminDashboard />
+        ) : screen === 'admin-approvals' ? (
+          <AdminApprovals />
+        ) : screen === 'admin-stores' ? (
+          <AdminStores />
+        ) : screen === 'admin-moderation' ? (
+          <AdminModeration />
+        ) : screen === 'admin-plans' ? (
+          <AdminPlans />
+        ) : screen === 'admin-audit' ? (
+          <AdminAudit />
         ) : (
           <DesignSystemPreview />
         )}

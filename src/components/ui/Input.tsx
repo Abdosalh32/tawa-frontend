@@ -3,7 +3,7 @@ import type { InputHTMLAttributes } from 'react'
 import { Field } from './Field'
 import { fieldDescribedBy } from './field-utils'
 
-export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel'
+export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'date'
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'id'> {
   id?: string
@@ -22,7 +22,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
 export function Input({ id: idProp, label, type = 'text', optional, helperText, error, ltr, disabled, ...rest }: InputProps) {
   const autoId = useId()
   const id = idProp ?? autoId
-  const isLtr = ltr || type === 'tel' || type === 'email' || type === 'number'
+  const isLtr = ltr || type === 'tel' || type === 'email' || type === 'number' || type === 'date'
 
   return (
     <Field id={id} label={label} optional={optional} helperText={helperText} error={error} disabled={disabled}>

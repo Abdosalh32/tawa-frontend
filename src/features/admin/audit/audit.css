@@ -1,0 +1,94 @@
+/* سجل التدقيق (برومت 21) — خط زمني مجمّع باليوم، قراءة فقط، Tokens حصراً */
+
+.audt-group {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.audt-group__title {
+  font-size: var(--type-caption);
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding-block: var(--space-sm);
+}
+
+.audt-item {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  border-inline-start: 3px solid var(--border-strong);
+}
+
+/* شريط جانبي أحمر رفيع للعمليات الحرجة (برومت 21) */
+.audt-item--critical {
+  border-inline-start-color: var(--status-critical);
+}
+
+.audt-item--success {
+  border-inline-start-color: var(--status-success);
+}
+
+.audt-item--warning {
+  border-inline-start-color: var(--status-warning);
+}
+
+.audt-item--accent {
+  border-inline-start-color: var(--accent);
+}
+
+.audt-item--info {
+  border-inline-start-color: var(--status-info);
+}
+
+.audt-item > summary {
+  cursor: pointer;
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.audt-item > summary::marker {
+  color: var(--text-muted);
+}
+
+.audt-item__desc {
+  flex: 1;
+  min-width: min(220px, 100%);
+  font-weight: 500;
+}
+
+.audt-item__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--type-caption);
+  color: var(--text-muted);
+}
+
+.audt-details {
+  padding: 0 var(--space-lg) var(--space-lg);
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.audt-details__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  font-size: var(--type-caption);
+}
+
+.audt-details__label {
+  color: var(--text-secondary);
+  min-width: 110px;
+}
+
+.audt-readonly {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}

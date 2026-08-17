@@ -550,6 +550,60 @@ textarea.tw-control {
   justify-content: flex-end; /* الأساسي جهة اليسار في RTL */
 }
 
+/* ═══════════════ Drawer ═══════════════ */
+
+.tw-drawer-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(11, 11, 11, 0.45);
+}
+
+.tw-drawer {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: min(440px, 100%);
+  background: var(--surface-raised);
+  box-shadow: var(--elevation-2);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  max-height: 100%;
+}
+
+.tw-drawer:focus {
+  outline: none;
+}
+
+.tw-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border-block-end: 1px solid var(--border-default);
+}
+
+.tw-drawer__title {
+  font-size: var(--type-h3);
+}
+
+.tw-drawer__body {
+  padding: var(--space-lg);
+  overflow-y: auto;
+  display: grid;
+  gap: var(--space-lg);
+  align-content: start;
+}
+
+.tw-drawer__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  border-block-start: 1px solid var(--border-default);
+}
+
 /* ═══════════════ Tooltip ═══════════════ */
 
 .tw-tooltip-wrap {

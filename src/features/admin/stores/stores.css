@@ -1,0 +1,104 @@
+/* إدارة المتاجر (برومت 18) — تخطيط فقط، Tokens حصراً */
+
+/* فلاتر Chips */
+.astr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.astr-chip {
+  border: 1px solid var(--border-strong);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  padding: 5px var(--space-lg);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.astr-chip:hover {
+  color: var(--text-primary);
+}
+
+.astr-chip[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+/* خلية هوية المتجر */
+.astr-store {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.astr-logo {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-control);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: var(--type-caption);
+}
+
+.astr-store__name {
+  font-weight: 600;
+}
+
+/* شريط حالة داخل صف المتجر المعلّق (برومت 18) */
+.astr-suspend-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-control);
+  background: var(--status-warning-soft);
+  color: var(--status-warning-text);
+  font-size: var(--type-caption);
+  font-weight: 500;
+}
+
+/* درج المعاينة */
+.astr-preview-frame {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--surface-page);
+  padding: var(--space-md);
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.astr-preview-frame__bar {
+  height: 10px;
+  border-radius: 4px;
+  background: var(--surface-sunken);
+}
+
+.astr-preview-frame__hero {
+  height: 48px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+}
+
+.astr-preview-frame__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+}
+
+.astr-preview-frame__card {
+  height: 40px;
+  border-radius: 6px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+}

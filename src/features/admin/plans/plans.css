@@ -1,0 +1,94 @@
+/* باقات الاشتراك (برومت 20) — بطاقات تسعير، Tokens حصراً */
+
+.apln-grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.apln-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  display: grid;
+  gap: var(--space-md);
+  align-content: start;
+}
+
+.apln-card--popular {
+  border-color: var(--accent);
+  box-shadow: var(--elevation-1);
+}
+
+.apln-card--archived {
+  background: var(--surface-page);
+  border-style: dashed;
+  color: var(--text-secondary);
+}
+
+.apln-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.apln-card__name {
+  font-size: var(--type-h3);
+  font-weight: 700;
+}
+
+.apln-card__price {
+  font-size: var(--type-h1);
+  font-weight: 700;
+  line-height: var(--line-height-heading);
+}
+
+.apln-card__period {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.apln-limits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-sm);
+  font-size: var(--type-caption);
+}
+
+.apln-limits li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.apln-limits__mark {
+  color: var(--status-success-text);
+  font-weight: 700;
+}
+
+.apln-card__subs {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  border-block-start: 1px solid var(--border-subtle);
+  padding-block-start: var(--space-md);
+}
+
+.apln-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.apln-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
