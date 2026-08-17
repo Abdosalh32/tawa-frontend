@@ -11,15 +11,13 @@ import {
   ErrorState,
   PageHeader,
   Radio,
-  Sidebar,
   Skeleton,
   SummaryCard,
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { APPROVAL_STATUS } from '../../../types/status'
-import { AdminBrand } from '../AdminBrand'
-import { buildAdminNav } from '../admin-nav'
+import { AdminSidebar } from '../AdminSidebar'
 import { ADMIN_METRICS, ATTENTION_ITEMS, RECENT_AUDIT, RECENT_STORES } from './mock-data'
 import type { RecentStore } from './mock-data'
 
@@ -51,7 +49,7 @@ export function AdminDashboard() {
     <AppShell
       context="admin"
       className="admin-shell"
-      sidebar={<Sidebar brand={<AdminBrand />} groups={buildAdminNav('overview')} />}
+      sidebar={<AdminSidebar active="overview" />}
       topbar={<Topbar title="لوحة مدير المنصة" userName="جواد" />}
     >
       <PageHeader

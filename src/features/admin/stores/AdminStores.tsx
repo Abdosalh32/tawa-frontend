@@ -17,7 +17,6 @@ import {
   PageHeader,
   Radio,
   SearchField,
-  Sidebar,
   Skeleton,
   Toast,
   Topbar,
@@ -25,8 +24,7 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { MERCHANT_STATUS, STORE_STATUS } from '../../../types/status'
 import type { MerchantStatus, StoreStatus } from '../../../types/status'
-import { AdminBrand } from '../AdminBrand'
-import { buildAdminNav } from '../admin-nav'
+import { AdminSidebar } from '../AdminSidebar'
 import { ADMIN_STORES } from './mock-data'
 import type { AdminStore } from './mock-data'
 
@@ -162,7 +160,7 @@ export function AdminStores() {
     <AppShell
       context="admin"
       className="admin-shell"
-      sidebar={<Sidebar brand={<AdminBrand />} groups={buildAdminNav('stores')} />}
+      sidebar={<AdminSidebar active="stores" />}
       topbar={<Topbar title="لوحة مدير المنصة" userName="جواد" />}
     >
       <PageHeader

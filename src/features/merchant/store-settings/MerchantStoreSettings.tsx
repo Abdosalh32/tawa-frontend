@@ -11,7 +11,6 @@ import {
   PageHeader,
   Radio,
   Select,
-  Sidebar,
   Tabs,
   Textarea,
   Toast,
@@ -19,9 +18,8 @@ import {
 } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
 import { STORE_STATUS } from '../../../types/status'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import {
   ACTIVITY_OPTIONS,
@@ -126,7 +124,7 @@ export function MerchantStoreSettings() {
     <AppShell
       context="merchant"
       className="sset-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('settings')} />}
+      sidebar={<MerchantSidebar active="settings" />}
       topbar={
         <Topbar
           title="لوحة التاجر"

@@ -16,12 +16,10 @@ import {
   Radio,
   SearchField,
   Select,
-  Sidebar,
   Skeleton,
   Topbar,
 } from '../../../components/ui'
-import { AdminBrand } from '../AdminBrand'
-import { buildAdminNav } from '../admin-nav'
+import { AdminSidebar } from '../AdminSidebar'
 import { AUDIT_RECORDS, OPERATION_META } from './mock-data'
 import type { AuditOperation, AuditRecord } from './mock-data'
 
@@ -83,7 +81,7 @@ export function AdminAudit() {
     <AppShell
       context="admin"
       className="admin-shell"
-      sidebar={<Sidebar brand={<AdminBrand />} groups={buildAdminNav('audit')} />}
+      sidebar={<AdminSidebar active="audit" />}
       topbar={<Topbar title="لوحة مدير المنصة" userName="جواد" />}
     >
       <PageHeader

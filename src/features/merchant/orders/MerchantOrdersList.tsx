@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
 import './orders.css'
 import {
   AppShell,
@@ -13,16 +14,14 @@ import {
   Radio,
   SearchField,
   Select,
-  Sidebar,
   Tabs,
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { FULFILLMENT_STATUS, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { FulfillmentStatus, OrderStatus, PaymentStatus } from '../../../types/status'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import { MERCHANT_ORDERS } from './mock-data'
 import type { MerchantOrder } from './mock-data'
@@ -78,18 +77,23 @@ const COLUMNS: ReadonlyArray<DataTableColumn<MerchantOrder>> = [
       <Badge variant={FULFILLMENT_STATUS[row.fulfillment].variant}>{FULFILLMENT_STATUS[row.fulfillment].label}</Badge>
     ),
   },
-  {
+]
+
+/** عمود الإجراء يُبنى داخل المكوّن لأنه يحتاج التنقّل بالعنوان */
+function actionsColumn(onView: (id: string) => void): DataTableColumn<MerchantOrder> {
+  return {
     key: 'actions',
     header: 'الإجراء',
     cell: (row) => (
-      <Button variant="secondary" size="sm" aria-label={`عرض الطلب ${row.id}`}>
+      <Button variant="secondary" size="sm" aria-label={`عرض الطلب ${row.id}`} onClick={() => onView(row.id)}>
         عرض الطلب
       </Button>
     ),
-  },
-]
+  }
+}
 
 export function MerchantOrdersList() {
+  const navigate = useNavigate()
   const [view, setView] = useState<ScreenView>('normal')
   const [statusTab, setStatusTab] = useState<StatusTab>('all')
   const [search, setSearch] = useState('')
@@ -166,7 +170,7 @@ export function MerchantOrdersList() {
     <AppShell
       context="merchant"
       className="olist-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('orders')} />}
+      sidebar={<MerchantSidebar active="orders" />}
       topbar={
         <Topbar
           title="لوحة التاجر"
@@ -264,7 +268,7 @@ export function MerchantOrdersList() {
 
       <DataTable
         caption="طلبات المتجر الواردة — بيانات تجريبية للعرض"
-        columns={COLUMNS}
+        columns={[...COLUMNS, actionsColumn((id) => navigate(`/merchant/${store.id}/orders/${id}`))]}
         rows={rows}
         rowKey={(row) => row.id}
         loading={loading}

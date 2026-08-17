@@ -18,7 +18,6 @@ import {
   Radio,
   SearchField,
   Select,
-  Sidebar,
   Toast,
   Topbar,
 } from '../../../components/ui'
@@ -27,9 +26,8 @@ import { PlusGlyph } from '../../../components/ui/icons'
 import { DISCOUNT_STATUS } from '../../../types/status'
 import { describeDiscountValue } from '../../../types/discount'
 import type { DiscountType } from '../../../types/discount'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import { MERCHANT_DISCOUNTS, discountState } from './mock-data'
 import type { MerchantDiscount } from './mock-data'
@@ -226,7 +224,7 @@ export function MerchantDiscountsList() {
     <AppShell
       context="merchant"
       className="disc-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('discounts')} />}
+      sidebar={<MerchantSidebar active="discounts" />}
       topbar={
         <Topbar
           title="لوحة التاجر"

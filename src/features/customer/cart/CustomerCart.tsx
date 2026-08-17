@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
 import './cart.css'
 import { Badge, Button, EmptyState, ErrorState, Input, Radio, Skeleton, Toast } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
@@ -37,6 +38,7 @@ function RemoveGlyph() {
 }
 
 export function CustomerCart() {
+  const navigate = useNavigate()
   const [view, setView] = useState<ScreenView>('normal')
   const [toast, setToast] = useState<string | null>(null)
   const [codeInput, setCodeInput] = useState('')
@@ -134,7 +136,7 @@ export function CustomerCart() {
               title="سلتك فارغة"
               description="أضف منتجات من المتجر لتظهر هنا مع الكميات والإجمالي."
               action={
-                <button type="button" className="crt-continue">
+                <button type="button" className="crt-continue" onClick={() => navigate('/shop')}>
                   متابعة التسوق
                 </button>
               }
@@ -260,11 +262,7 @@ export function CustomerCart() {
               <p className="crt-summary__note">
                 يكتمل الإجمالي النهائي بعد حسم آلية الشحن (D1) — الخصم يُطبَّق بالكود ويُحسم من مجموع المنتجات.
               </p>
-              <button
-                type="button"
-                className="crt-checkout"
-                onClick={() => setToast('خطوة الشحن والدفع تُبنى في مرحلة قادمة (معاينة محلية — لا طلب فعلياً)')}
-              >
+              <button type="button" className="crt-checkout" onClick={() => navigate('/shop/checkout')}>
                 إتمام الشراء
               </button>
             </aside>

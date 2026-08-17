@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
 import './products.css'
 import {
   AppShell,
@@ -13,16 +14,14 @@ import {
   Radio,
   SearchField,
   Select,
-  Sidebar,
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { PlusGlyph, TagGlyph } from '../../../components/ui/icons'
 import { PRODUCT_STATUS, STOCK_STATUS } from '../../../types/status'
 import type { ProductStatus } from '../../../types/status'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import { MERCHANT_PRODUCTS } from './mock-data'
 import type { MerchantProduct } from './mock-data'
@@ -99,18 +98,23 @@ const COLUMNS: ReadonlyArray<DataTableColumn<MerchantProduct>> = [
     cell: (row) => <Badge variant={PRODUCT_STATUS[row.status].variant}>{PRODUCT_STATUS[row.status].label}</Badge>,
   },
   { key: 'updatedAt', header: 'آخر تحديث', cell: (row) => row.updatedAt },
-  {
+]
+
+/** عمود الإجراء يُبنى داخل المكوّن لأنه يحتاج التنقّل بالعنوان */
+function actionsColumn(onEdit: (id: string) => void): DataTableColumn<MerchantProduct> {
+  return {
     key: 'actions',
     header: 'الإجراء',
     cell: (row) => (
-      <Button variant="secondary" size="sm" aria-label={`تعديل المنتج ${row.name}`}>
+      <Button variant="secondary" size="sm" aria-label={`تعديل المنتج ${row.name}`} onClick={() => onEdit(row.id)}>
         تعديل
       </Button>
     ),
-  },
-]
+  }
+}
 
 export function MerchantProductsList() {
+  const navigate = useNavigate()
   const [view, setView] = useState<ScreenView>('normal')
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
@@ -158,7 +162,7 @@ export function MerchantProductsList() {
         title="ابدأ بإضافة أول منتج"
         description="متجرك لا يحتوي منتجات بعد — أضف منتجك الأول ليظهر للزبائن فور النشر."
         action={
-          <Button variant="primary" icon={<PlusGlyph />}>
+          <Button variant="primary" icon={<PlusGlyph />} onClick={() => navigate(`/merchant/${store.id}/products/new`)}>
             إضافة منتج
           </Button>
         }
@@ -180,7 +184,7 @@ export function MerchantProductsList() {
     <AppShell
       context="merchant"
       className="plist-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('products')} />}
+      sidebar={<MerchantSidebar active="products" />}
       topbar={
         <Topbar
           title="لوحة التاجر"
@@ -199,7 +203,7 @@ export function MerchantProductsList() {
         }
         breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المنتجات' }]} />}
         primaryAction={
-          <Button variant="primary" icon={<PlusGlyph />}>
+          <Button variant="primary" icon={<PlusGlyph />} onClick={() => navigate(`/merchant/${store.id}/products/new`)}>
             إضافة منتج
           </Button>
         }
@@ -276,7 +280,7 @@ export function MerchantProductsList() {
 
       <DataTable
         caption="قائمة منتجات المتجر — بيانات تجريبية للعرض"
-        columns={COLUMNS}
+        columns={[...COLUMNS, actionsColumn((id) => navigate(`/merchant/${store.id}/products/${id}/edit`))]}
         rows={rows}
         rowKey={(row) => row.id}
         loading={loading}

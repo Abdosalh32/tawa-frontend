@@ -15,7 +15,6 @@ import {
   Radio,
   SearchField,
   Select,
-  Sidebar,
   Skeleton,
   Textarea,
   Toast,
@@ -24,8 +23,7 @@ import {
 import { TagGlyph } from '../../../components/ui/icons'
 import { MODERATION_STATUS } from '../../../types/status'
 import type { ModerationStatus } from '../../../types/status'
-import { AdminBrand } from '../AdminBrand'
-import { buildAdminNav } from '../admin-nav'
+import { AdminSidebar } from '../AdminSidebar'
 import { MODERATION_PRODUCTS, VIOLATION_REASONS, repeatOffenders } from './mock-data'
 import type { ModerationProduct } from './mock-data'
 
@@ -116,7 +114,7 @@ export function AdminModeration() {
     <AppShell
       context="admin"
       className="admin-shell"
-      sidebar={<Sidebar brand={<AdminBrand />} groups={buildAdminNav('moderation')} />}
+      sidebar={<AdminSidebar active="moderation" />}
       topbar={<Topbar title="لوحة مدير المنصة" userName="جواد" />}
     >
       <PageHeader

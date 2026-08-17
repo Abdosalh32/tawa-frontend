@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './product-detail.css'
+import { useNavigate, useParams } from 'react-router'
 import { Badge, Breadcrumbs, Button, EmptyState, ErrorState, Radio, Skeleton, Toast } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
 import { StorefrontShell } from '../storefront/StorefrontShell'
@@ -231,29 +232,51 @@ function ProductBody({ product }: { product: DetailProduct }) {
   )
 }
 
+/** معرف العنوان ← المنتج التجريبي المطابق (متسق مع معرفات شاشة التصفح) */
+const PRODUCT_VIEW_OF: Record<string, ScreenView> = { c3: 'simple', c1: 'variants', p1: 'out' }
+const PRODUCT_URL_OF: Partial<Record<ScreenView, string>> = {
+  simple: '/shop/products/c3',
+  variants: '/shop/products/c1',
+  out: '/shop/products/p1',
+  'not-found': '/shop/products/unknown',
+}
+
 export function CustomerProductDetail() {
+  const navigate = useNavigate()
+  const { productId } = useParams()
   const [view, setView] = useState<ScreenView>('simple')
+  /* المنتج من معرف العنوان — والمجهول «غير موجود»؛ حالتا التحميل والخطأ أدوات معاينة محلية */
+  const paramView: ScreenView = PRODUCT_VIEW_OF[productId ?? ''] ?? 'not-found'
+  const effectiveView: ScreenView = view === 'loading' || view === 'error' ? view : paramView
 
   return (
     <StorefrontShell
       devStateControls={
         <fieldset className="dev-fieldset">
-          <legend>أداة معاينة تطويرية — حالة الصفحة (بيانات تجريبية؛ اختيار المنتج بلا Routing بعد)</legend>
+          <legend>أداة معاينة تطويرية — حالة الصفحة (اختيار منتج ينتقل لعنوانه الفعلي)</legend>
           <div className="dev-fieldset__options">
             {VIEW_OPTIONS.map((option) => (
               <Radio
                 key={option.value}
                 name="pd-view"
                 label={option.label}
-                checked={view === option.value}
-                onChange={() => setView(option.value)}
+                checked={effectiveView === option.value}
+                onChange={() => {
+                  const url = PRODUCT_URL_OF[option.value]
+                  if (url) {
+                    setView('simple')
+                    navigate(url)
+                  } else {
+                    setView(option.value)
+                  }
+                }}
               />
             ))}
           </div>
         </fieldset>
       }
     >
-      {view === 'loading' ? (
+      {effectiveView === 'loading' ? (
         <main className="pd-main" aria-hidden="true">
           <Skeleton variant="rect" height={420} />
           <div style={{ display: 'grid', gap: 'var(--space-lg)' }}>
@@ -263,17 +286,17 @@ export function CustomerProductDetail() {
             <Skeleton variant="rect" height={220} />
           </div>
         </main>
-      ) : view === 'not-found' ? (
+      ) : effectiveView === 'not-found' ? (
         <main className="pd-main">
           <div style={{ gridColumn: '1 / -1' }}>
             <EmptyState
               title="المنتج غير موجود أو لم يعد متاحاً"
               description="ربما أُرشف المنتج أو تغيّر رابطه — تصفح بقية منتجات المتجر."
-              action={<Button variant="secondary">العودة للتصفح</Button>}
+              action={<Button variant="secondary" onClick={() => navigate('/shop')}>العودة للتصفح</Button>}
             />
           </div>
         </main>
-      ) : view === 'error' ? (
+      ) : effectiveView === 'error' ? (
         <main className="pd-main">
           <div style={{ gridColumn: '1 / -1' }}>
             <ErrorState
@@ -284,8 +307,8 @@ export function CustomerProductDetail() {
         </main>
       ) : (
         <ProductBody
-          key={view}
-          product={view === 'variants' ? VARIANT_PRODUCT : view === 'out' ? OUT_PRODUCT : SIMPLE_PRODUCT}
+          key={effectiveView}
+          product={effectiveView === 'variants' ? VARIANT_PRODUCT : effectiveView === 'out' ? OUT_PRODUCT : SIMPLE_PRODUCT}
         />
       )}
     </StorefrontShell>

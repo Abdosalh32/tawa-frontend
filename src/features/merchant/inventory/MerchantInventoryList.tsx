@@ -15,7 +15,6 @@ import {
   Radio,
   SearchField,
   Select,
-  Sidebar,
   SummaryCard,
   Tooltip,
   Topbar,
@@ -23,9 +22,8 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { InfoGlyph } from '../../../components/ui/icons'
 import { STOCK_STATUS } from '../../../types/status'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import { INVENTORY_ROWS, availableOf, statusOf } from './mock-data'
 import type { InventoryRow } from './mock-data'
@@ -163,7 +161,7 @@ export function MerchantInventoryList() {
     <AppShell
       context="merchant"
       className="inv-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('inventory')} />}
+      sidebar={<MerchantSidebar active="inventory" />}
       topbar={
         <Topbar
           title="لوحة التاجر"

@@ -16,7 +16,6 @@ import {
   Radio,
   SearchField,
   Select,
-  Sidebar,
   Skeleton,
   Switch,
   Textarea,
@@ -25,9 +24,8 @@ import {
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { FolderTreeGlyph, PlusGlyph } from '../../../components/ui/icons'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import {
   EMPTY_DRAFT,
@@ -252,7 +250,7 @@ export function MerchantCategoriesList() {
     <AppShell
       context="merchant"
       className="clist-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('categories')} />}
+      sidebar={<MerchantSidebar active="categories" />}
       topbar={<Topbar title="لوحة التاجر" storeContext={<StoreSwitcher />} userName="فاطمة" />}
     >
       <PageHeader

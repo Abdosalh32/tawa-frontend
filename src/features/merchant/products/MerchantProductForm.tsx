@@ -11,16 +11,15 @@ import {
   PageHeader,
   Radio,
   Select,
-  Sidebar,
   Switch,
   Table,
   Textarea,
   Toast,
   Topbar,
 } from '../../../components/ui'
-import { StoreBrand } from '../StoreBrand'
+import { useNavigate } from 'react-router'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import { CATEGORY_OPTIONS, EDIT_MOCK_NET_STOCK, editMockForm, emptyForm, syncCombos } from './product-form-data'
 import type { ProductFormState } from './product-form-data'
@@ -420,8 +419,9 @@ function ProductFormBody({ mode }: { mode: FormMode }) {
   )
 }
 
-export function MerchantProductForm() {
-  const [mode, setMode] = useState<FormMode>('create')
+export function MerchantProductForm({ mode }: { mode: FormMode }) {
+  /* الوضع من العنوان: /products/new أو /products/{id}/edit — لا حالة داخلية */
+  const navigate = useNavigate()
   /* المنتج يتبع متجراً واحداً (D5) — لا منتج لتعديله في متجر بلا منتجات */
   const store = useActiveStore()
   const canEdit = store.hasSeedData
@@ -431,7 +431,7 @@ export function MerchantProductForm() {
     <AppShell
       context="merchant"
       className="pform-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('products')} />}
+      sidebar={<MerchantSidebar active="products" />}
       topbar={
         <Topbar
           title="لوحة التاجر"
@@ -449,16 +449,21 @@ export function MerchantProductForm() {
       />
 
       <fieldset className="dev-fieldset">
-        <legend>أداة معاينة تطويرية — وضع النموذج (تبديل الوضع يعيد تهيئة النموذج، لا Routing فعلياً)</legend>
+        <legend>أداة معاينة تطويرية — وضع النموذج (التبديل ينتقل بين مساري /new و/edit فعلياً)</legend>
         <div className="dev-fieldset__options">
-          <Radio name="pform-mode" label="إضافة منتج" checked={effectiveMode === 'create'} onChange={() => setMode('create')} />
+          <Radio
+            name="pform-mode"
+            label="إضافة منتج"
+            checked={effectiveMode === 'create'}
+            onChange={() => navigate(`/merchant/${store.id}/products/new`)}
+          />
           <Radio
             name="pform-mode"
             label="تعديل منتج (بيانات تجريبية)"
             description={canEdit ? undefined : `لا منتجات في «${store.name}» بعد — لا شيء لتعديله`}
             disabled={!canEdit}
             checked={effectiveMode === 'edit'}
-            onChange={() => setMode('edit')}
+            onChange={() => navigate(`/merchant/${store.id}/products/p2/edit`)}
           />
         </div>
       </fieldset>

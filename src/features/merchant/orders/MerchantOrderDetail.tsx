@@ -12,7 +12,6 @@ import {
   KeyValueList,
   PageHeader,
   Radio,
-  Sidebar,
   Skeleton,
   Stepper,
   Table,
@@ -21,9 +20,9 @@ import {
 } from '../../../components/ui'
 import { FULFILLMENT_STATUS, ORDER_FLOW, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { OrderStatus } from '../../../types/status'
-import { StoreBrand } from '../StoreBrand'
+import { useParams } from 'react-router'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import { ORDER_DETAIL, itemsSubtotal, lineTotal } from './order-detail-mock-data'
 
@@ -252,15 +251,18 @@ function LoadingBody() {
 
 export function MerchantOrderDetail() {
   const [view, setView] = useState<ScreenView>('normal')
-  /* الطلب يخصّ متجراً واحداً (D5) — طلبه من متجر آخر يقابل 404 من /stores/{id}/orders/{order} */
+  /* الطلب يخصّ متجراً واحداً (D5) — معرفه من العنوان، والمجهول أو التابع لمتجر آخر
+     يقابل 404 من /stores/{id}/orders/{order} */
+  const { orderId } = useParams()
   const store = useActiveStore()
-  const effectiveView: ScreenView = view === 'normal' && !store.hasSeedData ? 'not-found' : view
+  const orderFound = store.hasSeedData && orderId === ORDER_DETAIL.id
+  const effectiveView: ScreenView = view === 'normal' && !orderFound ? 'not-found' : view
 
   return (
     <AppShell
       context="merchant"
       className="odet-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('orders')} />}
+      sidebar={<MerchantSidebar active="orders" />}
       topbar={
         <Topbar
           title="لوحة التاجر"
@@ -301,7 +303,7 @@ export function MerchantOrderDetail() {
             title="الطلب غير موجود أو غير متاح"
             description={
               store.hasSeedData
-                ? 'تأكد من رقم الطلب — قد يكون الرابط قديماً أو الطلب حُذف من مصدره.'
+                ? `لا طلب بالمعرف «${orderId ?? ''}» في هذا المتجر — تأكد من الرقم، فقد يكون الرابط قديماً. (المعاينة المحلية تعرض الطلب ${ORDER_DETAIL.id} فقط)`
                 : `هذا الطلب لا يخصّ «${store.name}» — كل طلب يتبع المتجر الذي أُنشئ فيه.`
             }
             action={<Button variant="secondary">العودة إلى الطلبات</Button>}

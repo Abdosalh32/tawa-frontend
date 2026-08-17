@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { Badge, Button, Checkbox, EmptyState, ErrorState, Radio, SearchField, Skeleton } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
 import { StorefrontShell } from './StorefrontShell'
@@ -20,6 +21,7 @@ function formatPrice(value: number): string {
 }
 
 export function CustomerStorefrontBrowse() {
+  const navigate = useNavigate()
   const [view, setView] = useState<ScreenView>('normal')
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<'all' | StorefrontCategory>('all')
@@ -236,6 +238,7 @@ export function CustomerStorefrontBrowse() {
                           size="sm"
                           disabled={product.outOfStock}
                           aria-label={`عرض المنتج ${product.name}`}
+                          onClick={() => navigate(`/shop/products/${product.id}`)}
                         >
                           عرض المنتج
                         </Button>

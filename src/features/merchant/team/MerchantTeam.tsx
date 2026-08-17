@@ -15,7 +15,6 @@ import {
   PageHeader,
   Radio,
   Select,
-  Sidebar,
   Skeleton,
   Toast,
   Topbar,
@@ -23,9 +22,8 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { PlusGlyph } from '../../../components/ui/icons'
 import { STAFF_STATUS } from '../../../types/status'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import { PERMISSION_GROUPS, ROLE_LABEL, ROLE_PERMISSIONS, TEAM_MEMBERS, validateInvite } from './team-data'
 import type { InviteErrors, PermissionKey, TeamMember, TeamRole } from './team-data'
@@ -230,7 +228,7 @@ export function MerchantTeam() {
     <AppShell
       context="merchant"
       className="team-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('team')} />}
+      sidebar={<MerchantSidebar active="team" />}
       topbar={
         <Topbar
           title="لوحة التاجر"

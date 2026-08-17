@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import './dashboard.css'
 import {
   AppShell,
@@ -8,7 +9,6 @@ import {
   EmptyState,
   PageHeader,
   Radio,
-  Sidebar,
   Skeleton,
   SummaryCard,
   Topbar,
@@ -16,15 +16,14 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { LayersGlyph, OrdersGlyph, PlusGlyph } from '../../../components/ui/icons'
 import { ORDER_STATUS, PAYMENT_STATUS, STOCK_STATUS, STORE_STATUS } from '../../../types/status'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import { DASHBOARD_METRICS, RECENT_ORDERS, STOCK_ALERTS } from './mock-data'
 import type { RecentOrder } from './mock-data'
 
-/** أعمدة جدول الطلبات الحديثة — أزرار «عرض» غير موصولة بأي خلفية */
-const ORDER_COLUMNS: ReadonlyArray<DataTableColumn<RecentOrder>> = [
+/** أعمدة جدول الطلبات الحديثة — «عرض الطلب» ينتقل لتفاصيله بالعنوان */
+const orderColumns = (onView: (id: string) => void): ReadonlyArray<DataTableColumn<RecentOrder>> => [
   { key: 'id', header: 'رقم الطلب', numeric: true, cell: (row) => row.id },
   { key: 'customer', header: 'الزبون', cell: (row) => row.customer },
   { key: 'date', header: 'التاريخ', cell: (row) => row.date },
@@ -43,7 +42,7 @@ const ORDER_COLUMNS: ReadonlyArray<DataTableColumn<RecentOrder>> = [
     key: 'actions',
     header: 'الإجراء',
     cell: (row) => (
-      <Button variant="secondary" size="sm" aria-label={`عرض الطلب ${row.id}`}>
+      <Button variant="secondary" size="sm" aria-label={`عرض الطلب ${row.id}`} onClick={() => onView(row.id)}>
         عرض الطلب
       </Button>
     ),
@@ -61,11 +60,14 @@ const VIEW_OPTIONS: ReadonlyArray<{ value: DashboardView; label: string }> = [
 ]
 
 export function MerchantDashboardOverview() {
+  const navigate = useNavigate()
   const [view, setView] = useState<DashboardView>('normal')
   const loading = view === 'loading'
   /* كل أرقام هذه الشاشة تخصّ المتجر النشط (D5) — يقابل GET /stores/{id}/dashboard */
   const store = useActiveStore()
   const seeded = store.hasSeedData
+  /** مسار داخل صدفة المتجر النشط */
+  const to = (sub: string) => `/merchant/${store.id}/${sub}`
   const orders = view === 'empty' || !seeded ? [] : RECENT_ORDERS
   const stockAlerts = seeded ? STOCK_ALERTS : []
   /* متجر بلا بيانات: أصفار حقيقية بدل نقل أرقام متجر آخر */
@@ -77,7 +79,7 @@ export function MerchantDashboardOverview() {
     <AppShell
       context="merchant"
       className="dash-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('overview')} />}
+      sidebar={<MerchantSidebar active="overview" />}
       topbar={
         <Topbar
           title="لوحة التاجر"
@@ -91,11 +93,15 @@ export function MerchantDashboardOverview() {
         description={`أهلاً فاطمة 👋 — هذا ملخص أداء «${store.name}» اليوم`}
         meta={<Badge variant={STORE_STATUS[store.status].variant}>{STORE_STATUS[store.status].label}</Badge>}
         primaryAction={
-          <Button variant="primary" icon={<PlusGlyph />}>
+          <Button variant="primary" icon={<PlusGlyph />} onClick={() => navigate(to('products/new'))}>
             إضافة منتج
           </Button>
         }
-        secondaryActions={<Button variant="secondary">معاينة المتجر</Button>}
+        secondaryActions={
+          <Button variant="secondary" onClick={() => navigate('/shop')}>
+            معاينة المتجر
+          </Button>
+        }
       />
 
       <fieldset className="dev-fieldset">
@@ -138,13 +144,13 @@ export function MerchantDashboardOverview() {
         <section className="dash-section" aria-labelledby="dash-orders-title">
           <div className="dash-section__head">
             <h2 id="dash-orders-title">طلبات حديثة</h2>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => navigate(to('orders'))}>
               عرض كل الطلبات
             </Button>
           </div>
           <DataTable
             caption="أحدث الطلبات الواردة — بيانات تجريبية للعرض"
-            columns={ORDER_COLUMNS}
+            columns={orderColumns((id) => navigate(to(`orders/${id}`)))}
             rows={orders}
             rowKey={(row) => row.id}
             loading={loading}
@@ -163,7 +169,7 @@ export function MerchantDashboardOverview() {
           <section className="dash-section" aria-labelledby="dash-stock-title">
             <div className="dash-section__head">
               <h2 id="dash-stock-title">تنبيهات المخزون</h2>
-              <Button variant="secondary" size="sm">
+              <Button variant="secondary" size="sm" onClick={() => navigate(to('inventory'))}>
                 إدارة المخزون
               </Button>
             </div>
@@ -198,13 +204,13 @@ export function MerchantDashboardOverview() {
           <section className="dash-section" aria-labelledby="dash-quick-title">
             <h2 id="dash-quick-title">إجراءات سريعة</h2>
             <div className="dash-card dash-quick">
-              <Button variant="secondary" icon={<PlusGlyph />}>
+              <Button variant="secondary" icon={<PlusGlyph />} onClick={() => navigate(to('products/new'))}>
                 إضافة منتج
               </Button>
-              <Button variant="secondary" icon={<OrdersGlyph />}>
+              <Button variant="secondary" icon={<OrdersGlyph />} onClick={() => navigate(to('orders'))}>
                 مراجعة الطلبات
               </Button>
-              <Button variant="secondary" icon={<LayersGlyph />}>
+              <Button variant="secondary" icon={<LayersGlyph />} onClick={() => navigate(to('inventory'))}>
                 تحديث المخزون
               </Button>
             </div>

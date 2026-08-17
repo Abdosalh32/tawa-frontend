@@ -12,15 +12,13 @@ import {
   IconButton,
   PageHeader,
   Radio,
-  Sidebar,
   Skeleton,
   Switch,
   Toast,
   Topbar,
 } from '../../../components/ui'
-import { StoreBrand } from '../StoreBrand'
+import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
-import { buildMerchantNav } from '../merchant-nav'
 import { useActiveStore } from '../store-context'
 import {
   COLOR_ROLES,
@@ -285,7 +283,7 @@ export function MerchantAppearance() {
     <AppShell
       context="merchant"
       className="appr-shell"
-      sidebar={<Sidebar brand={<StoreBrand />} groups={buildMerchantNav('appearance')} />}
+      sidebar={<MerchantSidebar active="appearance" />}
       topbar={<Topbar title="لوحة التاجر" storeContext={<StoreSwitcher />} userName="فاطمة" />}
     >
       <PageHeader

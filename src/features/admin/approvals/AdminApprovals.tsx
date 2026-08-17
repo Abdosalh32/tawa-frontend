@@ -14,7 +14,6 @@ import {
   KeyValueList,
   PageHeader,
   Radio,
-  Sidebar,
   Skeleton,
   Tabs,
   Toast,
@@ -23,8 +22,7 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { ScrollGlyph } from '../../../components/ui/icons'
 import { APPROVAL_STATUS } from '../../../types/status'
-import { AdminBrand } from '../AdminBrand'
-import { buildAdminNav } from '../admin-nav'
+import { AdminSidebar } from '../AdminSidebar'
 import { APPROVAL_REQUESTS } from './mock-data'
 import type { ApprovalRequest } from './mock-data'
 
@@ -138,7 +136,7 @@ export function AdminApprovals() {
     <AppShell
       context="admin"
       className="admin-shell"
-      sidebar={<Sidebar brand={<AdminBrand />} groups={buildAdminNav('approvals')} />}
+      sidebar={<AdminSidebar active="approvals" />}
       topbar={<Topbar title="لوحة مدير المنصة" userName="جواد" />}
     >
       <PageHeader

@@ -1,7 +1,8 @@
+import { useLocation, useNavigate } from 'react-router'
 import './merchant.css'
 import { Badge, Menu, MenuItem, MenuSeparator } from '../../components/ui'
 import { STORE_STATUS } from '../../types/status'
-import { MERCHANT_STORES, setActiveStoreId, useActiveStore } from './store-context'
+import { MERCHANT_STORES, useActiveStore } from './store-context'
 
 function ChevronGlyph() {
   return (
@@ -17,6 +18,14 @@ function ChevronGlyph() {
  */
 export function StoreSwitcher() {
   const active = useActiveStore()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  /* التبديل ينقل للعنوان نفسه تحت المتجر الآخر — العنوان مصدر الحقيقة للسياق */
+  const switchTo = (id: string) => {
+    const suffix = location.pathname.replace(/^\/merchant\/[^/]+/, '')
+    navigate(`/merchant/${id}${suffix === '' ? '/overview' : suffix}`)
+  }
 
   return (
     <Menu
@@ -31,7 +40,7 @@ export function StoreSwitcher() {
       }
     >
       {MERCHANT_STORES.map((store) => (
-        <MenuItem key={store.id} active={store.id === active.id} onSelect={() => setActiveStoreId(store.id)}>
+        <MenuItem key={store.id} active={store.id === active.id} onSelect={() => switchTo(store.id)}>
           <span className="merchant-switcher__option">
             <span>{store.name}</span>
             <span className="merchant-switcher__domain ltr">{store.subdomain}</span>

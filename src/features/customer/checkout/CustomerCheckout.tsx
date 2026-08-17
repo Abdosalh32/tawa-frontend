@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import './checkout.css'
 import { Alert, Badge, Button, EmptyState, ErrorState, Input, Radio, Select, Skeleton, Stepper, Textarea, Toast } from '../../../components/ui'
 import { StorefrontShell } from '../storefront/StorefrontShell'
@@ -37,6 +38,7 @@ function CheckGlyph() {
 }
 
 export function CustomerCheckout() {
+  const navigate = useNavigate()
   const [view, setView] = useState<ScreenView>('normal')
   const [form, setForm] = useState<CheckoutFormState>(emptyCheckout)
   const [errors, setErrors] = useState<CheckoutErrors>({})
@@ -132,10 +134,10 @@ export function CustomerCheckout() {
               <Button variant="secondary" onClick={copyTrackingId}>
                 نسخ الرقم
               </Button>
-              <button type="button" className="co-outline-btn">
+              <button type="button" className="co-outline-btn" onClick={() => navigate('/shop/tracking')}>
                 تتبع الطلب
               </button>
-              <button type="button" className="co-outline-btn">
+              <button type="button" className="co-outline-btn" onClick={() => navigate('/shop')}>
                 مواصلة التسوق
               </button>
             </div>
@@ -150,7 +152,7 @@ export function CustomerCheckout() {
               title="سلتك فارغة — لا يمكن إتمام الشراء"
               description="أضف منتجات إلى سلتك أولاً ثم عد لإتمام الشراء."
               action={
-                <button type="button" className="co-outline-btn">
+                <button type="button" className="co-outline-btn" onClick={() => navigate('/shop')}>
                   متابعة التسوق
                 </button>
               }

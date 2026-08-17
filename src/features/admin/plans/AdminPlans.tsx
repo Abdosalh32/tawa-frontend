@@ -16,15 +16,13 @@ import {
   PageHeader,
   Radio,
   Select,
-  Sidebar,
   Skeleton,
   Toast,
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { PlusGlyph } from '../../../components/ui/icons'
-import { AdminBrand } from '../AdminBrand'
-import { buildAdminNav } from '../admin-nav'
+import { AdminSidebar } from '../AdminSidebar'
 import { MANUAL_RENEWALS, RENEWAL_MERCHANTS, SUBSCRIPTION_PLANS } from './mock-data'
 import type { ManualRenewal, SubscriptionPlan } from './mock-data'
 
@@ -172,7 +170,7 @@ export function AdminPlans() {
     <AppShell
       context="admin"
       className="admin-shell"
-      sidebar={<Sidebar brand={<AdminBrand />} groups={buildAdminNav('plans')} />}
+      sidebar={<AdminSidebar active="plans" />}
       topbar={<Topbar title="لوحة مدير المنصة" userName="جواد" />}
     >
       <PageHeader

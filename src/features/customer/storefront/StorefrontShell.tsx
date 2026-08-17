@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
+import { useNavigate } from 'react-router'
 import './storefront.css'
 import { Radio } from '../../../components/ui'
 import { TEMPLATES, deriveSurface, readableOn } from '../../../types/store-theme'
@@ -18,6 +19,7 @@ export interface StorefrontShellProps {
  * تستهلكها شاشتا التصفح وتفاصيل المنتج دون تكرار.
  */
 export function StorefrontShell({ devStateControls, headerMiddle, children }: StorefrontShellProps) {
+  const navigate = useNavigate()
   const config = useStorePreviewConfig()
   const { template, presetKey } = config
   const cartCount = cartQuantityOf(config)
@@ -68,19 +70,24 @@ export function StorefrontShell({ devStateControls, headerMiddle, children }: St
       </div>
 
       <header className="sf-header">
-        <span className="sf-brand">
+        <button type="button" className="sf-brand" onClick={() => navigate('/shop')}>
           {/* الشعار Placeholder — رفع الشعار الفعلي مؤجل */}
           <span className="sf-brand__logo" aria-hidden="true">
             ع
           </span>
           متجر العافية
-        </span>
+        </button>
         {headerMiddle && <div className="sf-header__search">{headerMiddle}</div>}
         <div className="sf-header__actions">
-          <button type="button" className="sf-track">
+          <button type="button" className="sf-track" onClick={() => navigate('/shop/tracking')}>
             تتبع طلبي
           </button>
-          <button type="button" className="sf-cart" aria-label={`السلة — ${cartCount} عناصر (مؤشر معاينة غير موصول)`}>
+          <button
+            type="button"
+            className="sf-cart"
+            aria-label={`السلة — ${cartCount} عناصر`}
+            onClick={() => navigate('/shop/cart')}
+          >
             السلة (<span className="numeric">{cartCount}</span>)
           </button>
         </div>
