@@ -80,7 +80,7 @@
   border-radius: var(--radius-pill);
 }
 
-.sset-status-hero--published .sset-status-hero__dot {
+.sset-status-hero--active .sset-status-hero__dot {
   background: var(--status-success);
   animation: sset-pulse 1.6s ease-in-out infinite;
 }
@@ -97,7 +97,8 @@
   background: var(--status-info);
 }
 
-.sset-status-hero--rejected .sset-status-hero__dot {
+.sset-status-hero--rejected .sset-status-hero__dot,
+.sset-status-hero--suspended .sset-status-hero__dot {
   background: var(--status-critical);
 }
 

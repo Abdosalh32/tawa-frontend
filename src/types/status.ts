@@ -1,8 +1,11 @@
 import type { BadgeVariant } from '../components/ui/Badge'
 
 /**
- * القواميس الدلالية الموحدة للحالات (المصدر: component-inventory.md §8).
- * تُستهلك في كل الشاشات — لا يُعرَّف لون حالة محلياً.
+ * القواميس الدلالية الموحدة للحالات — تُستهلك في كل الشاشات، ولا يُعرَّف لون حالة محلياً.
+ *
+ * **المفاتيح مطابقة حرفياً لقيم enum في الباكند** (قرار 17 أغسطس 2026: الباكند هو المرجع)
+ * كي يعمل الربط دون طبقة ترجمة. مرجع كل قاموس مذكور فوقه بجدوله في الـ schema.
+ * التسميات العربية من المتطلبات ووثائق التصميم.
  */
 
 export interface StatusMeta {
@@ -10,18 +13,43 @@ export interface StatusMeta {
   variant: BadgeVariant
 }
 
-/** حالات الطلب (1.5.4) — موحدة بين لوحة التاجر وتتبع الزبون */
-export type OrderStatus = 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled'
+/**
+ * حالات الطلب — `orders.order_status` في الباكند (ست حالات).
+ * المتطلبات (1.5.4) تذكر أربعاً؛ الباكند يضيف `pending` قبل التأكيد
+ * ويسمّي «قيد التجهيز» بـ `processing`.
+ */
+export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'ready_for_delivery' | 'delivered' | 'cancelled'
 
 export const ORDER_STATUS: Record<OrderStatus, StatusMeta> = {
+  pending: { label: 'بانتظار التأكيد', variant: 'neutral' },
   confirmed: { label: 'مؤكد', variant: 'info' },
-  preparing: { label: 'قيد التجهيز', variant: 'warning' },
-  ready: { label: 'جاهز للتسليم', variant: 'progress' },
+  processing: { label: 'قيد التجهيز', variant: 'warning' },
+  ready_for_delivery: { label: 'جاهز للتسليم', variant: 'progress' },
   delivered: { label: 'مسلّم', variant: 'success' },
   cancelled: { label: 'ملغى', variant: 'error' },
 }
 
-/** حالات المخزون (1.4.9 – 1.4.12) */
+/** المسار الخطي للأمام (بلا الإلغاء) — يستهلكه Stepper الطلب وخط تتبع الزبون */
+export const ORDER_FLOW: ReadonlyArray<Exclude<OrderStatus, 'cancelled'>> = [
+  'pending',
+  'confirmed',
+  'processing',
+  'ready_for_delivery',
+  'delivered',
+]
+
+/**
+ * حالة التجهيز — `orders.fulfillment_status` في الباكند.
+ * محور مستقل عن حالة الطلب والدفع (يطابق «حالات منفصلة» في 1.5.2).
+ */
+export type FulfillmentStatus = 'unfulfilled' | 'fulfilled'
+
+export const FULFILLMENT_STATUS: Record<FulfillmentStatus, StatusMeta> = {
+  unfulfilled: { label: 'غير مُجهَّز', variant: 'neutral' },
+  fulfilled: { label: 'مُجهَّز', variant: 'success' },
+}
+
+/** حالات المخزون (1.4.9 – 1.4.12) — مشتقة في الواجهة، لا عمود لها في الباكند */
 export type StockStatus = 'available' | 'low' | 'out' | 'reserved'
 
 export const STOCK_STATUS: Record<StockStatus, StatusMeta> = {
@@ -32,26 +60,31 @@ export const STOCK_STATUS: Record<StockStatus, StatusMeta> = {
 }
 
 /**
- * حالات الدفع — الظاهر منها في المتطلبات فقط.
- * حالات الفشل/الاسترجاع: Pending product decision (D2/G7).
+ * حالات الدفع — `orders.payment_status` في الباكند.
+ * ملاحظة عقدية: **لا عمود `payment_method` في جدول الطلبات**، فوسيلة الدفع
+ * (كاش/بطاقة) لا مكان لها خلفياً بعد — تُعرض كنص معاينة فقط حتى حسم D2.
  */
-export type PaymentStatus = 'cod' | 'paid'
+export type PaymentStatus = 'unpaid' | 'paid' | 'refunded'
 
 export const PAYMENT_STATUS: Record<PaymentStatus, StatusMeta> = {
-  cod: { label: 'كاش عند الاستلام', variant: 'neutral' },
+  unpaid: { label: 'غير مدفوع', variant: 'neutral' },
   paid: { label: 'مدفوع', variant: 'success' },
+  refunded: { label: 'مُسترجع', variant: 'info' },
 }
 
-/** حالات المنتج (1.4.5، برومت 4: منشور/مسودة/مؤرشف) — «محظور» إداريةٌ تُضاف مع شاشات المدير */
-export type ProductStatus = 'published' | 'draft' | 'archived'
+/** حالات المنتج — `products.status` في الباكند (`active` = المنشور للزبائن) */
+export type ProductStatus = 'draft' | 'active' | 'archived'
 
 export const PRODUCT_STATUS: Record<ProductStatus, StatusMeta> = {
-  published: { label: 'منشور', variant: 'success' },
   draft: { label: 'مسودة', variant: 'neutral' },
+  active: { label: 'منشور', variant: 'success' },
   archived: { label: 'مؤرشف', variant: 'neutral' },
 }
 
-/** حالتا الخصم الموثقتان (برومت 8: نشطة/منتهية) — «مجدول» وغيرها غير منصوصة */
+/**
+ * حالة الخصم — مشتقة في الواجهة من `discounts.is_active` وفترة السريان
+ * (`starts_at`/`ends_at`)؛ لا عمود حالة مفرد في الباكند.
+ */
 export type DiscountStatus = 'active' | 'ended'
 
 export const DISCOUNT_STATUS: Record<DiscountStatus, StatusMeta> = {
@@ -59,16 +92,44 @@ export const DISCOUNT_STATUS: Record<DiscountStatus, StatusMeta> = {
   ended: { label: 'منتهٍ', variant: 'neutral' },
 }
 
-/** حالة المتجر لدى الإدارة (م.1.3.4 – م.1.3.6) */
-export type StoreStatus = 'active' | 'suspended' | 'banned'
+/**
+ * حالة المتجر — `stores.status` في الباكند (ثلاث حالات فقط).
+ * **لا تعليق ولا حظر على المتجر** خلفياً؛ التعليق على التاجر (انظر `MERCHANT_STATUS`).
+ */
+export type StoreStatus = 'draft' | 'active' | 'maintenance'
 
 export const STORE_STATUS: Record<StoreStatus, StatusMeta> = {
-  active: { label: 'نشط', variant: 'success' },
-  suspended: { label: 'معلّق', variant: 'warning' },
-  banned: { label: 'محظور', variant: 'error' },
+  draft: { label: 'مسودة — غير منشور', variant: 'neutral' },
+  active: { label: 'منشور', variant: 'success' },
+  maintenance: { label: 'صيانة مؤقتة', variant: 'warning' },
 }
 
-/** حالة فحص المنتج لدى الإدارة (م.1.3.8 – م.1.3.9) */
+/**
+ * حالة حساب التاجر — `merchants.status` في الباكند.
+ * هنا يقع التعليق (م.1.3.4)؛ **ولا قيمة `rejected`** فمسار رفض الاعتماد (م.1.3.3)
+ * بلا مقابل خلفي حتى بناء نطاق الاعتماد.
+ */
+export type MerchantStatus = 'pending_verification' | 'active' | 'suspended'
+
+export const MERCHANT_STATUS: Record<MerchantStatus, StatusMeta> = {
+  pending_verification: { label: 'بانتظار تفعيل الهاتف', variant: 'warning' },
+  active: { label: 'نشط', variant: 'success' },
+  suspended: { label: 'معلّق', variant: 'error' },
+}
+
+/** حالة عضو الفريق — `store_staff.status` في الباكند */
+export type StaffStatus = 'invited' | 'active' | 'suspended'
+
+export const STAFF_STATUS: Record<StaffStatus, StatusMeta> = {
+  invited: { label: 'بانتظار قبول الدعوة', variant: 'warning' },
+  active: { label: 'نشط', variant: 'success' },
+  suspended: { label: 'معطّل', variant: 'neutral' },
+}
+
+/**
+ * حالة فحص المنتج لدى الإدارة (م.1.3.8 – م.1.3.9).
+ * **بلا مقابل خلفي** — لا جدول ولا عمود للفحص؛ يُبنى مع نطاق الإدارة.
+ */
 export type ModerationStatus = 'pending' | 'ok' | 'violating'
 
 export const MODERATION_STATUS: Record<ModerationStatus, StatusMeta> = {
@@ -77,7 +138,10 @@ export const MODERATION_STATUS: Record<ModerationStatus, StatusMeta> = {
   violating: { label: 'مخالف', variant: 'error' },
 }
 
-/** حالات الاعتماد والرقابة (م.1.3.1 – م.1.3.5) */
+/**
+ * حالات اعتماد التاجر (م.1.3.1 – م.1.3.5).
+ * **بلا مقابل خلفي** — لا جدول طلبات انضمام ولا وثائق؛ يُبنى مع نطاق الإدارة.
+ */
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected' | 'suspended' | 'banned'
 
 export const APPROVAL_STATUS: Record<ApprovalStatus, StatusMeta> = {

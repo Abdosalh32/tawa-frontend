@@ -23,7 +23,7 @@ export interface ProductFormState {
   sku: string
   category: string
   /** الحالة الموثقة للنموذج: منشور/مسودة (برومت 5) — الأرشفة خارج هذه المرحلة */
-  status: Extract<ProductStatus, 'published' | 'draft'>
+  status: Extract<ProductStatus, 'active' | 'draft'>
   /** تُستخدم فقط عند عدم تفعيل المتغيرات (برومت 5: بطاقة التسعير تظهر إن لا متغيرات) */
   price: string
   quantity: string
@@ -74,7 +74,7 @@ export function emptyForm(): ProductFormState {
     description: '',
     sku: '',
     category: '',
-    status: 'published',
+    status: 'active',
     price: '',
     quantity: '',
     lowStockThreshold: '',
@@ -103,7 +103,7 @@ export function editMockForm(): ProductFormState {
     description: 'قميص قطني مريح بقصّة عصرية، مناسب للاستخدام اليومي.',
     sku: 'TS-CTN-M',
     category: 'fashion',
-    status: 'published',
+    status: 'active',
     price: '',
     quantity: '',
     lowStockThreshold: '5',

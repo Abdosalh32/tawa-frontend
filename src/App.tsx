@@ -497,9 +497,9 @@ interface PreviewOrder {
 }
 
 const PREVIEW_ORDERS: readonly PreviewOrder[] = [
-  { id: 'TW-2481-9X', customer: 'فاطمة إدريس', phone: '+218 91 234 5678', total: '173 د.ل', payment: 'paid', status: 'preparing' },
-  { id: 'TW-2480-4K', customer: 'محمد الشريف', phone: '+218 92 111 2233', total: '45 د.ل', payment: 'cod', status: 'confirmed' },
-  { id: 'TW-2479-7M', customer: 'سالم بن عامر', phone: '+218 94 555 8899', total: '260 د.ل', payment: 'cod', status: 'ready' },
+  { id: 'TW-2481-9X', customer: 'فاطمة إدريس', phone: '+218 91 234 5678', total: '173 د.ل', payment: 'paid', status: 'processing' },
+  { id: 'TW-2480-4K', customer: 'محمد الشريف', phone: '+218 92 111 2233', total: '45 د.ل', payment: 'unpaid', status: 'confirmed' },
+  { id: 'TW-2479-7M', customer: 'سالم بن عامر', phone: '+218 94 555 8899', total: '260 د.ل', payment: 'unpaid', status: 'ready_for_delivery' },
   { id: 'TW-2478-2B', customer: 'آمنة الفيتوري', phone: '+218 91 777 4455', total: '89 د.ل', payment: 'paid', status: 'delivered' },
 ]
 
@@ -707,8 +707,8 @@ function NavigationDemo() {
           items={[
             { key: 'all', label: 'الكل', count: 46 },
             { key: 'new', label: 'جديدة', count: 8 },
-            { key: 'preparing', label: 'قيد التجهيز', count: 5 },
-            { key: 'ready', label: 'جاهزة', count: 3 },
+            { key: 'processing', label: 'قيد التجهيز', count: 5 },
+            { key: 'ready_for_delivery', label: 'جاهزة', count: 3 },
             { key: 'cancelled', label: 'ملغاة', disabled: true },
           ]}
         />

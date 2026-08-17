@@ -49,16 +49,28 @@ export function validateSettings(form: StoreSettingsForm): SettingsErrors {
 }
 
 /**
- * الحالة المركبة للمتجر (اعتماد + نشر) كما تعرضها هذه الشاشة —
- * الحالات الموثقة: بانتظار الاعتماد، معتمد غير منشور، منشور، صيانة (1.2.5)، مرفوض (م.1.3.3).
+ * الحالة المركبة التي تعرضها هذه الشاشة للتاجر — **تركيبة واجهة** من حقلين في الباكند:
+ *
+ * | حالة الواجهة | merchants.status      | stores.status |
+ * |--------------|-----------------------|---------------|
+ * | pending      | pending_verification  | draft         |
+ * | approved     | active                | draft         |
+ * | active       | active                | active        |
+ * | maintenance  | active                | maintenance   |
+ * | suspended    | suspended             | maintenance   |
+ * | rejected     | — **بلا مقابل خلفي**   | draft         |
+ *
+ * ملاحظة: `merchants.status` ليس فيه قيمة `rejected`، فمسار رفض الاعتماد (م.1.3.3)
+ * بلا تمثيل خلفي حتى بناء نطاق الاعتماد.
  */
-export type StoreLifecycle = 'pending' | 'approved' | 'published' | 'maintenance' | 'rejected'
+export type StoreLifecycle = 'pending' | 'approved' | 'active' | 'maintenance' | 'suspended' | 'rejected'
 
 export const LIFECYCLE_META: Record<StoreLifecycle, { label: string; variant: BadgeVariant }> = {
   pending: { label: 'بانتظار اعتماد الإدارة', variant: 'warning' },
   approved: { label: 'معتمد — غير منشور', variant: 'info' },
-  published: { label: 'منشور', variant: 'success' },
+  active: { label: 'منشور', variant: 'success' },
   maintenance: { label: 'موقوف مؤقتاً (صيانة)', variant: 'warning' },
+  suspended: { label: 'الحساب معلّق من الإدارة', variant: 'error' },
   rejected: { label: 'مرفوض — مع سبب', variant: 'error' },
 }
 

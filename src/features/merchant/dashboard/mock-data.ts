@@ -39,11 +39,11 @@ export const DASHBOARD_METRICS: readonly DashboardMetric[] = [
 ]
 
 export const RECENT_ORDERS: readonly RecentOrder[] = [
-  { id: 'TW-2481-9X', customer: 'فاطمة إدريس', date: 'اليوم، 10:30 ص', total: '173 د.ل', payment: 'paid', status: 'preparing' },
-  { id: 'TW-2480-4K', customer: 'محمد الشريف', date: 'اليوم، 9:12 ص', total: '45 د.ل', payment: 'cod', status: 'confirmed' },
-  { id: 'TW-2479-7M', customer: 'سالم بن عامر', date: 'أمس، 6:40 م', total: '260 د.ل', payment: 'cod', status: 'ready' },
+  { id: 'TW-2481-9X', customer: 'فاطمة إدريس', date: 'اليوم، 10:30 ص', total: '173 د.ل', payment: 'paid', status: 'processing' },
+  { id: 'TW-2480-4K', customer: 'محمد الشريف', date: 'اليوم، 9:12 ص', total: '45 د.ل', payment: 'unpaid', status: 'confirmed' },
+  { id: 'TW-2479-7M', customer: 'سالم بن عامر', date: 'أمس، 6:40 م', total: '260 د.ل', payment: 'unpaid', status: 'ready_for_delivery' },
   { id: 'TW-2478-2B', customer: 'آمنة الفيتوري', date: 'أمس، 2:05 م', total: '89 د.ل', payment: 'paid', status: 'delivered' },
-  { id: 'TW-2477-5T', customer: 'خالد المقريف', date: '14 أغسطس', total: '132 د.ل', payment: 'cod', status: 'delivered' },
+  { id: 'TW-2477-5T', customer: 'خالد المقريف', date: '14 أغسطس', total: '132 د.ل', payment: 'unpaid', status: 'delivered' },
 ]
 
 export const STOCK_ALERTS: readonly StockAlertItem[] = [

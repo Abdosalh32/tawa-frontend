@@ -41,11 +41,12 @@ const TAB_ITEMS = [
 ] as const
 
 const LIFECYCLE_OPTIONS: ReadonlyArray<{ value: StoreLifecycle; label: string }> = [
-  { value: 'published', label: 'منشور (الافتراضي — متسق مع بقية الشاشات)' },
+  { value: 'active', label: 'منشور (الافتراضي — متسق مع بقية الشاشات)' },
   { value: 'pending', label: 'بانتظار الاعتماد' },
   { value: 'approved', label: 'معتمد غير منشور' },
   { value: 'maintenance', label: 'موقوف مؤقتاً (صيانة)' },
-  { value: 'rejected', label: 'مرفوض' },
+  { value: 'suspended', label: 'الحساب معلّق من الإدارة' },
+  { value: 'rejected', label: 'مرفوض (بلا مقابل خلفي)' },
 ]
 
 /** بند Checklist متطلبات النشر (1.2.4) */
@@ -83,7 +84,7 @@ export function MerchantStoreSettings() {
   const [tab, setTab] = useState<SettingsTab>('general')
   const [form, setForm] = useState<StoreSettingsForm>(INITIAL_SETTINGS)
   const [errors, setErrors] = useState<SettingsErrors>({})
-  const [lifecycle, setLifecycle] = useState<StoreLifecycle>('published')
+  const [lifecycle, setLifecycle] = useState<StoreLifecycle>('active')
   const [pauseOpen, setPauseOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const summaryRef = useRef<HTMLDivElement>(null)
@@ -104,7 +105,7 @@ export function MerchantStoreSettings() {
     setToast('حُفظت التغييرات (معاينة محلية — لا حفظ فعلياً)')
   }
 
-  const approvalMet = lifecycle !== 'pending' && lifecycle !== 'rejected'
+  const approvalMet = lifecycle !== 'pending' && lifecycle !== 'rejected' && lifecycle !== 'suspended'
   const errorMessages = Object.values(errors)
 
   return (
@@ -269,7 +270,8 @@ export function MerchantStoreSettings() {
           <div className={`sset-status-hero sset-status-hero--${lifecycle}`}>
             <span className="sset-status-hero__dot" aria-hidden="true" />
             <span>
-              {lifecycle === 'published' && 'متجرك منشور ويستقبل الطلبات'}
+              {lifecycle === 'active' && 'متجرك منشور ويستقبل الطلبات'}
+              {lifecycle === 'suspended' && 'حسابك معلّق من الإدارة — متجرك مغلق مؤقتاً'}
               {lifecycle === 'maintenance' && 'متجرك موقوف مؤقتاً — الزوار يرون صفحة صيانة'}
               {lifecycle === 'pending' && 'متجرك بانتظار اعتماد الإدارة'}
               {lifecycle === 'approved' && 'حسابك معتمد — متجرك غير منشور بعد'}
@@ -277,6 +279,12 @@ export function MerchantStoreSettings() {
             </span>
             <Badge variant={LIFECYCLE_META[lifecycle].variant}>{LIFECYCLE_META[lifecycle].label}</Badge>
           </div>
+
+          {lifecycle === 'suspended' && (
+            <Alert variant="error" title="حسابك معلّق من الإدارة">
+              متجرك مغلق مؤقتاً حتى فك التعليق (م.1.3.4 – م.1.3.5) — التعليق يقع على حساب التاجر بحسب عقد الباكند.
+            </Alert>
+          )}
 
           {lifecycle === 'rejected' && (
             <Alert variant="error" title="سبب الرفض (يظهر لك لتصحّح وتعيد التقديم — م.1.3.3)">
@@ -321,7 +329,7 @@ export function MerchantStoreSettings() {
               <Button
                 variant="primary"
                 onClick={() => {
-                  setLifecycle('published')
+                  setLifecycle('active')
                   setToast('نُشر المتجر (معاينة محلية — لا نشر فعلياً)')
                 }}
               >
@@ -330,7 +338,7 @@ export function MerchantStoreSettings() {
             </div>
           )}
 
-          {lifecycle === 'published' && (
+          {lifecycle === 'active' && (
             <div className="sset-actions">
               <Button variant="secondary" onClick={() => setPauseOpen(true)}>
                 إيقاف استقبال الطلبات مؤقتاً
@@ -343,7 +351,7 @@ export function MerchantStoreSettings() {
               <Button
                 variant="primary"
                 onClick={() => {
-                  setLifecycle('published')
+                  setLifecycle('active')
                   setToast('استُؤنف استقبال الطلبات (معاينة محلية)')
                 }}
               >

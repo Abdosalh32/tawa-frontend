@@ -19,11 +19,11 @@ import {
   Toast,
   Topbar,
 } from '../../../components/ui'
-import { ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
+import { FULFILLMENT_STATUS, ORDER_FLOW, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { OrderStatus } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
 import { buildMerchantNav } from '../merchant-nav'
-import { ORDER_DETAIL, ORDER_FLOW, itemsSubtotal, lineTotal } from './order-detail-mock-data'
+import { ORDER_DETAIL, itemsSubtotal, lineTotal } from './order-detail-mock-data'
 
 /** حالة عرض تطويرية محلية — الافتراضي «عادية» */
 type ScreenView = 'normal' | 'loading' | 'not-found' | 'error'
@@ -182,8 +182,16 @@ function OrderDetailBody() {
               items={[
                 { label: 'الوسيلة', value: ORDER_DETAIL.paymentMethod },
                 {
-                  label: 'الحالة',
+                  label: 'حالة الدفع',
                   value: <Badge variant={PAYMENT_STATUS[ORDER_DETAIL.payment].variant}>{PAYMENT_STATUS[ORDER_DETAIL.payment].label}</Badge>,
+                },
+                {
+                  label: 'حالة التجهيز',
+                  value: (
+                    <Badge variant={FULFILLMENT_STATUS[ORDER_DETAIL.fulfillment].variant}>
+                      {FULFILLMENT_STATUS[ORDER_DETAIL.fulfillment].label}
+                    </Badge>
+                  ),
                 },
               ]}
             />

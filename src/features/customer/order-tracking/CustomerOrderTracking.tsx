@@ -1,14 +1,13 @@
 import { useRef, useState } from 'react'
 import './tracking.css'
 import { Alert, Badge, ErrorState, Input, Radio, Skeleton } from '../../../components/ui'
-import { ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
-import type { OrderStatus } from '../../../types/status'
+import { ORDER_FLOW, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import { StorefrontShell } from '../storefront/StorefrontShell'
 import { TRACKED_ORDERS, findTrackedOrder } from './mock-data'
 import type { TrackedOrder } from './mock-data'
 
-/** المسار الخطي الموثق (1.5.4) لعرض الخط الزمني */
-const FLOW: ReadonlyArray<Exclude<OrderStatus, 'cancelled'>> = ['confirmed', 'preparing', 'ready', 'delivered']
+/** المسار الخطي من الباكند (orders.order_status) لعرض الخط الزمني */
+const FLOW = ORDER_FLOW
 
 /** حالة عرض تطويرية محلية — الافتراضي «نموذج الاستعلام» */
 type ScreenView = 'form' | 'active' | 'delivered' | 'cancelled' | 'not-found' | 'loading' | 'error'

@@ -1,10 +1,15 @@
-import type { StoreStatus } from '../../../types/status'
+import type { MerchantStatus, StoreStatus } from '../../../types/status'
 
 /**
  * بيانات تجريبية محلية لإدارة المتاجر (م.1.3.4 – م.1.3.7) — للعرض والقرار المحلي فقط.
  * لا تُستورد خارج هذه الميزة.
  * «الباقة» معروضة هنا لأن اشتراك المتجر القائم كيان موثق (م.1.3.12 يجدّده) —
  * بخلاف شاشة الاعتماد حيث اختيار الباقة عند التقديم قرار مفقود (M2).
+ *
+ * **مواءمة الباكند (17 أغسطس 2026):** `stores.status` ثلاث حالات فقط
+ * (draft/active/maintenance) **ولا تعليق ولا حظر على المتجر** — التعليق على
+ * حساب التاجر (`merchants.status`). لذا الحالتان منفصلتان هنا،
+ * و«الحظر» بلا مقابل خلفي فأُسقط من الأفعال (سؤال مفتوح لمالك المنتج).
  */
 
 export interface AdminStore {
@@ -18,8 +23,11 @@ export interface AdminStore {
   lastActivity: string
   /** عدد المخالفات المسجّلة سابقاً (م.1.3.9) */
   violations: number
+  /** stores.status — حالة المتجر نفسه */
   status: StoreStatus
-  /** سبب التعليق المكتوب + مدته (م.1.3.4، برومت 18) */
+  /** merchants.status — حالة حساب التاجر المالك (هنا يقع التعليق) */
+  merchantStatus: MerchantStatus
+  /** سبب تعليق التاجر ومدته (م.1.3.4، برومت 18) */
   suspension?: { reason: string; sinceDays: number }
 }
 
@@ -35,6 +43,7 @@ export const ADMIN_STORES: readonly AdminStore[] = [
     lastActivity: 'اليوم',
     violations: 0,
     status: 'active',
+    merchantStatus: 'active',
   },
   {
     id: 'st2',
@@ -46,7 +55,8 @@ export const ADMIN_STORES: readonly AdminStore[] = [
     registeredAt: '2 أغسطس',
     lastActivity: 'أمس',
     violations: 1,
-    status: 'suspended',
+    status: 'maintenance',
+    merchantStatus: 'suspended',
     suspension: { reason: 'وثائق منتهية الصلاحية', sinceDays: 3 },
   },
   {
@@ -60,6 +70,7 @@ export const ADMIN_STORES: readonly AdminStore[] = [
     lastActivity: 'اليوم',
     violations: 0,
     status: 'active',
+    merchantStatus: 'active',
   },
   {
     id: 'st4',
@@ -71,7 +82,9 @@ export const ADMIN_STORES: readonly AdminStore[] = [
     registeredAt: '28 يوليو',
     lastActivity: 'قبل 4 أيام',
     violations: 3,
-    status: 'banned',
+    status: 'maintenance',
+    merchantStatus: 'suspended',
+    suspension: { reason: 'تكرار عرض منتجات مخالفة للقوانين', sinceDays: 6 },
   },
   {
     id: 'st5',
@@ -84,6 +97,20 @@ export const ADMIN_STORES: readonly AdminStore[] = [
     lastActivity: 'أمس',
     violations: 0,
     status: 'active',
+    merchantStatus: 'active',
+  },
+  {
+    id: 'st8',
+    storeName: 'ورشة الخشب',
+    merchantName: 'سعيد الورفلي',
+    subdomain: 'wood-shop.tawa.ly',
+    planName: 'مجانية',
+    productCount: 3,
+    registeredAt: 'اليوم',
+    lastActivity: 'اليوم',
+    violations: 0,
+    status: 'draft',
+    merchantStatus: 'pending_verification',
   },
   {
     id: 'st6',
@@ -96,6 +123,7 @@ export const ADMIN_STORES: readonly AdminStore[] = [
     lastActivity: 'اليوم',
     violations: 0,
     status: 'active',
+    merchantStatus: 'active',
   },
   {
     id: 'st7',
@@ -107,7 +135,8 @@ export const ADMIN_STORES: readonly AdminStore[] = [
     registeredAt: '20 يوليو',
     lastActivity: 'قبل يومين',
     violations: 2,
-    status: 'suspended',
+    status: 'maintenance',
+    merchantStatus: 'suspended',
     suspension: { reason: 'تكرار عرض منتجات مخالفة', sinceDays: 1 },
   },
 ]

@@ -353,8 +353,8 @@ function ProductFormBody({ mode }: { mode: FormMode }) {
               name="pform-status"
               label="منشور"
               description="يظهر للزبائن في واجهة المتجر"
-              checked={form.status === 'published'}
-              onChange={() => setForm((prev) => ({ ...prev, status: 'published' }))}
+              checked={form.status === 'active'}
+              onChange={() => setForm((prev) => ({ ...prev, status: 'active' }))}
             />
             <Radio
               name="pform-status"

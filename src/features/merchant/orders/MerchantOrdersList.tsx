@@ -18,8 +18,8 @@ import {
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
-import { ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
-import type { OrderStatus, PaymentStatus } from '../../../types/status'
+import { FULFILLMENT_STATUS, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
+import type { FulfillmentStatus, OrderStatus, PaymentStatus } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
 import { buildMerchantNav } from '../merchant-nav'
 import { MERCHANT_ORDERS } from './mock-data'
@@ -29,6 +29,7 @@ const PAGE_SIZE = 5
 
 type StatusTab = 'all' | OrderStatus
 type PaymentFilter = 'all' | PaymentStatus
+type FulfillmentFilter = 'all' | FulfillmentStatus
 
 /** حالة عرض تطويرية محلية — الافتراضي «عادية» */
 type ScreenView = 'normal' | 'loading' | 'empty' | 'error'
@@ -62,8 +63,15 @@ const COLUMNS: ReadonlyArray<DataTableColumn<MerchantOrder>> = [
   },
   {
     key: 'status',
-    header: 'الحالة',
+    header: 'حالة الطلب',
     cell: (row) => <Badge variant={ORDER_STATUS[row.status].variant}>{ORDER_STATUS[row.status].label}</Badge>,
+  },
+  {
+    key: 'fulfillment',
+    header: 'التجهيز',
+    cell: (row) => (
+      <Badge variant={FULFILLMENT_STATUS[row.fulfillment].variant}>{FULFILLMENT_STATUS[row.fulfillment].label}</Badge>
+    ),
   },
   {
     key: 'actions',
@@ -81,9 +89,10 @@ export function MerchantOrdersList() {
   const [statusTab, setStatusTab] = useState<StatusTab>('all')
   const [search, setSearch] = useState('')
   const [paymentFilter, setPaymentFilter] = useState<PaymentFilter>('all')
+  const [fulfillmentFilter, setFulfillmentFilter] = useState<FulfillmentFilter>('all')
   const [page, setPage] = useState(1)
 
-  const filtersActive = search.trim() !== '' || paymentFilter !== 'all' || statusTab !== 'all'
+  const filtersActive = search.trim() !== '' || paymentFilter !== 'all' || fulfillmentFilter !== 'all' || statusTab !== 'all'
 
   /** عدّادات التبويبات من القائمة التجريبية نفسها — لا أرقام مصطنعة */
   const tabItems = useMemo(() => {
@@ -104,10 +113,11 @@ export function MerchantOrdersList() {
     return MERCHANT_ORDERS.filter((order) => {
       if (statusTab !== 'all' && order.status !== statusTab) return false
       if (paymentFilter !== 'all' && order.payment !== paymentFilter) return false
+      if (fulfillmentFilter !== 'all' && order.fulfillment !== fulfillmentFilter) return false
       if (query && !order.id.toLowerCase().includes(query) && !order.customer.includes(search.trim())) return false
       return true
     })
-  }, [statusTab, paymentFilter, search])
+  }, [statusTab, paymentFilter, fulfillmentFilter, search])
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
@@ -119,6 +129,7 @@ export function MerchantOrdersList() {
   const resetFilters = () => {
     setSearch('')
     setPaymentFilter('all')
+    setFulfillmentFilter('all')
     setStatusTab('all')
     setPage(1)
   }
@@ -203,21 +214,38 @@ export function MerchantOrdersList() {
           />
         }
         filters={
-          <Select
-            label="حالة الدفع"
-            value={paymentFilter}
-            onChange={(event) => {
-              setPaymentFilter(event.target.value as PaymentFilter)
-              setPage(1)
-            }}
-          >
-            <option value="all">الكل</option>
-            {Object.entries(PAYMENT_STATUS).map(([key, meta]) => (
-              <option key={key} value={key}>
-                {meta.label}
-              </option>
-            ))}
-          </Select>
+          <>
+            <Select
+              label="حالة الدفع"
+              value={paymentFilter}
+              onChange={(event) => {
+                setPaymentFilter(event.target.value as PaymentFilter)
+                setPage(1)
+              }}
+            >
+              <option value="all">الكل</option>
+              {Object.entries(PAYMENT_STATUS).map(([key, meta]) => (
+                <option key={key} value={key}>
+                  {meta.label}
+                </option>
+              ))}
+            </Select>
+            <Select
+              label="حالة التجهيز"
+              value={fulfillmentFilter}
+              onChange={(event) => {
+                setFulfillmentFilter(event.target.value as FulfillmentFilter)
+                setPage(1)
+              }}
+            >
+              <option value="all">الكل</option>
+              {Object.entries(FULFILLMENT_STATUS).map(([key, meta]) => (
+                <option key={key} value={key}>
+                  {meta.label}
+                </option>
+              ))}
+            </Select>
+          </>
         }
         actions={
           filtersActive && (

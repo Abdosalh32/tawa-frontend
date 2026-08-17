@@ -29,13 +29,13 @@ export const TRACKED_ORDERS: readonly TrackedOrder[] = [
     phone: '+218912345678',
     storeName: 'متجر العافية',
     createdAt: 'اليوم، 10:30 ص',
-    status: 'preparing',
+    status: 'processing',
     itemCount: 3,
     productsSubtotal: 173,
     paymentMethod: 'بطاقة مصرفية',
     payment: 'paid',
     pickupLocation: 'المنزل',
-    times: { confirmed: 'اليوم، 10:30 ص', preparing: 'اليوم، 11:15 ص' },
+    times: { pending: 'اليوم، 10:28 ص', confirmed: 'اليوم، 10:30 ص', processing: 'اليوم، 11:15 ص' },
   },
   {
     id: 'TW-2478-2B',
@@ -48,7 +48,7 @@ export const TRACKED_ORDERS: readonly TrackedOrder[] = [
     paymentMethod: 'بطاقة مصرفية',
     payment: 'paid',
     pickupLocation: 'مكتب الشحن',
-    times: { confirmed: 'أمس، 2:05 م', preparing: 'أمس، 3:40 م', ready: 'أمس، 6:10 م', delivered: 'اليوم، 9:20 ص' },
+    times: { pending: 'أمس، 2:03 م', confirmed: 'أمس، 2:05 م', processing: 'أمس، 3:40 م', ready_for_delivery: 'أمس، 6:10 م', delivered: 'اليوم، 9:20 ص' },
   },
   {
     id: 'TW-2475-3W',
@@ -59,9 +59,9 @@ export const TRACKED_ORDERS: readonly TrackedOrder[] = [
     itemCount: 2,
     productsSubtotal: 110,
     paymentMethod: 'كاش عند الاستلام',
-    payment: 'cod',
+    payment: 'unpaid',
     pickupLocation: 'المنزل',
-    times: { confirmed: '13 أغسطس، 5:20 م', cancelled: '13 أغسطس، 8:45 م' },
+    times: { pending: '13 أغسطس، 5:18 م', confirmed: '13 أغسطس، 5:20 م', cancelled: '13 أغسطس، 8:45 م' },
   },
 ]
 

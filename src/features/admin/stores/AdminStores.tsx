@@ -23,14 +23,15 @@ import {
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
-import { STORE_STATUS } from '../../../types/status'
-import type { StoreStatus } from '../../../types/status'
+import { MERCHANT_STATUS, STORE_STATUS } from '../../../types/status'
+import type { MerchantStatus, StoreStatus } from '../../../types/status'
 import { AdminBrand } from '../AdminBrand'
 import { buildAdminNav } from '../admin-nav'
 import { ADMIN_STORES } from './mock-data'
 import type { AdminStore } from './mock-data'
 
-type StatusFilter = 'all' | StoreStatus
+/** تصفية بحالة المتجر، أو بالتجار المعلّقين (merchants.status) */
+type StatusFilter = 'all' | StoreStatus | 'suspended_merchant'
 
 /** حالة عرض تطويرية محلية — الافتراضي «عادية» */
 type ScreenView = 'normal' | 'loading' | 'error'
@@ -42,7 +43,9 @@ const VIEW_OPTIONS: ReadonlyArray<{ value: ScreenView; label: string }> = [
 ]
 
 interface LocalAction {
-  status: StoreStatus
+  /** التعليق يقع على حساب التاجر لا على المتجر (مواءمة الباكند) */
+  merchantStatus: MerchantStatus
+  status?: StoreStatus
   suspension?: { reason: string; sinceDays: number }
 }
 
@@ -54,7 +57,6 @@ export function AdminStores() {
   const [actions, setActions] = useState<Record<string, LocalAction>>({})
   const [previewId, setPreviewId] = useState<string | null>(null)
   const [suspendId, setSuspendId] = useState<string | null>(null)
-  const [banId, setBanId] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
 
   useEffect(() => {
@@ -68,17 +70,24 @@ export function AdminStores() {
       ADMIN_STORES.map((store) => {
         const action = actions[store.id]
         if (!action) return store
-        return { ...store, status: action.status, suspension: action.suspension }
+        return {
+          ...store,
+          merchantStatus: action.merchantStatus,
+          status: action.status ?? store.status,
+          suspension: action.suspension,
+        }
       }),
     [actions],
   )
 
   const countOf = (status: StoreStatus) => stores.filter((store) => store.status === status).length
+  const suspendedMerchants = stores.filter((store) => store.merchantStatus === 'suspended').length
 
   const filtered = useMemo(() => {
     const query = search.trim()
     return stores.filter((store) => {
-      if (statusFilter !== 'all' && store.status !== statusFilter) return false
+      if (statusFilter === 'suspended_merchant' && store.merchantStatus !== 'suspended') return false
+      if (statusFilter !== 'all' && statusFilter !== 'suspended_merchant' && store.status !== statusFilter) return false
       if (query && !store.storeName.includes(query) && !store.merchantName.includes(query) && !store.subdomain.includes(query.toLowerCase()))
         return false
       return true
@@ -87,11 +96,10 @@ export function AdminStores() {
 
   const previewStore = stores.find((store) => store.id === previewId) ?? null
   const suspendStore = stores.find((store) => store.id === suspendId) ?? null
-  const banStore = stores.find((store) => store.id === banId) ?? null
 
   const unsuspend = (store: AdminStore) => {
-    setActions((prev) => ({ ...prev, [store.id]: { status: 'active' } }))
-    setToast(`فُك تعليق «${store.storeName}» وأُعيد للعمل (معاينة محلية)`)
+    setActions((prev) => ({ ...prev, [store.id]: { merchantStatus: 'active' } }))
+    setToast(`فُك تعليق حساب (${store.merchantName}) وأُعيد متجره للعمل (معاينة محلية)`)
   }
 
   const columns: ReadonlyArray<DataTableColumn<AdminStore>> = [
@@ -115,8 +123,15 @@ export function AdminStores() {
     { key: 'registered', header: 'تاريخ التسجيل', cell: (row) => row.registeredAt },
     {
       key: 'status',
-      header: 'الحالة',
+      header: 'حالة المتجر',
       cell: (row) => <Badge variant={STORE_STATUS[row.status].variant}>{STORE_STATUS[row.status].label}</Badge>,
+    },
+    {
+      key: 'merchantStatus',
+      header: 'حساب التاجر',
+      cell: (row) => (
+        <Badge variant={MERCHANT_STATUS[row.merchantStatus].variant}>{MERCHANT_STATUS[row.merchantStatus].label}</Badge>
+      ),
     },
     {
       key: 'actions',
@@ -126,19 +141,14 @@ export function AdminStores() {
           <Button variant="secondary" size="sm" aria-label={`معاينة متجر ${row.storeName}`} onClick={() => setPreviewId(row.id)}>
             معاينة
           </Button>
-          {row.status === 'active' && (
-            <Button variant="ghost" size="sm" aria-label={`تعليق متجر ${row.storeName}`} onClick={() => setSuspendId(row.id)}>
-              تعليق
+          {row.merchantStatus !== 'suspended' && (
+            <Button variant="ghost" size="sm" aria-label={`تعليق حساب التاجر ${row.merchantName}`} onClick={() => setSuspendId(row.id)}>
+              تعليق التاجر
             </Button>
           )}
-          {row.status === 'suspended' && (
-            <Button variant="primary" size="sm" aria-label={`فك تعليق متجر ${row.storeName}`} onClick={() => unsuspend(row)}>
+          {row.merchantStatus === 'suspended' && (
+            <Button variant="primary" size="sm" aria-label={`فك تعليق حساب ${row.merchantName}`} onClick={() => unsuspend(row)}>
               فك التعليق
-            </Button>
-          )}
-          {row.status !== 'banned' && (
-            <Button variant="ghost" size="sm" aria-label={`حظر متجر ${row.storeName}`} onClick={() => setBanId(row.id)}>
-              حظر
             </Button>
           )}
         </span>
@@ -146,7 +156,7 @@ export function AdminStores() {
     },
   ]
 
-  const suspendedStores = filtered.filter((store) => store.status === 'suspended' && store.suspension)
+  const suspendedStores = filtered.filter((store) => store.merchantStatus === 'suspended' && store.suspension)
 
   return (
     <AppShell
@@ -204,7 +214,7 @@ export function AdminStores() {
                 <button type="button" className="astr-chip" aria-pressed={statusFilter === 'all'} onClick={() => setStatusFilter('all')}>
                   الكل ({stores.length})
                 </button>
-                {(['active', 'suspended', 'banned'] as StoreStatus[]).map((status) => (
+                {(['active', 'draft', 'maintenance'] as StoreStatus[]).map((status) => (
                   <button
                     key={status}
                     type="button"
@@ -215,6 +225,14 @@ export function AdminStores() {
                     {STORE_STATUS[status].label} ({countOf(status)})
                   </button>
                 ))}
+                <button
+                  type="button"
+                  className="astr-chip"
+                  aria-pressed={statusFilter === 'suspended_merchant'}
+                  onClick={() => setStatusFilter('suspended_merchant')}
+                >
+                  تجار معلّقون ({suspendedMerchants})
+                </button>
               </div>
             }
             actions={
@@ -234,13 +252,18 @@ export function AdminStores() {
 
           {suspendedStores.map((store) => (
             <p className="astr-suspend-strip" key={store.id}>
-              «{store.storeName}» معلّق منذ <span className="numeric">{store.suspension?.sinceDays}</span> أيام — السبب:{' '}
-              {store.suspension?.reason}
+              حساب ({store.merchantName}) معلّق منذ <span className="numeric">{store.suspension?.sinceDays}</span> أيام — متجره
+              «{store.storeName}» مغلق · السبب: {store.suspension?.reason}
               <Button variant="primary" size="sm" onClick={() => unsuspend(store)}>
                 فك التعليق
               </Button>
             </p>
           ))}
+
+          <Alert variant="info" title="مواءمة عقد الباكند">
+            حالة المتجر ثلاثية (مسودة/منشور/صيانة) والتعليق يقع على <strong>حساب التاجر</strong> لا على المتجر.
+            و«حظر المتجر» بلا مقابل في الباكند — يُضاف بعد قرار مالك المنتج.
+          </Alert>
 
           <DataTable
             caption="متاجر المنصة بحالاتها — بيانات تجريبية للعرض"
@@ -276,7 +299,7 @@ export function AdminStores() {
           previewStore && (
             <>
               <Button variant="secondary">فتح المتجر في تبويب</Button>
-              {previewStore.status === 'active' && (
+              {previewStore.merchantStatus !== 'suspended' && (
                 <Button
                   variant="ghost"
                   onClick={() => {
@@ -284,7 +307,7 @@ export function AdminStores() {
                     setPreviewId(null)
                   }}
                 >
-                  تعليق المتجر
+                  تعليق حساب التاجر
                 </Button>
               )}
             </>
@@ -310,14 +333,22 @@ export function AdminStores() {
               items={[
                 { label: 'النطاق الفرعي', value: previewStore.subdomain, ltr: true },
                 { label: 'التاجر المالك', value: previewStore.merchantName },
-                { label: 'الحالة', value: <Badge variant={STORE_STATUS[previewStore.status].variant}>{STORE_STATUS[previewStore.status].label}</Badge> },
+                { label: 'حالة المتجر', value: <Badge variant={STORE_STATUS[previewStore.status].variant}>{STORE_STATUS[previewStore.status].label}</Badge> },
+                {
+                  label: 'حساب التاجر',
+                  value: (
+                    <Badge variant={MERCHANT_STATUS[previewStore.merchantStatus].variant}>
+                      {MERCHANT_STATUS[previewStore.merchantStatus].label}
+                    </Badge>
+                  ),
+                },
                 { label: 'عدد المنتجات', value: String(previewStore.productCount), numeric: true },
                 { label: 'آخر نشاط', value: previewStore.lastActivity },
                 { label: 'مخالفات سابقة', value: String(previewStore.violations), numeric: true },
               ]}
             />
             {previewStore.suspension && (
-              <Alert variant="warning" title="هذا المتجر معلّق حالياً">
+              <Alert variant="warning" title="حساب التاجر معلّق حالياً">
                 السبب المسجّل: {previewStore.suspension.reason} — منذ <span className="numeric">{previewStore.suspension.sinceDays}</span>{' '}
                 أيام.
               </Alert>
@@ -328,45 +359,29 @@ export function AdminStores() {
 
       <ConfirmDialog
         open={suspendStore !== null}
-        title={suspendStore ? `تعليق متجر ${suspendStore.storeName}` : 'تعليق المتجر'}
+        title={suspendStore ? `تعليق حساب ${suspendStore.merchantName}` : 'تعليق حساب التاجر'}
         impact={
           suspendStore
-            ? `سيُجمَّد حساب (${suspendStore.merchantName}) ويُغلق متجره مؤقتاً حتى فك التعليق (م.1.3.4) — التجميد الفعلي مع الربط الخلفي (معاينة محلية).`
+            ? `سيُجمَّد حساب (${suspendStore.merchantName}) ويُغلق متجر «${suspendStore.storeName}» مؤقتاً حتى فك التعليق (م.1.3.4). التعليق يقع على حساب التاجر بحسب عقد الباكند — التنفيذ الفعلي مع الربط (معاينة محلية).`
             : ''
         }
-        confirmLabel="تعليق المتجر"
+        confirmLabel="تعليق حساب التاجر"
         requireReason
         reasonLabel="سبب التعليق (يُسجَّل في سجل التدقيق)"
         onConfirm={(reason) => {
           if (!suspendStore) return
           setActions((prev) => ({
             ...prev,
-            [suspendStore.id]: { status: 'suspended', suspension: { reason: reason ?? '', sinceDays: 0 } },
+            [suspendStore.id]: {
+              merchantStatus: 'suspended',
+              status: 'maintenance',
+              suspension: { reason: reason ?? '', sinceDays: 0 },
+            },
           }))
-          setToast(`عُلّق «${suspendStore.storeName}» مع تسجيل السبب (معاينة محلية)`)
+          setToast(`عُلّق حساب (${suspendStore.merchantName}) وأُغلق متجره مع تسجيل السبب (معاينة محلية)`)
           setSuspendId(null)
         }}
         onCancel={() => setSuspendId(null)}
-      />
-
-      <ConfirmDialog
-        open={banStore !== null}
-        title={banStore ? `حظر متجر ${banStore.storeName}` : 'حظر المتجر'}
-        impact={
-          banStore
-            ? `سيُحظر المتجر ويُغلق نهائياً حتى قرار إداري بفك الحظر (م.1.3.4 – م.1.3.5) — التنفيذ الفعلي مع الربط الخلفي (معاينة محلية).`
-            : ''
-        }
-        confirmLabel="حظر المتجر"
-        requireReason
-        reasonLabel="سبب الحظر (يُسجَّل في سجل التدقيق)"
-        onConfirm={() => {
-          if (!banStore) return
-          setActions((prev) => ({ ...prev, [banStore.id]: { status: 'banned' } }))
-          setToast(`حُظر «${banStore.storeName}» مع تسجيل السبب (معاينة محلية)`)
-          setBanId(null)
-        }}
-        onCancel={() => setBanId(null)}
       />
 
       {toast && <Toast variant="success" message={toast} floating onClose={() => setToast(null)} />}

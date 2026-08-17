@@ -1,4 +1,4 @@
-import type { OrderStatus, PaymentStatus } from '../../../types/status'
+import type { FulfillmentStatus, OrderStatus, PaymentStatus } from '../../../types/status'
 
 /**
  * بيانات تجريبية محلية لشاشة «تفاصيل الطلب» — طلب واحد (TW-2481-9X)
@@ -30,14 +30,13 @@ export interface OrderDetailData {
     details: string
   }
   payment: PaymentStatus
+  /** محور مستقل — orders.fulfillment_status */
+  fulfillment: FulfillmentStatus
   /** وسيلة الدفع الموثقة (2.2.7): كاش عند الاستلام أو بطاقة مصرفية */
   paymentMethod: string
   initialStatus: OrderStatus
   items: OrderDetailItem[]
 }
-
-/** مسار الحالة الخطي الوحيد الموثق (1.5.4) — لا قفزات */
-export const ORDER_FLOW: ReadonlyArray<Exclude<OrderStatus, 'cancelled'>> = ['confirmed', 'preparing', 'ready', 'delivered']
 
 export const ORDER_DETAIL: OrderDetailData = {
   id: 'TW-2481-9X',
@@ -52,8 +51,9 @@ export const ORDER_DETAIL: OrderDetailData = {
     details: 'حي الأندلس، شارع الجمهورية، بجوار صيدلية الشفاء',
   },
   payment: 'paid',
+  fulfillment: 'unfulfilled',
   paymentMethod: 'بطاقة مصرفية',
-  initialStatus: 'preparing',
+  initialStatus: 'processing',
   items: [
     { id: 'l1', product: 'شامبو أرغان 400مل', sku: 'SH-ARG-400', unitPrice: 45, quantity: 1 },
     { id: 'l2', product: 'كريم زبدة الشيا', variant: 'حجم متوسط', sku: 'CR-SHEA-M', unitPrice: 18, quantity: 1 },

@@ -14,24 +14,22 @@ import {
   Input,
   PageHeader,
   Radio,
+  Select,
   Sidebar,
   Skeleton,
-  Switch,
   Toast,
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { PlusGlyph } from '../../../components/ui/icons'
+import { STAFF_STATUS } from '../../../types/status'
 import { StoreBrand } from '../StoreBrand'
 import { buildMerchantNav } from '../merchant-nav'
-import { PERMISSIONS, ROLE_LABEL, TEAM_MEMBERS, validateInvite } from './team-data'
-import type { InviteErrors, MemberStatus, PermissionKey, TeamMember } from './team-data'
+import { PERMISSION_GROUPS, ROLE_LABEL, ROLE_PERMISSIONS, TEAM_MEMBERS, validateInvite } from './team-data'
+import type { InviteErrors, PermissionKey, TeamMember, TeamRole } from './team-data'
 
-const STATUS_META: Record<MemberStatus, { label: string; variant: 'success' | 'warning' | 'neutral' }> = {
-  active: { label: 'نشط', variant: 'success' },
-  invited: { label: 'بانتظار قبول الدعوة', variant: 'warning' },
-  disabled: { label: 'معطّل', variant: 'neutral' },
-}
+/** الأدوار القابلة للإسناد — «مالك المتجر» متأصل ولا يُسند بدعوة */
+const ASSIGNABLE_ROLES: readonly TeamRole[] = ['Store Manager', 'Inventory Manager', 'Order Processor']
 
 /** حالة عرض تطويرية محلية — الافتراضي «عادية» */
 type ScreenView = 'normal' | 'empty' | 'loading' | 'error'
@@ -43,17 +41,44 @@ const VIEW_OPTIONS: ReadonlyArray<{ value: ScreenView; label: string }> = [
   { value: 'error', label: 'خطأ' },
 ]
 
+/** عرض صلاحيات الدور للقراءة — مشتقة من role_has_permissions في الباكند */
+function RolePermissionsPreview({ role }: { role: TeamRole }) {
+  const granted = new Set<PermissionKey>(ROLE_PERMISSIONS[role])
+  return (
+    <div className="team-matrix">
+      {PERMISSION_GROUPS.map((group) => {
+        const items = group.items.filter((item) => granted.has(item.key))
+        if (items.length === 0) return null
+        return (
+          <div className="team-matrix__row" key={group.group}>
+            <span style={{ fontWeight: 600 }}>{group.group}</span>
+            <span className="team-perms">
+              {items.map((item) => (
+                <span className="team-perm" key={item.key}>
+                  {item.label}
+                </span>
+              ))}
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export function MerchantTeam() {
   const [view, setView] = useState<ScreenView>('normal')
   /** تعديلات محلية فوق البيانات التجريبية — لا دعوات ولا تعطيل فعلياً */
   const [members, setMembers] = useState<readonly TeamMember[]>(TEAM_MEMBERS)
   const [inviteOpen, setInviteOpen] = useState(false)
+  const [inviteName, setInviteName] = useState('')
   const [inviteEmail, setInviteEmail] = useState('')
-  const [invitePerms, setInvitePerms] = useState<ReadonlySet<PermissionKey>>(new Set(['orders']))
+  const [invitePhone, setInvitePhone] = useState('')
+  const [inviteRole, setInviteRole] = useState<TeamRole>('Order Processor')
   const [inviteErrors, setInviteErrors] = useState<InviteErrors>({})
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editPerms, setEditPerms] = useState<ReadonlySet<PermissionKey>>(new Set())
-  const [disableId, setDisableId] = useState<string | null>(null)
+  const [editRole, setEditRole] = useState<TeamRole>('Order Processor')
+  const [suspendId, setSuspendId] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
 
   useEffect(() => {
@@ -63,51 +88,48 @@ export function MerchantTeam() {
   }, [toast])
 
   const editingMember = members.find((member) => member.id === editingId) ?? null
-  const disableMember = members.find((member) => member.id === disableId) ?? null
-  const rows = view === 'empty' ? members.filter((member) => member.role === 'owner') : members
-
-  const togglePerm = (set: ReadonlySet<PermissionKey>, key: PermissionKey): Set<PermissionKey> => {
-    const next = new Set(set)
-    if (next.has(key)) next.delete(key)
-    else next.add(key)
-    return next
-  }
+  const suspendMember = members.find((member) => member.id === suspendId) ?? null
+  const rows = view === 'empty' ? members.filter((member) => member.role === 'Store Owner') : members
 
   const sendInvite = () => {
-    const errors = validateInvite(inviteEmail, invitePerms)
+    const errors = validateInvite(inviteName, inviteEmail, invitePhone)
     setInviteErrors(errors)
     if (Object.keys(errors).length > 0) return
-    const email = inviteEmail.trim()
     setMembers((prev) => [
       ...prev,
       {
         id: `t-local-${prev.length + 1}`,
-        name: email.split('@')[0],
-        email,
-        role: 'employee',
+        name: inviteName.trim(),
+        email: inviteEmail.trim(),
+        phone: invitePhone.trim(),
+        role: inviteRole,
         status: 'invited',
         lastActivity: '—',
-        permissions: [...invitePerms],
+        permissions: ROLE_PERMISSIONS[inviteRole],
       },
     ])
-    setToast(`أُرسلت دعوة إلى ${email} (معاينة محلية — لا إرسال فعلياً)`)
+    setToast(`أُرسلت دعوة إلى ${inviteEmail.trim()} بدور «${ROLE_LABEL[inviteRole]}» (معاينة محلية)`)
     setInviteOpen(false)
+    setInviteName('')
     setInviteEmail('')
-    setInvitePerms(new Set(['orders']))
+    setInvitePhone('')
+    setInviteRole('Order Processor')
     setInviteErrors({})
   }
 
   const openEdit = (member: TeamMember) => {
     setEditingId(member.id)
-    setEditPerms(new Set(member.permissions))
+    setEditRole(member.role)
   }
 
-  const savePerms = () => {
+  const saveRole = () => {
     if (!editingMember) return
     setMembers((prev) =>
-      prev.map((member) => (member.id === editingMember.id ? { ...member, permissions: [...editPerms] } : member)),
+      prev.map((member) =>
+        member.id === editingMember.id ? { ...member, role: editRole, permissions: ROLE_PERMISSIONS[editRole] } : member,
+      ),
     )
-    setToast(`حُدّثت صلاحيات ${editingMember.name} (معاينة محلية)`)
+    setToast(`صار دور ${editingMember.name} «${ROLE_LABEL[editRole]}» (معاينة محلية)`)
     setEditingId(null)
   }
 
@@ -124,6 +146,7 @@ export function MerchantTeam() {
             <span className="team-member__info">
               <span className="team-member__name">{row.name}</span>
               <span className="team-member__email ltr">{row.email}</span>
+              <span className="team-member__email ltr">{row.phone}</span>
             </span>
           </span>
         ),
@@ -133,7 +156,7 @@ export function MerchantTeam() {
         key: 'permissions',
         header: 'الصلاحيات',
         cell: (row) =>
-          row.role === 'owner' ? (
+          row.role === 'Store Owner' ? (
             <span className="team-perms">
               <span className="team-perm team-perm--all">وصول كامل</span>
             </span>
@@ -141,11 +164,9 @@ export function MerchantTeam() {
             <span className="team-perms__none">لا صلاحيات</span>
           ) : (
             <span className="team-perms">
-              {row.permissions.map((key) => (
-                <span className="team-perm" key={key}>
-                  {PERMISSIONS.find((permission) => permission.key === key)?.label}
-                </span>
-              ))}
+              <span className="team-perm">
+                <span className="numeric">{row.permissions.length}</span> صلاحية
+              </span>
             </span>
           ),
       },
@@ -153,13 +174,13 @@ export function MerchantTeam() {
       {
         key: 'status',
         header: 'الحالة',
-        cell: (row) => <Badge variant={STATUS_META[row.status].variant}>{STATUS_META[row.status].label}</Badge>,
+        cell: (row) => <Badge variant={STAFF_STATUS[row.status].variant}>{STAFF_STATUS[row.status].label}</Badge>,
       },
       {
         key: 'actions',
         header: 'الإجراءات',
         cell: (row) =>
-          row.role === 'owner' ? (
+          row.role === 'Store Owner' ? (
             <span className="team-perms__none">—</span>
           ) : (
             <span className="team-actions">
@@ -173,12 +194,12 @@ export function MerchantTeam() {
                   إعادة إرسال
                 </Button>
               )}
-              {row.status !== 'disabled' && (
+              {row.status !== 'suspended' && (
                 <>
-                  <Button variant="secondary" size="sm" aria-label={`تعديل صلاحيات ${row.name}`} onClick={() => openEdit(row)}>
-                    الصلاحيات
+                  <Button variant="secondary" size="sm" aria-label={`تغيير دور ${row.name}`} onClick={() => openEdit(row)}>
+                    الدور
                   </Button>
-                  <Button variant="ghost" size="sm" aria-label={`تعطيل حساب ${row.name}`} onClick={() => setDisableId(row.id)}>
+                  <Button variant="ghost" size="sm" aria-label={`تعطيل حساب ${row.name}`} onClick={() => setSuspendId(row.id)}>
                     تعطيل
                   </Button>
                 </>
@@ -188,17 +209,6 @@ export function MerchantTeam() {
       },
     ],
     [],
-  )
-
-  const renderMatrix = (selected: ReadonlySet<PermissionKey>, onToggle: (key: PermissionKey) => void) => (
-    <div className="team-matrix">
-      {PERMISSIONS.map((permission) => (
-        <div className="team-matrix__row" key={permission.key}>
-          <span>{permission.label}</span>
-          <Switch label={`صلاحية ${permission.label}`} checked={selected.has(permission.key)} onChange={() => onToggle(permission.key)} />
-        </div>
-      ))}
-    </div>
   )
 
   return (
@@ -220,7 +230,7 @@ export function MerchantTeam() {
     >
       <PageHeader
         title="فريق العمل"
-        description="ادعُ موظفيك بالبريد وحدّد ما يُسمح لكل منهم بالوصول إليه؛ التعطيل يسحب الصلاحيات فوراً"
+        description="ادعُ موظفيك بالبريد وأسند لكل منهم دوراً محدد الصلاحيات؛ التعطيل يسحب الوصول فوراً"
         breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'فريق العمل' }]} />}
         primaryAction={
           <Button variant="primary" icon={<PlusGlyph />} onClick={() => setInviteOpen(true)}>
@@ -249,9 +259,9 @@ export function MerchantTeam() {
         </div>
       </fieldset>
 
-      <Alert variant="info" title="نموذج الصلاحيات النهائي قرار منتج معلّق (G2)">
-        المتطلبات تنص على تحديد «الأدوار والوظائف» المسموح بها (1.5.8) دون تحديد قائمتها ولا مستوى حبيبيتها — نعرض مفاتيح
-        على مستوى وحدات موثقة، ولا نخترع أدواراً جاهزة قبل الحسم.
+      <Alert variant="info" title="نموذج الصلاحيات محسوم من الباكند">
+        أربعة أدوار جاهزة (مالك المتجر · مدير المتجر · مدير المخزون · مسؤول الطلبات) و20 صلاحية بحبيبية الإجراء — تُسند
+        بالدور لا بمفاتيح منفصلة، والصلاحيات المعروضة مشتقة من الدور.
       </Alert>
 
       {view === 'loading' ? (
@@ -265,14 +275,14 @@ export function MerchantTeam() {
         </div>
       ) : (
         <DataTable
-          caption="أعضاء فريق العمل وصلاحياتهم — بيانات تجريبية للعرض"
+          caption="أعضاء فريق العمل وأدوارهم — بيانات تجريبية للعرض"
           columns={columns}
           rows={rows}
           rowKey={(row) => row.id}
           emptyState={
             <EmptyState
               title="لا موظفين في فريقك بعد"
-              description="ادعُ موظفاً بالبريد ليساعدك في إدارة الطلبات والمخزون."
+              description="ادعُ موظفاً بالبريد وأسند له دوراً ليساعدك في إدارة الطلبات والمخزون."
               action={
                 <Button variant="primary" icon={<PlusGlyph />} onClick={() => setInviteOpen(true)}>
                   دعوة موظف
@@ -299,6 +309,12 @@ export function MerchantTeam() {
         }
       >
         <Input
+          label="اسم الموظف"
+          value={inviteName}
+          error={inviteErrors.name}
+          onChange={(event) => setInviteName(event.target.value)}
+        />
+        <Input
           label="البريد الإلكتروني"
           type="email"
           helperText="تُرسل الدعوة إليه ليقبلها وينشئ كلمة مروره (1.5.7)"
@@ -306,24 +322,34 @@ export function MerchantTeam() {
           error={inviteErrors.email}
           onChange={(event) => setInviteEmail(event.target.value)}
         />
+        <Input
+          label="رقم الهاتف"
+          type="tel"
+          value={invitePhone}
+          error={inviteErrors.phone}
+          onChange={(event) => setInvitePhone(event.target.value)}
+        />
+        <Select label="الدور" value={inviteRole} onChange={(event) => setInviteRole(event.target.value as TeamRole)}>
+          {ASSIGNABLE_ROLES.map((role) => (
+            <option key={role} value={role}>
+              {ROLE_LABEL[role]}
+            </option>
+          ))}
+        </Select>
         <div>
-          <p className="tw-field__label">الصلاحيات</p>
-          {renderMatrix(invitePerms, (key) => setInvitePerms((prev) => togglePerm(prev, key)))}
-          {inviteErrors.permissions && <p className="tw-field__error">{inviteErrors.permissions}</p>}
+          <p className="tw-field__label">صلاحيات هذا الدور</p>
+          <RolePermissionsPreview role={inviteRole} />
         </div>
-        <p style={{ fontSize: 'var(--type-caption)', color: 'var(--text-secondary)' }}>
-          الموظف يعمل داخل هذا المتجر فقط ولا يدير الفريق (افتراض A5) — يُصدَّق مع حسم G2.
-        </p>
       </Drawer>
 
       <Drawer
         open={editingMember !== null}
         onClose={() => setEditingId(null)}
-        title={editingMember ? `صلاحيات ${editingMember.name}` : 'تعديل الصلاحيات'}
+        title={editingMember ? `دور ${editingMember.name}` : 'تغيير الدور'}
         footer={
           <>
-            <Button variant="primary" onClick={savePerms}>
-              حفظ الصلاحيات
+            <Button variant="primary" onClick={saveRole}>
+              حفظ الدور
             </Button>
             <Button variant="secondary" onClick={() => setEditingId(null)}>
               إلغاء
@@ -334,9 +360,19 @@ export function MerchantTeam() {
         {editingMember && (
           <>
             <p style={{ fontSize: 'var(--type-caption)', color: 'var(--text-secondary)' }}>
-              <span className="ltr">{editingMember.email}</span> — {ROLE_LABEL[editingMember.role]}
+              <span className="ltr">{editingMember.email}</span> · <span className="ltr">{editingMember.phone}</span>
             </p>
-            {renderMatrix(editPerms, (key) => setEditPerms((prev) => togglePerm(prev, key)))}
+            <Select label="الدور" value={editRole} onChange={(event) => setEditRole(event.target.value as TeamRole)}>
+              {ASSIGNABLE_ROLES.map((role) => (
+                <option key={role} value={role}>
+                  {ROLE_LABEL[role]}
+                </option>
+              ))}
+            </Select>
+            <div>
+              <p className="tw-field__label">صلاحيات هذا الدور</p>
+              <RolePermissionsPreview role={editRole} />
+            </div>
             <p style={{ fontSize: 'var(--type-caption)', color: 'var(--text-secondary)' }}>
               البنود غير المصرَّح بها تُخفى من ملاحة الموظف ولا تُعطَّل فقط.
             </p>
@@ -345,23 +381,23 @@ export function MerchantTeam() {
       </Drawer>
 
       <ConfirmDialog
-        open={disableMember !== null}
-        title={disableMember ? `تعطيل حساب ${disableMember.name}` : 'تعطيل الحساب'}
+        open={suspendMember !== null}
+        title={suspendMember ? `تعطيل حساب ${suspendMember.name}` : 'تعطيل الحساب'}
         impact={
-          disableMember
-            ? `سيفقد (${disableMember.name}) الوصول إلى لوحة التحكم فوراً وتُسحب كل صلاحياته (1.5.9) — التنفيذ الفعلي مع الربط الخلفي (معاينة محلية).`
+          suspendMember
+            ? `سيفقد (${suspendMember.name}) الوصول إلى لوحة التحكم فوراً وتُسحب كل صلاحياته (1.5.9) — التنفيذ الفعلي مع الربط الخلفي (معاينة محلية).`
             : ''
         }
         confirmLabel="تعطيل الحساب"
         onConfirm={() => {
-          if (!disableMember) return
+          if (!suspendMember) return
           setMembers((prev) =>
-            prev.map((member) => (member.id === disableMember.id ? { ...member, status: 'disabled', permissions: [] } : member)),
+            prev.map((member) => (member.id === suspendMember.id ? { ...member, status: 'suspended', permissions: [] } : member)),
           )
-          setToast(`عُطّل حساب ${disableMember.name} وسُحبت صلاحياته (معاينة محلية)`)
-          setDisableId(null)
+          setToast(`عُطّل حساب ${suspendMember.name} وسُحبت صلاحياته (معاينة محلية)`)
+          setSuspendId(null)
         }}
-        onCancel={() => setDisableId(null)}
+        onCancel={() => setSuspendId(null)}
       />
 
       {toast && <Toast variant="success" message={toast} floating onClose={() => setToast(null)} />}
