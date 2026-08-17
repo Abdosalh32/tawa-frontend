@@ -67,6 +67,7 @@ import { MerchantOrderDetail } from './features/merchant/orders/MerchantOrderDet
 import { MerchantStoreSetupWizard } from './features/merchant/store-setup/MerchantStoreSetupWizard'
 import { MerchantAppearance } from './features/merchant/appearance/MerchantAppearance'
 import { MerchantStoreSettings } from './features/merchant/store-settings/MerchantStoreSettings'
+import { MerchantTeam } from './features/merchant/team/MerchantTeam'
 import { MerchantOrdersList } from './features/merchant/orders/MerchantOrdersList'
 import { MerchantProductForm } from './features/merchant/products/MerchantProductForm'
 import { MerchantProductsList } from './features/merchant/products/MerchantProductsList'
@@ -874,6 +875,7 @@ type DevScreen =
   | 'discounts'
   | 'appearance'
   | 'store-settings'
+  | 'team'
   | 'storefront'
   | 'product-detail-customer'
   | 'cart'
@@ -898,6 +900,7 @@ const DEV_SCREENS: ReadonlyArray<{ key: DevScreen; label: string }> = [
   { key: 'order-detail', label: 'لوحة التاجر — تفاصيل طلب' },
   { key: 'discounts', label: 'لوحة التاجر — الخصومات' },
   { key: 'appearance', label: 'لوحة التاجر — المظهر والقوالب' },
+  { key: 'team', label: 'لوحة التاجر — فريق العمل' },
   { key: 'store-settings', label: 'لوحة التاجر — إعدادات المتجر' },
   { key: 'storefront', label: 'واجهة الزبون — التصفح' },
   { key: 'product-detail-customer', label: 'واجهة الزبون — صفحة منتج' },
@@ -953,6 +956,8 @@ export default function App() {
           <MerchantDiscountsList />
         ) : screen === 'appearance' ? (
           <MerchantAppearance />
+        ) : screen === 'team' ? (
+          <MerchantTeam />
         ) : screen === 'store-settings' ? (
           <MerchantStoreSettings />
         ) : screen === 'storefront' ? (

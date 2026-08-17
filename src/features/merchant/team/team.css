@@ -1,0 +1,94 @@
+/* فريق العمل (برومت 11) — تخطيط فقط، Tokens حصراً */
+
+.team-shell {
+  height: 100%;
+}
+
+/* خلية هوية الموظف */
+.team-member {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.team-avatar {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.team-member__info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.team-member__name {
+  font-weight: 600;
+}
+
+.team-member__email {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* Chips الصلاحيات المصغّرة */
+.team-perms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.team-perm {
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.team-perm--all {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.team-perms__none {
+  font-size: var(--type-caption);
+  color: var(--text-muted);
+}
+
+/* مصفوفة الصلاحيات في الدرج */
+.team-matrix {
+  display: grid;
+  gap: var(--space-md);
+  padding-block: var(--space-sm);
+}
+
+.team-matrix__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block-end: var(--space-md);
+  border-block-end: 1px solid var(--border-subtle);
+}
+
+.team-matrix__row:last-child {
+  border-block-end: none;
+  padding-block-end: 0;
+}
+
+.team-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
