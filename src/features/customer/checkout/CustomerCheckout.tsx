@@ -42,7 +42,7 @@ export function CustomerCheckout() {
   const [errors, setErrors] = useState<CheckoutErrors>({})
   const [toast, setToast] = useState<string | null>(null)
   const summaryRef = useRef<HTMLDivElement>(null)
-  const { lines } = useStorePreviewConfig()
+  const { lines, discount } = useStorePreviewConfig()
 
   useEffect(() => {
     if (!toast) return
@@ -301,14 +301,24 @@ export function CustomerCheckout() {
                   بانتظار قرار المنتج (D1)
                 </Badge>
               </p>
-              <p className="co-summary__row">
-                <span>الخصم</span>
-                <Badge variant="neutral" dot={false}>
-                  بانتظار قرار المنتج (D9)
-                </Badge>
-              </p>
+              {discount ? (
+                <p className="co-summary__row">
+                  <span>
+                    الخصم (<span className="ltr">{discount.code}</span>)
+                  </span>
+                  <span className="numeric" style={{ color: 'var(--status-success-text)', fontWeight: 700 }}>
+                    − {formatPrice(discount.amount)}
+                  </span>
+                </p>
+              ) : (
+                <p className="co-summary__row">
+                  <span>الخصم</span>
+                  <span className="co-summary__note">لم يُطبَّق كود — يُدخل من السلة</span>
+                </p>
+              )}
               <p className="co-summary__note">
-                يكتمل الإجمالي النهائي بعد حسم آلية الشحن (D1) وآلية الخصم (D9) — لا نعرض إجمالياً مفترضاً.
+                يكتمل الإجمالي النهائي بعد حسم آلية الشحن (D1). الخصم يُرسل مع الطلب ككود (discount_code) بحسب عقد
+                الباكند.
               </p>
               <button type="button" className="co-confirm" disabled={cartEmpty} onClick={confirmOrder}>
                 تأكيد الطلب

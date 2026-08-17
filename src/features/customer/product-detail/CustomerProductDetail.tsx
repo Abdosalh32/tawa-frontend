@@ -113,6 +113,13 @@ function ProductBody({ product }: { product: DetailProduct }) {
 
         <p className="pd-price">
           <span className="numeric">{formatPrice(price)}</span>
+          {/* السعر قبل الخصم — للمنتج بلا متغيرات فقط (كل تركيبة لها سعرها) */}
+          {!hasVariants && product.compareAtPrice !== undefined && (
+            <>
+              {' '}
+              <span className="pd-compare numeric">{formatPrice(product.compareAtPrice)}</span>
+            </>
+          )}
         </p>
 
         <div className="pd-availability">

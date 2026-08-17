@@ -221,6 +221,12 @@ export function CustomerStorefrontBrowse() {
                         <p className="sf-card__name">{product.name}</p>
                         <p className="sf-card__price">
                           <span className="numeric">{formatPrice(product.price)}</span>
+                          {product.compareAtPrice !== undefined && (
+                            <>
+                              {' '}
+                              <span className="sf-card__compare numeric">{formatPrice(product.compareAtPrice)}</span>
+                            </>
+                          )}
                         </p>
                       </div>
                       <div className="sf-card__meta">

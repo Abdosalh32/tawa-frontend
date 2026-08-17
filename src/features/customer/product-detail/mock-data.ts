@@ -28,6 +28,8 @@ export interface DetailProduct {
   shortDescription: string
   longDescription: string
   price: number
+  /** السعر قبل الخصم — products.compare_at_price */
+  compareAtPrice?: number
   availability: Availability
   remaining?: number
   axes?: DetailAxis[]
@@ -43,6 +45,7 @@ export const SIMPLE_PRODUCT: DetailProduct = {
   longDescription:
     'زيت جوز هند عضوي نقي معصور على البارد دون أي إضافات، مناسب لترطيب الشعر الجاف وتغذية البشرة، ويصلح للاستخدام اليومي. عبوة زجاجية 250مل محكمة الإغلاق.',
   price: 22,
+  compareAtPrice: 28,
   availability: 'in',
 }
 
@@ -55,6 +58,7 @@ export const VARIANT_PRODUCT: DetailProduct = {
   longDescription:
     'تركيبة غنية بزيت الأرغان الطبيعي تناسب الاستخدام اليومي، خالية من البارابين. اختر الحجم والنوع المناسبين لشعرك.',
   price: 45,
+  compareAtPrice: 60,
   availability: 'in',
   axes: [
     { key: 'size', label: 'الحجم', options: ['400مل', '750مل'] },

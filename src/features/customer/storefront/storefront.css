@@ -334,3 +334,11 @@
 .sf-footer__tawa {
   color: color-mix(in srgb, var(--sf-text) 60%, transparent);
 }
+
+/* السعر قبل الخصم — products.compare_at_price */
+.sf-card__compare {
+  text-decoration: line-through;
+  color: color-mix(in srgb, var(--sf-text) 45%, transparent);
+  font-weight: 500;
+  font-size: var(--type-caption);
+}

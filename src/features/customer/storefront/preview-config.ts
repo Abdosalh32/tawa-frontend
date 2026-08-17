@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { DEFAULT_COLORS } from '../../../types/store-theme'
 import type { ColorRole, TemplateKey } from '../../../types/store-theme'
+import type { DiscountRule } from '../../../types/discount'
 
 /**
  * إعدادات معاينة الستورفرونت (قالب + لوحة ألوان) وأسطر سلة المعاينة المحلية —
@@ -35,10 +36,19 @@ export interface CartLine {
   maxQuantity?: number
 }
 
+/** كود خصم مُطبَّق محلياً — يقابل `orders.discount_code` + `discount_amount` */
+export interface AppliedDiscount {
+  code: string
+  amount: number
+  rule: DiscountRule
+}
+
 export interface StorePreviewConfig {
   template: TemplateKey
   presetKey: string
   lines: readonly CartLine[]
+  /** null = لا كود مُطبَّق */
+  discount: AppliedDiscount | null
 }
 
 /** بذرة سلة المعاينة (عنصران — متسقة مع بيانات المتجر التجريبية) */
@@ -49,7 +59,7 @@ function seedLines(): CartLine[] {
   ]
 }
 
-let config: StorePreviewConfig = { template: 'modern', presetKey: 'default', lines: seedLines() }
+let config: StorePreviewConfig = { template: 'modern', presetKey: 'default', lines: seedLines(), discount: null }
 const listeners = new Set<() => void>()
 
 function emit(next: StorePreviewConfig): void {
@@ -74,23 +84,33 @@ export function addCartLine(line: CartLine): void {
         item.id === line.id ? { ...item, quantity: clampQuantity(item.quantity + line.quantity, item.maxQuantity) } : item,
       )
     : [...config.lines, { ...line, quantity: clampQuantity(line.quantity, line.maxQuantity) }]
-  emit({ ...config, lines })
+  emit({ ...config, lines, discount: null })
 }
 
 export function setCartLineQuantity(id: string, quantity: number): void {
   emit({
     ...config,
     lines: config.lines.map((item) => (item.id === id ? { ...item, quantity: clampQuantity(quantity, item.maxQuantity) } : item)),
+    /* الخصم يُلغى عند تغيّر المجموع كي لا يبقى مبلغ محسوب على سلة قديمة */
+    discount: null,
   })
 }
 
 export function removeCartLine(id: string): void {
-  emit({ ...config, lines: config.lines.filter((item) => item.id !== id) })
+  emit({ ...config, lines: config.lines.filter((item) => item.id !== id), discount: null })
 }
 
 /** إعادة تعبئة سلة المعاينة بالبذرة — أداة تطويرية */
 export function resetPreviewCart(): void {
-  emit({ ...config, lines: seedLines() })
+  emit({ ...config, lines: seedLines(), discount: null })
+}
+
+export function applyPreviewDiscount(discount: AppliedDiscount): void {
+  emit({ ...config, discount })
+}
+
+export function clearPreviewDiscount(): void {
+  emit({ ...config, discount: null })
 }
 
 export function cartQuantityOf(current: StorePreviewConfig): number {

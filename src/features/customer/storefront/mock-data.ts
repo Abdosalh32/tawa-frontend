@@ -1,3 +1,5 @@
+import type { DiscountRule } from '../../../types/discount'
+
 /**
  * بيانات تجريبية محلية لواجهة الزبون — منتجات «منشورة ومتاحة للشراء» فقط (2.1.1).
  * حقول يراها الزبون حصراً: لا SKU ولا كميات مخزون داخلية.
@@ -17,6 +19,8 @@ export interface StorefrontProduct {
   id: string
   name: string
   price: number
+  /** السعر قبل الخصم — products.compare_at_price (يُعرض مشطوباً) */
+  compareAtPrice?: number
   category: StorefrontCategory
   /** خيارات اللون المتاحة (لفلترة 2.1.4) */
   colors?: string[]
@@ -37,14 +41,28 @@ export const COLOR_SWATCHES: ReadonlyArray<{ name: string; hex: string }> = [
 export const SIZE_OPTIONS: readonly string[] = ['S', 'M', 'L']
 
 export const STOREFRONT_PRODUCTS: readonly StorefrontProduct[] = [
-  { id: 'c1', name: 'شامبو أرغان 400مل', price: 45, category: 'care' },
+  { id: 'c1', name: 'شامبو أرغان 400مل', price: 45, compareAtPrice: 60, category: 'care' },
   { id: 'c2', name: 'كريم زبدة الشيا', price: 18, category: 'care' },
   { id: 'c3', name: 'زيت جوز الهند العضوي', price: 22, category: 'care' },
   { id: 'c4', name: 'مقشر القهوة العربية', price: 15, category: 'care' },
-  { id: 'f1', name: 'قميص قطني رجالي', price: 55, category: 'fashion', colors: ['أزرق', 'أبيض'], sizes: ['S', 'M', 'L'] },
+  { id: 'f1', name: 'قميص قطني رجالي', price: 55, compareAtPrice: 70, category: 'fashion', colors: ['أزرق', 'أبيض'], sizes: ['S', 'M', 'L'] },
   { id: 'f2', name: 'عباءة صيفية خفيفة', price: 120, category: 'fashion', colors: ['أحمر'], sizes: ['M', 'L'] },
   { id: 'p1', name: 'عطر العود الملكي 50مل', price: 260, category: 'perfume', outOfStock: true },
   { id: 'p2', name: 'ماء ورد طبيعي', price: 12, category: 'perfume' },
-  { id: 'h1', name: 'سجادة صلاة مخملية', price: 35, category: 'home', colors: ['أحمر', 'أخضر'] },
+  { id: 'h1', name: 'سجادة صلاة مخملية', price: 35, compareAtPrice: 42, category: 'home', colors: ['أحمر', 'أخضر'] },
   { id: 'h2', name: 'مبخرة خزفية مزخرفة', price: 48, category: 'home' },
+]
+
+/**
+ * كتالوج أكواد الخصم المتاحة في هذا المتجر — يقوم مقام
+ * `POST /discounts/validate` في الباكند حتى الربط الفعلي.
+ * القيم مطابقة لخصومات لوحة التاجر التجريبية.
+ */
+export const STORE_DISCOUNT_CODES: readonly DiscountRule[] = [
+  { code: 'WELCOME10', type: 'fixed', value: 10, minOrderAmount: 50, usageLimit: 100, usedCount: 14, isActive: true },
+  { code: 'MID5', type: 'fixed', value: 5, minOrderAmount: 30, usedCount: 6, isActive: true },
+  { code: 'SCHOOL20', type: 'percentage', value: 20, minOrderAmount: 40, maxDiscountAmount: 25, usedCount: 0, isActive: true },
+  { code: 'EID15', type: 'percentage', value: 15, minOrderAmount: 80, maxDiscountAmount: 40, usageLimit: 50, usedCount: 32, isActive: true, expired: true },
+  { code: 'WEEKEND7', type: 'fixed', value: 7, minOrderAmount: 35, usedCount: 11, isActive: false },
+  { code: 'LOYAL12', type: 'fixed', value: 12, minOrderAmount: 60, usageLimit: 20, usedCount: 20, isActive: true },
 ]

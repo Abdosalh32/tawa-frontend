@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import './cart.css'
-import { Badge, Button, EmptyState, ErrorState, Radio, Skeleton, Toast } from '../../../components/ui'
+import { Badge, Button, EmptyState, ErrorState, Input, Radio, Skeleton, Toast } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
+import { DISCOUNT_MESSAGE, describeDiscountValue, evaluateDiscount } from '../../../types/discount'
 import { StorefrontShell } from '../storefront/StorefrontShell'
+import { STORE_DISCOUNT_CODES } from '../storefront/mock-data'
 import {
+  applyPreviewDiscount,
+  clearPreviewDiscount,
   removeCartLine,
   resetPreviewCart,
   setCartLineQuantity,
@@ -35,7 +39,9 @@ function RemoveGlyph() {
 export function CustomerCart() {
   const [view, setView] = useState<ScreenView>('normal')
   const [toast, setToast] = useState<string | null>(null)
-  const { lines } = useStorePreviewConfig()
+  const [codeInput, setCodeInput] = useState('')
+  const [codeError, setCodeError] = useState<string | undefined>()
+  const { lines, discount } = useStorePreviewConfig()
 
   useEffect(() => {
     if (!toast) return
@@ -49,6 +55,29 @@ export function CustomerCart() {
 
   const shownLines = view === 'empty' ? [] : lines
   const isEmpty = shownLines.length === 0
+
+  /** التحقق محلي بدلالات الـ schema — يقوم مقام مسار validate حتى الربط */
+  const applyCode = () => {
+    const result = evaluateDiscount(codeInput, subtotal, STORE_DISCOUNT_CODES)
+    if (result.status === 'ok') {
+      applyPreviewDiscount({ code: result.rule.code, amount: result.amount, rule: result.rule })
+      setCodeError(undefined)
+      setCodeInput('')
+      setToast(`طُبّق كود «${result.rule.code}» — وفّرت ${result.amount} د.ل (معاينة محلية)`)
+      return
+    }
+    if (result.status === 'min_not_met') {
+      setCodeError(`${DISCOUNT_MESSAGE.min_not_met} (${result.minOrderAmount} د.ل)`)
+      return
+    }
+    setCodeError(DISCOUNT_MESSAGE[result.status])
+  }
+
+  const removeCode = () => {
+    clearPreviewDiscount()
+    setCodeError(undefined)
+    setToast('أُزيل كود الخصم')
+  }
 
   const removeLine = (id: string, name: string) => {
     removeCartLine(id)
@@ -193,14 +222,43 @@ export function CustomerCart() {
                   بانتظار قرار المنتج (D1)
                 </Badge>
               </p>
-              <p className="crt-summary__row">
-                <span>الخصم</span>
-                <Badge variant="neutral" dot={false}>
-                  بانتظار قرار المنتج (D9)
-                </Badge>
-              </p>
+              {discount ? (
+                <>
+                  <p className="crt-summary__row">
+                    <span>
+                      الخصم (<span className="ltr">{discount.code}</span>)
+                    </span>
+                    <span className="numeric crt-discount__amount">− {formatPrice(discount.amount)}</span>
+                  </p>
+                  <div className="crt-discount__applied">
+                    <span>
+                      {describeDiscountValue(discount.rule)} · الحد الأدنى <span className="numeric">{discount.rule.minOrderAmount} د.ل</span>
+                    </span>
+                    <Button variant="ghost" size="sm" onClick={removeCode}>
+                      إزالة الكود
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="crt-discount">
+                  <Input
+                    label="كود الخصم"
+                    optional
+                    ltr
+                    value={codeInput}
+                    error={codeError}
+                    onChange={(event) => {
+                      setCodeInput(event.target.value.toUpperCase())
+                      setCodeError(undefined)
+                    }}
+                  />
+                  <Button variant="secondary" disabled={codeInput.trim() === ''} onClick={applyCode}>
+                    تطبيق
+                  </Button>
+                </div>
+              )}
               <p className="crt-summary__note">
-                يكتمل الإجمالي النهائي بعد حسم آلية الشحن (D1) وآلية تطبيق الخصم (D9) — لا نعرض إجمالياً مفترضاً.
+                يكتمل الإجمالي النهائي بعد حسم آلية الشحن (D1) — الخصم يُطبَّق بالكود ويُحسم من مجموع المنتجات.
               </p>
               <button
                 type="button"

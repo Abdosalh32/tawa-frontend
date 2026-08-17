@@ -197,3 +197,30 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+/* كود الخصم (D9 محسوم: بكود ونسبة) */
+.crt-discount {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-sm);
+}
+
+.crt-discount .tw-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.crt-discount__applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 65%, transparent);
+}
+
+.crt-discount__amount {
+  color: var(--status-success-text);
+  font-weight: 700;
+}
