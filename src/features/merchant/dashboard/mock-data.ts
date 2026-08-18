@@ -1,5 +1,5 @@
 import type { SummaryTone } from '../../../components/ui'
-import type { OrderStatus, PaymentStatus, StockStatus } from '../../../types/status'
+import type { OrderStatus, PaymentStatus } from '../../../types/status'
 
 /**
  * بيانات تجريبية محلية لشاشة «نظرة عامة» — للعرض الثابت فقط.
@@ -23,12 +23,15 @@ export interface RecentOrder {
   status: OrderStatus
 }
 
-export interface StockAlertItem {
+/** بند «يحتاج انتباهك» — ماذا/لماذا/ماذا أفعل (الاتجاه الفني §9) */
+export interface AttentionEntry {
   id: string
-  product: string
-  variant?: string
-  remaining: number
-  status: Extract<StockStatus, 'low' | 'out'>
+  severity: 'critical' | 'warning'
+  title: string
+  why: string
+  actionLabel: string
+  /** وجهة الفعل داخل صدفة المتجر */
+  to: 'inventory' | 'orders'
 }
 
 export const DASHBOARD_METRICS: readonly DashboardMetric[] = [
@@ -46,8 +49,30 @@ export const RECENT_ORDERS: readonly RecentOrder[] = [
   { id: 'TW-2477-5T', customer: 'خالد المقريف', date: '14 أغسطس', total: '132 د.ل', payment: 'unpaid', status: 'delivered' },
 ]
 
-export const STOCK_ALERTS: readonly StockAlertItem[] = [
-  { id: 'sh-arg-400', product: 'شامبو أرغان 400مل', remaining: 3, status: 'low' },
-  { id: 'cr-shea-m', product: 'كريم زبدة الشيا', variant: 'حجم متوسط', remaining: 2, status: 'low' },
-  { id: 'pf-oud-50', product: 'عطر العود الملكي 50مل', variant: 'تركيز مضاعف', remaining: 0, status: 'out' },
+/* مشتقة من الحقائق التجريبية نفسها (المخزون والطلبات أعلاه) — بترتيب الخطورة */
+export const ATTENTION_ITEMS: readonly AttentionEntry[] = [
+  {
+    id: 'att-out',
+    severity: 'critical',
+    title: 'نفد مخزون «عطر العود الملكي 50مل — تركيز مضاعف»',
+    why: 'المنتج لا يظهر للشراء حتى تُحدَّث كميته',
+    actionLabel: 'تحديث المخزون',
+    to: 'inventory',
+  },
+  {
+    id: 'att-new-orders',
+    severity: 'warning',
+    title: '8 طلبات جديدة بانتظار التأكيد',
+    why: 'أقدمها منذ الصباح — زبائنك ينتظرون قبول طلباتهم',
+    actionLabel: 'مراجعة الطلبات',
+    to: 'orders',
+  },
+  {
+    id: 'att-low',
+    severity: 'warning',
+    title: 'مخزون منخفض في منتجين: «شامبو أرغان 400مل» (3) و«كريم زبدة الشيا» (2)',
+    why: 'تحت حد التنبيه — قد ينفدان مع طلبات اليوم',
+    actionLabel: 'تعديل الكميات',
+    to: 'inventory',
+  },
 ]

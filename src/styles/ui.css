@@ -781,3 +781,80 @@ textarea.tw-control {
   border-block-start: 1px solid var(--border-subtle);
   margin: var(--space-xs) 0;
 }
+
+/* ═══════════════ «يحتاج انتباهك» (نمط توا — الاتجاه الفني §9) ═══════════════ */
+
+.tw-attn {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.tw-attn__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  /* خيط توا بلون الخطورة — البنية من الفواصل لا من صناديق ملونة */
+  border-inline-start: var(--thread) solid transparent;
+}
+
+.tw-attn__item + .tw-attn__item {
+  border-block-start: 1px solid var(--border-subtle);
+}
+
+.tw-attn__item--critical {
+  border-inline-start-color: var(--status-critical);
+}
+
+.tw-attn__item--warning {
+  border-inline-start-color: var(--status-warning);
+}
+
+.tw-attn__item--info {
+  border-inline-start-color: var(--accent);
+}
+
+.tw-attn__text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.tw-attn__title {
+  display: block;
+  font-weight: 600;
+  font-size: var(--type-body);
+}
+
+.tw-attn__why {
+  display: block;
+  font-size: var(--type-caption);
+  color: var(--text-muted);
+}
+
+/* «كل شيء تحت السيطرة» — الغياب الإيجابي للبنود */
+.tw-attn--clear {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border-inline-start: var(--thread) solid var(--status-success);
+}
+
+.tw-attn__clear-mark {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--status-success-soft);
+  color: var(--status-success-text);
+  font-weight: 700;
+}
