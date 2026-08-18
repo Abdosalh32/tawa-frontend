@@ -49,11 +49,11 @@
   font-size: var(--type-h3);
 }
 
-/* بطاقتا الدفع (برومت 14: بطاقتان كبيرتان) */
+/* طرق الدفع الخمس — قائمة صفوف لا شبكة بطاقات: خمسة عناصر لا تنقسم شبكياً
+   بلا صف يتيم، والصف يقرأ كخيار واحد (اسم + سطر توضيح) على كل العروض. */
 .co-payments {
   display: grid;
-  gap: var(--space-md);
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-sm);
 }
 
 .co-pay input:focus-visible + .co-pay__card {
@@ -63,22 +63,40 @@
 
 .co-pay__card {
   display: grid;
-  gap: var(--space-xs);
-  padding: var(--space-lg);
-  border: 1px solid color-mix(in srgb, var(--sf-text) 25%, transparent);
+  grid-template-columns: 18px minmax(0, 1fr);
+  column-gap: var(--space-md);
+  row-gap: 2px;
+  align-items: start;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid color-mix(in srgb, var(--sf-text) 20%, transparent);
   border-radius: var(--radius-card);
   cursor: pointer;
-  height: 100%;
+  transition: border-color var(--motion-base), background var(--motion-base);
+}
+
+/* دائرة الاختيار مرسومة بالـ CSS — المدخل نفسه مخفي بصرياً لا وظيفياً */
+.co-pay__card::before {
+  content: '';
+  grid-row: 1 / span 2;
+  width: 18px;
+  height: 18px;
+  margin-block-start: 3px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid color-mix(in srgb, var(--sf-text) 35%, transparent);
+  transition: border var(--motion-base);
+}
+
+.co-pay__card:hover {
+  border-color: color-mix(in srgb, var(--sf-text) 40%, transparent);
 }
 
 .co-pay input:checked + .co-pay__card {
   border-color: var(--sf-primary);
-  background: color-mix(in srgb, var(--sf-primary) 8%, transparent);
+  background: color-mix(in srgb, var(--sf-primary) 7%, transparent);
 }
 
-.co-pay input:disabled + .co-pay__card {
-  opacity: var(--disabled-opacity);
-  cursor: not-allowed;
+.co-pay input:checked + .co-pay__card::before {
+  border: 5.5px solid var(--sf-primary);
 }
 
 .co-pay__name {
@@ -88,6 +106,46 @@
 .co-pay__hint {
   font-size: var(--type-caption);
   color: color-mix(in srgb, var(--sf-text) 65%, transparent);
+}
+
+/* حقلا البطاقة الشرطيان — يظهران مع «بطاقة مصرفية» وحدها (required_if في العقد) */
+.co-card-fields {
+  display: grid;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border: 1px solid color-mix(in srgb, var(--sf-primary) 30%, transparent);
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--sf-primary) 6%, transparent);
+  animation: co-fields-in var(--motion-base);
+}
+
+@container (min-width: 640px) {
+  .co-card-fields {
+    grid-template-columns: minmax(0, 1fr) 148px;
+    align-items: start;
+  }
+}
+
+/* رمز التحقق أربعة محارف — لا يُمدّ بعرض الشاشة على الجوال */
+.co-card-fields > .tw-field:last-child {
+  max-width: 200px;
+}
+
+.co-card-fields__note {
+  grid-column: 1 / -1;
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 65%, transparent);
+}
+
+@keyframes co-fields-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* الملخص */
@@ -139,6 +197,14 @@
   padding-block-start: var(--space-md);
 }
 
+/* الإجمالي النهائي — الرقم الذي يدفعه الزبون: أثقل سطر في الملخص */
+.co-summary__row--total {
+  font-size: var(--type-h3);
+  font-weight: 700;
+  border-block-start: 2px solid color-mix(in srgb, var(--sf-text) 20%, transparent);
+  padding-block-start: var(--space-md);
+}
+
 .co-summary__note {
   font-size: var(--type-caption);
   color: color-mix(in srgb, var(--sf-text) 65%, transparent);
@@ -180,10 +246,30 @@
   color: var(--status-success-text);
 }
 
+.co-success__label {
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 65%, transparent);
+  margin-block-end: calc(-1 * var(--space-md));
+}
+
 .co-success__id {
   font-size: var(--type-display);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* سطر ثانوي: رقم الطلب وطريقة الدفع وحالتها — دون منافسة رقم التتبع */
+.co-success__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-xs);
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 75%, transparent);
+  margin-block-start: calc(-1 * var(--space-md));
 }
 
 .co-success__actions {

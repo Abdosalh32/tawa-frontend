@@ -60,6 +60,19 @@
   color: color-mix(in srgb, var(--sf-text) 65%, transparent);
 }
 
+/* رقم التتبع — ما تستعمله شركة الشحن، فيظهر بجوار رقم الطلب لا مخفياً */
+.ot-result-head__tracking {
+  font-size: var(--type-caption);
+  color: color-mix(in srgb, var(--sf-text) 80%, transparent);
+}
+
+/* اختيار نوع الرقم — يقابل حقلَي العقد، صف واحد فوق الحقل */
+.ot-field-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+
 /* الخط الزمني العمودي (برومت 15) */
 .ot-timeline {
   list-style: none;
@@ -159,7 +172,10 @@
   font-size: var(--type-caption);
 }
 
-.ot-summary__note {
-  font-size: var(--type-caption);
-  color: color-mix(in srgb, var(--sf-text) 60%, transparent);
+/* الإجمالي كما يرجعه الخادم (grand_total) */
+.ot-summary__row--total {
+  font-size: var(--type-h3);
+  font-weight: 700;
+  border-block-start: 1px solid color-mix(in srgb, var(--sf-text) 20%, transparent);
+  padding-block-start: var(--space-sm);
 }

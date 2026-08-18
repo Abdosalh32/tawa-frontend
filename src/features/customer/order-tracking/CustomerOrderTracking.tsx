@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react'
 import './tracking.css'
 import { Alert, Badge, ErrorState, Input, Radio, Skeleton } from '../../../components/ui'
+import { PAYMENT_METHODS } from '../../../types/checkout'
 import { ORDER_FLOW, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import { StorefrontShell } from '../storefront/StorefrontShell'
-import { TRACKED_ORDERS, findTrackedOrder } from './mock-data'
-import type { TrackedOrder } from './mock-data'
+import { LOOKUP_FIELDS, TRACKED_ORDERS, findTrackedOrder } from './mock-data'
+import type { LookupField, TrackedOrder } from './mock-data'
 
 /** المسار الخطي من الباكند (orders.order_status) لعرض الخط الزمني */
 const FLOW = ORDER_FLOW
@@ -23,7 +24,7 @@ const VIEW_OPTIONS: ReadonlyArray<{ value: ScreenView; label: string }> = [
 ]
 
 interface LookupErrors {
-  orderId?: string
+  reference?: string
   phone?: string
 }
 
@@ -60,16 +61,20 @@ function formatPrice(value: number): string {
 
 export function CustomerOrderTracking() {
   const [view, setView] = useState<ScreenView>('form')
-  const [orderId, setOrderId] = useState('')
+  /* الحقل المستعلم به صريح كما في العقد: أحدهما مطلوب حين يغيب الآخر */
+  const [field, setField] = useState<LookupField>('order_number')
+  const [reference, setReference] = useState('')
   const [phone, setPhone] = useState('')
   const [errors, setErrors] = useState<LookupErrors>({})
   const [result, setResult] = useState<TrackedOrder | null>(null)
   const [notFound, setNotFound] = useState(false)
   const summaryRef = useRef<HTMLDivElement>(null)
 
+  const activeField = LOOKUP_FIELDS.find((option) => option.value === field) ?? LOOKUP_FIELDS[0]
+
   const lookup = () => {
     const nextErrors: LookupErrors = {}
-    if (orderId.trim() === '') nextErrors.orderId = 'أدخل رقم الطلب — تجده في رسالة التأكيد'
+    if (reference.trim() === '') nextErrors.reference = `أدخل ${activeField.label} — تجده في رسالة التأكيد`
     const digits = phone.replace(/[\s-]/g, '')
     if (!/^\+?\d{9,15}$/.test(digits)) nextErrors.phone = 'أدخل رقم الهاتف المستخدم في الطلب'
     setErrors(nextErrors)
@@ -80,7 +85,7 @@ export function CustomerOrderTracking() {
       return
     }
     /* المطابقة محلية بالرقمين معاً (2.2.8) — لا نداء شبكة */
-    const match = findTrackedOrder(orderId, phone)
+    const match = findTrackedOrder(field, reference, phone)
     setResult(match ?? null)
     setNotFound(match === undefined)
   }
@@ -91,17 +96,17 @@ export function CustomerOrderTracking() {
     setErrors({})
     if (nextView === 'active' || nextView === 'delivered' || nextView === 'cancelled') {
       const order = nextView === 'active' ? TRACKED_ORDERS[0] : nextView === 'delivered' ? TRACKED_ORDERS[1] : TRACKED_ORDERS[2]
-      setOrderId(order.id)
+      setReference(field === 'order_number' ? order.id : order.trackingNumber)
       setPhone(order.phone)
       setResult(order)
       setNotFound(false)
     } else if (nextView === 'not-found') {
-      setOrderId('TW-0000-0A')
+      setReference(field === 'order_number' ? 'TW-0000-0A' : 'TRK-LCL-0000000000')
       setPhone('+218900000000')
       setResult(null)
       setNotFound(true)
     } else {
-      setOrderId('')
+      setReference('')
       setPhone('')
       setResult(null)
       setNotFound(false)
@@ -156,8 +161,8 @@ export function CustomerOrderTracking() {
             >
               <h1 className="ot-title">تتبع طلبك</h1>
               <p className="ot-help">
-                أدخل رقم الطلب ورقم الهاتف المستخدم فيه لعرض حالة شحنتك — دون حساب (2.2.8). تجد رقم الطلب في رسالة
-                التأكيد.
+                أدخل رقم الطلب أو رقم التتبع مع رقم الهاتف المستخدم في الطلب لعرض حالة شحنتك — دون حساب (2.2.8).
+                الرقمان في رسالة التأكيد.
               </p>
 
               {errorMessages.length > 0 && (
@@ -172,13 +177,30 @@ export function CustomerOrderTracking() {
                 </div>
               )}
 
+              <div className="ot-field-switch" role="radiogroup" aria-label="نوع الرقم المستعلم به">
+                {LOOKUP_FIELDS.map((option) => (
+                  <Radio
+                    key={option.value}
+                    name="ot-field"
+                    label={option.label}
+                    checked={field === option.value}
+                    onChange={() => {
+                      setField(option.value)
+                      setReference('')
+                      setErrors({})
+                      setResult(null)
+                      setNotFound(false)
+                    }}
+                  />
+                ))}
+              </div>
               <Input
-                label="رقم الطلب"
+                label={activeField.label}
                 ltr
-                helperText="مثال: TW-2481-9X"
-                value={orderId}
-                error={errors.orderId}
-                onChange={(event) => setOrderId(event.target.value)}
+                helperText={activeField.hint}
+                value={reference}
+                error={errors.reference}
+                onChange={(event) => setReference(event.target.value)}
               />
               <Input
                 label="رقم الهاتف المستخدم في الطلب"
@@ -193,7 +215,7 @@ export function CustomerOrderTracking() {
 
               {notFound && (
                 <Alert variant="error" title="لا يوجد طلب مطابق">
-                  تأكد من رقم الطلب ورقم الهاتف معاً — يجب أن يطابقا بيانات الطلب نفسه.
+                  تأكد من {activeField.label} ورقم الهاتف معاً — يجب أن يطابقا بيانات الطلب نفسه.
                 </Alert>
               )}
             </form>
@@ -204,6 +226,9 @@ export function CustomerOrderTracking() {
                   <p className="ot-result-head__id numeric">{result.id}</p>
                   <p className="ot-result-head__meta">
                     {result.storeName} — أُنشئ {result.createdAt}
+                  </p>
+                  <p className="ot-result-head__tracking">
+                    رقم التتبع <span className="numeric ltr">{result.trackingNumber}</span>
                   </p>
                   <div>
                     <Badge variant={ORDER_STATUS[result.status].variant}>{ORDER_STATUS[result.status].label}</Badge>
@@ -245,17 +270,31 @@ export function CustomerOrderTracking() {
                     <span className="numeric">{formatPrice(result.productsSubtotal)}</span>
                   </p>
                   <p className="ot-summary__row">
+                    <span>رسوم الشحن</span>
+                    <span className="numeric">{formatPrice(result.shippingFee)}</span>
+                  </p>
+                  {result.discountAmount > 0 && (
+                    <p className="ot-summary__row">
+                      <span>
+                        الخصم {result.discountCode && <span className="ltr">({result.discountCode})</span>}
+                      </span>
+                      <span className="numeric">− {formatPrice(result.discountAmount)}</span>
+                    </p>
+                  )}
+                  <p className="ot-summary__row ot-summary__row--total">
+                    <span>الإجمالي</span>
+                    <span className="numeric">{formatPrice(result.grandTotal)}</span>
+                  </p>
+                  <p className="ot-summary__row">
                     <span>طريقة الدفع</span>
                     <span>
-                      {result.paymentMethod} <Badge variant={PAYMENT_STATUS[result.payment].variant}>{PAYMENT_STATUS[result.payment].label}</Badge>
+                      {PAYMENT_METHODS[result.paymentMethod].label}{' '}
+                      <Badge variant={PAYMENT_STATUS[result.payment].variant}>{PAYMENT_STATUS[result.payment].label}</Badge>
                     </span>
                   </p>
                   <p className="ot-summary__row">
                     <span>مكان الاستلام</span>
                     <span>{result.pickupLocation}</span>
-                  </p>
-                  <p className="ot-summary__note">
-                    يُعرض مجموع المنتجات فقط — الإجمالي النهائي يكتمل بعد حسم آلية الشحن (D1) وآلية الخصم (D9).
                   </p>
                 </div>
               </section>

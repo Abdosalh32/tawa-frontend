@@ -218,7 +218,10 @@ function ProductBody({ product }: { product: DetailProduct }) {
           </details>
           <details className="pd-acc">
             <summary>معلومات الشحن</summary>
-            <div>تُعرض تفاصيل الشحن هنا — آلية احتساب الشحن قرار منتج معلّق (D1).</div>
+            <div>
+              تُحتسب رسوم الشحن عند إتمام الشراء بحسب شركة التوصيل ومدينتك — يظهر الرقم النهائي في ملخص الطلب قبل
+              التأكيد.
+            </div>
           </details>
         </div>
       </div>

@@ -17,6 +17,7 @@ import {
   Toast,
   Topbar,
 } from '../../../components/ui'
+import { PAYMENT_METHODS, grandTotalOf } from '../../../types/checkout'
 import { FULFILLMENT_STATUS, ORDER_FLOW, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { OrderStatus } from '../../../types/status'
 import { useNavigate, useParams } from 'react-router'
@@ -61,6 +62,7 @@ function OrderDetailBody() {
   const cancellable = !cancelled && status !== 'delivered'
 
   const subtotal = itemsSubtotal(ORDER_DETAIL.items)
+  const grandTotal = grandTotalOf(subtotal, ORDER_DETAIL.shippingFee)
 
   const advance = () => {
     if (!nextStatus) return
@@ -140,17 +142,15 @@ function OrderDetailBody() {
               </p>
               <p className="odet-summary-row">
                 <span className="odet-summary-row__label">رسوم الشحن</span>
-                <Badge variant="neutral" dot={false}>
-                  بانتظار قرار المنتج (D1)
-                </Badge>
+                <span className="numeric">{formatAmount(ORDER_DETAIL.shippingFee)}</span>
               </p>
               <p className="odet-summary-row odet-summary-row--total">
-                <span className="odet-summary-row__label">الإجمالي (دون الشحن)</span>
-                <span className="numeric">{formatAmount(subtotal)}</span>
+                <span className="odet-summary-row__label">الإجمالي</span>
+                <span className="numeric">{formatAmount(grandTotal)}</span>
               </p>
             </div>
             <p className="odet-summary-note">
-              آلية احتساب رسوم الشحن ومصدرها قرار منتج معلّق (D1 في سجل القرارات) — يكتمل الإجمالي النهائي بعد حسمه.
+              تُحتسب رسوم الشحن آلياً عبر شركة التوصيل عند تأكيد الطلب — الإجمالي = المنتجات + الشحن − الخصم.
             </p>
           </section>
         </div>
@@ -173,6 +173,8 @@ function OrderDetailBody() {
               items={[
                 { label: 'المدينة', value: ORDER_DETAIL.address.city },
                 { label: 'العنوان التفصيلي', value: ORDER_DETAIL.address.details },
+                /* رقم البوليصة الذي تتعقب به شركة التوصيل — والزبون يتتبع به بلا حساب */
+                { label: 'رقم التتبع', value: ORDER_DETAIL.trackingNumber, ltr: true },
               ]}
             />
           </section>
@@ -181,11 +183,14 @@ function OrderDetailBody() {
             <h2 id="odet-payment-title">الدفع</h2>
             <KeyValueList
               items={[
-                { label: 'الوسيلة', value: ORDER_DETAIL.paymentMethod },
+                { label: 'الوسيلة', value: PAYMENT_METHODS[ORDER_DETAIL.paymentMethod].label },
                 {
                   label: 'حالة الدفع',
                   value: <Badge variant={PAYMENT_STATUS[ORDER_DETAIL.payment].variant}>{PAYMENT_STATUS[ORDER_DETAIL.payment].label}</Badge>,
                 },
+                ...(ORDER_DETAIL.paymentTransactionId
+                  ? [{ label: 'رقم المعاملة', value: ORDER_DETAIL.paymentTransactionId, ltr: true }]
+                  : []),
                 {
                   label: 'حالة التجهيز',
                   value: (

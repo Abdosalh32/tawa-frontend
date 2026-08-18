@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import './cart.css'
-import { Badge, Button, EmptyState, ErrorState, Input, Radio, Skeleton, Toast } from '../../../components/ui'
+import { Button, EmptyState, ErrorState, Input, Radio, Skeleton, Toast } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
 import { DISCOUNT_MESSAGE, describeDiscountValue, evaluateDiscount } from '../../../types/discount'
+import { DEFAULT_SHIPPING_PROVIDER, SHIPPING_PROVIDERS, grandTotalOf, shippingFeeOf } from '../../../types/checkout'
 import { StorefrontShell } from '../storefront/StorefrontShell'
 import { STORE_DISCOUNT_CODES } from '../storefront/mock-data'
 import {
@@ -54,6 +55,10 @@ export function CustomerCart() {
   /* مجموع المنتجات وعدد العناصر مشتقان محلياً (2.2.4) */
   const subtotal = useMemo(() => lines.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0), [lines])
   const itemCount = useMemo(() => lines.reduce((sum, line) => sum + line.quantity, 0), [lines])
+  /* الرسوم هنا تقديرية: المدينة تُختار في الإتمام، والخادم يعيد الحساب وقيمته هي المعتمدة */
+  const shippingProvider = SHIPPING_PROVIDERS[DEFAULT_SHIPPING_PROVIDER]
+  const shippingFee = shippingFeeOf('')
+  const estimatedTotal = grandTotalOf(subtotal, shippingFee, discount?.amount ?? 0)
 
   const shownLines = view === 'empty' ? [] : lines
   const isEmpty = shownLines.length === 0
@@ -219,10 +224,8 @@ export function CustomerCart() {
                 <span className="numeric">{formatPrice(subtotal)}</span>
               </p>
               <p className="crt-summary__row">
-                <span>رسوم الشحن</span>
-                <Badge variant="neutral" dot={false}>
-                  بانتظار قرار المنتج (D1)
-                </Badge>
+                <span>رسوم الشحن (تقديرية)</span>
+                <span className="numeric">{formatPrice(shippingFee)}</span>
               </p>
               {discount ? (
                 <>
@@ -259,8 +262,12 @@ export function CustomerCart() {
                   </Button>
                 </div>
               )}
+              <p className="crt-summary__row crt-summary__row--total">
+                <span>الإجمالي التقديري</span>
+                <span className="numeric">{formatPrice(estimatedTotal)}</span>
+              </p>
               <p className="crt-summary__note">
-                يكتمل الإجمالي النهائي بعد حسم آلية الشحن (D1) — الخصم يُطبَّق بالكود ويُحسم من مجموع المنتجات.
+                رسوم تقديرية عبر «{shippingProvider.label}»؛ يُحسم الرقم النهائي عند إتمام الشراء بعد اختيار مدينتك.
               </p>
               <button type="button" className="crt-checkout" onClick={() => navigate('/shop/checkout')}>
                 إتمام الشراء

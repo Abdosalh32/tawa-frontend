@@ -2,9 +2,18 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import './checkout.css'
 import { Alert, Badge, Button, EmptyState, ErrorState, Input, Radio, Select, Skeleton, Stepper, Textarea, Toast } from '../../../components/ui'
+import {
+  DEFAULT_SHIPPING_PROVIDER,
+  PAYMENT_METHODS,
+  PAYMENT_METHOD_ORDER,
+  SHIPPING_PROVIDERS,
+  grandTotalOf,
+  shippingFeeOf,
+} from '../../../types/checkout'
+import { PAYMENT_STATUS } from '../../../types/status'
 import { StorefrontShell } from '../storefront/StorefrontShell'
 import { useStorePreviewConfig } from '../storefront/preview-config'
-import { CITIES, MOCK_TRACKING_ID, PICKUP_OPTIONS, emptyCheckout, validateCheckout } from './checkout-data'
+import { CITIES, MOCK_ORDER_NUMBER, MOCK_TRACKING_NUMBER, PICKUP_OPTIONS, emptyCheckout, validateCheckout } from './checkout-data'
 import type { CheckoutErrors, CheckoutFormState } from './checkout-data'
 
 /** خطوات الشراء الموثقة (برومت 14): السلة ← الشحن والدفع ← التأكيد */
@@ -55,6 +64,11 @@ export function CustomerCheckout() {
   const subtotal = useMemo(() => lines.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0), [lines])
   const shownLines = view === 'empty' ? [] : lines
   const cartEmpty = shownLines.length === 0
+  /* الرسوم مرآة لسائق التوصيل الافتراضي في الخادم؛ الخادم يعيد حسابها عند الإتمام وقيمته هي المعتمدة */
+  const shippingProvider = SHIPPING_PROVIDERS[DEFAULT_SHIPPING_PROVIDER]
+  const shippingFee = shippingFeeOf(form.city)
+  const total = grandTotalOf(subtotal, shippingFee, discount?.amount ?? 0)
+  const paymentMeta = PAYMENT_METHODS[form.payment]
 
   const confirmOrder = () => {
     if (cartEmpty) return
@@ -70,7 +84,7 @@ export function CustomerCheckout() {
 
   const copyTrackingId = async () => {
     try {
-      await navigator.clipboard.writeText(MOCK_TRACKING_ID)
+      await navigator.clipboard.writeText(MOCK_TRACKING_NUMBER)
       setToast('نُسخ رقم التتبع')
     } catch {
       setToast('تعذّر النسخ — انسخ الرقم يدوياً')
@@ -128,11 +142,20 @@ export function CustomerCheckout() {
               <CheckGlyph />
             </span>
             <h2>تم استلام طلبك!</h2>
-            <p className="co-summary__note">رقم التتبع الفريد لطلبك — احتفظ به لتتبع طلبك مع رقم هاتفك دون حساب (2.2.8)</p>
-            <p className="co-success__id numeric">{MOCK_TRACKING_ID}</p>
+            <p className="co-success__label">رقم التتبع</p>
+            <p className="co-success__id numeric">{MOCK_TRACKING_NUMBER}</p>
+            <p className="co-success__meta">
+              رقم الطلب <span className="numeric ltr">{MOCK_ORDER_NUMBER}</span> · {paymentMeta.label}{' '}
+              <Badge variant={PAYMENT_STATUS[paymentMeta.resultingStatus].variant}>
+                {PAYMENT_STATUS[paymentMeta.resultingStatus].label}
+              </Badge>
+            </p>
+            <p className="co-summary__note">
+              يكفي أحد الرقمين مع رقم هاتفك لتتبع شحنتك دون حساب (2.2.8) — كلاهما يعمل في صفحة التتبع.
+            </p>
             <div className="co-success__actions">
               <Button variant="secondary" onClick={copyTrackingId}>
-                نسخ الرقم
+                نسخ رقم التتبع
               </Button>
               <button type="button" className="co-outline-btn" onClick={() => navigate('/shop/tracking')}>
                 تتبع الطلب
@@ -142,7 +165,7 @@ export function CustomerCheckout() {
               </button>
             </div>
             <Alert variant="info" title="معاينة محلية فقط">
-              لم يُنشأ طلب ولم يُنفَّذ دفع ولم يُرسل أي شيء للخادم — رقم التتبع أعلاه هو المعرّف التجريبي الموثق، وسلة
+              لم يُنشأ طلب ولم يُنفَّذ دفع ولم يُرسل أي شيء للخادم — الرقمان أعلاه معرّفان تجريبيان بصيغتَي الباكند، وسلة
               المعاينة لم تُفرَّغ.
             </Alert>
           </div>
@@ -244,36 +267,53 @@ export function CustomerCheckout() {
 
               <section className="co-card" aria-labelledby="co-payment-title">
                 <h2 id="co-payment-title">طريقة الدفع</h2>
+                {/* الطرق الخمس بقيم `payment_method` نفسها — لا ترجمة عند الإرسال */}
                 <div className="co-payments" role="radiogroup" aria-label="اختيار طريقة الدفع">
-                  <label className="co-pay">
-                    <input
-                      type="radio"
-                      className="visually-hidden"
-                      name="co-payment"
-                      checked={form.payment === 'cod'}
-                      onChange={() => setForm((prev) => ({ ...prev, payment: 'cod' }))}
-                    />
-                    <span className="co-pay__card">
-                      <span className="co-pay__name">كاش عند الاستلام</span>
-                      <span className="co-pay__hint">ادفع نقداً عند استلام شحنتك (2.2.7)</span>
-                    </span>
-                  </label>
-                  <label className="co-pay">
-                    {/* البطاقة موثقة (2.2.7) لكن تكامل الدفع معلّق (D2) — خيار معطّل لا نموذج بطاقة */}
-                    <input type="radio" className="visually-hidden" name="co-payment" disabled checked={false} readOnly />
-                    <span className="co-pay__card">
-                      <span className="co-pay__name">
-                        بطاقة مصرفية{' '}
-                        <Badge variant="warning" dot={false}>
-                          غير متاح — D2
-                        </Badge>
+                  {PAYMENT_METHOD_ORDER.map((method) => (
+                    <label className="co-pay" key={method}>
+                      <input
+                        type="radio"
+                        className="visually-hidden"
+                        name="co-payment"
+                        value={method}
+                        checked={form.payment === method}
+                        onChange={() => setForm((prev) => ({ ...prev, payment: method }))}
+                      />
+                      <span className="co-pay__card">
+                        <span className="co-pay__name">{PAYMENT_METHODS[method].label}</span>
+                        <span className="co-pay__hint">{PAYMENT_METHODS[method].hint}</span>
                       </span>
-                      <span className="co-pay__hint">
-                        يُفعَّل الدفع بالبطاقة بعد تأكيد تكامل بوابة الدفع وسلوك المعاملات — لا نعرض نموذج بطاقة قبل ذلك.
-                      </span>
-                    </span>
-                  </label>
+                    </label>
+                  ))}
                 </div>
+                {/* حقلان شرطيان: البطاقة وحدها تطلبهما (required_if في عقد الباكند) */}
+                {paymentMeta.requiresCardDetails && (
+                  <div className="co-card-fields">
+                    <p className="co-card-fields__note">
+                      تُرسل بيانات البطاقة لبوابة الدفع مع الطلب ولا يحتفظ بها المتجر.
+                    </p>
+                    <Input
+                      label="رقم البطاقة"
+                      ltr
+                      inputMode="numeric"
+                      autoComplete="cc-number"
+                      value={form.cardNumber}
+                      error={errors.cardNumber}
+                      onChange={(event) => setForm((prev) => ({ ...prev, cardNumber: event.target.value }))}
+                    />
+                    <Input
+                      label="رمز التحقق"
+                      ltr
+                      inputMode="numeric"
+                      autoComplete="cc-csc"
+                      maxLength={4}
+                      helperText="CVV خلف البطاقة"
+                      value={form.cvv}
+                      error={errors.cvv}
+                      onChange={(event) => setForm((prev) => ({ ...prev, cvv: event.target.value }))}
+                    />
+                  </div>
+                )}
               </section>
             </form>
 
@@ -298,10 +338,8 @@ export function CustomerCheckout() {
                 <span className="numeric">{formatPrice(subtotal)}</span>
               </p>
               <p className="co-summary__row">
-                <span>رسوم الشحن</span>
-                <Badge variant="neutral" dot={false}>
-                  بانتظار قرار المنتج (D1)
-                </Badge>
+                <span>رسوم الشحن — {shippingProvider.label}</span>
+                <span className="numeric">{formatPrice(shippingFee)}</span>
               </p>
               {discount ? (
                 <p className="co-summary__row">
@@ -318,9 +356,14 @@ export function CustomerCheckout() {
                   <span className="co-summary__note">لم يُطبَّق كود — يُدخل من السلة</span>
                 </p>
               )}
+              <p className="co-summary__row co-summary__row--total">
+                <span>الإجمالي</span>
+                <span className="numeric">{formatPrice(total)}</span>
+              </p>
+              {/* نص الزبون بلا مصطلحات عقد — تفاصيل الحقول في types/checkout.ts */}
               <p className="co-summary__note">
-                يكتمل الإجمالي النهائي بعد حسم آلية الشحن (D1). الخصم يُرسل مع الطلب ككود (discount_code) بحسب عقد
-                الباكند.
+                رسوم الشحن عبر «{shippingProvider.label}» ({shippingProvider.feeNote})، ويُثبَّت الرقم النهائي لحظة
+                تأكيد الطلب.
               </p>
               <button type="button" className="co-confirm" disabled={cartEmpty} onClick={confirmOrder}>
                 تأكيد الطلب

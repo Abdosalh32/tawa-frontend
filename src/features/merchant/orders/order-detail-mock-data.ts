@@ -1,9 +1,10 @@
+import type { PaymentMethod } from '../../../types/checkout'
 import type { FulfillmentStatus, OrderStatus, PaymentStatus } from '../../../types/status'
 
 /**
  * بيانات تجريبية محلية لشاشة «تفاصيل الطلب» — طلب واحد (TW-2481-9X)
- * متسق مع قائمة الطلبات. الحقول من 1.5.3 وبرومت 7 و2.2.5 حصراً.
- * لا رسوم شحن هنا إطلاقاً — قرار الاحتساب معلّق (D1).
+ * متسق مع قائمة الطلبات وشاشة تتبع الزبون. الحقول من 1.5.3 وبرومت 7 و2.2.5،
+ * ورسوم الشحن ورقم التتبع ورقم المعاملة من `StorefrontOrderResource` في الباكند.
  */
 
 export interface OrderDetailItem {
@@ -32,8 +33,14 @@ export interface OrderDetailData {
   payment: PaymentStatus
   /** محور مستقل — orders.fulfillment_status */
   fulfillment: FulfillmentStatus
-  /** وسيلة الدفع الموثقة (2.2.7): كاش عند الاستلام أو بطاقة مصرفية */
-  paymentMethod: string
+  /** `orders.payment_method` — إحدى طرق العقد الخمس */
+  paymentMethod: PaymentMethod
+  /** `orders.payment_transaction_id` — يغيب مع الدفع عند الاستلام */
+  paymentTransactionId?: string
+  /** `orders.tracking_number` — بوليصة شركة التوصيل، فريد على مستوى الجدول */
+  trackingNumber: string
+  /** `orders.shipping_fee` كما حسبه سائق الشحن في الخادم */
+  shippingFee: number
   initialStatus: OrderStatus
   items: OrderDetailItem[]
 }
@@ -52,7 +59,10 @@ export const ORDER_DETAIL: OrderDetailData = {
   },
   payment: 'paid',
   fulfillment: 'unfulfilled',
-  paymentMethod: 'بطاقة مصرفية',
+  paymentMethod: 'card',
+  paymentTransactionId: 'TXN-4K9PZ2XQ7MD1WB3E',
+  trackingNumber: 'TRK-LCL-8QF2M4KD9P',
+  shippingFee: 10,
   initialStatus: 'processing',
   items: [
     { id: 'l1', product: 'شامبو أرغان 400مل', sku: 'SH-ARG-400', unitPrice: 45, quantity: 1 },
