@@ -55,10 +55,19 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--space-xl) var(--space-lg);
+  padding: var(--space-xl) var(--space-lg) var(--space-3xl);
   display: grid;
+  /* عرض أقصى موسّط — المحتوى لا يمتد لانهائياً (الاتجاه الفني §5) */
+  grid-template-columns: minmax(0, var(--content-max));
+  justify-content: center;
   gap: var(--space-xl);
   align-content: start;
+}
+
+@container (min-width: 1024px) {
+  .tw-shell__content {
+    padding-inline: 28px;
+  }
 }
 
 /* منع الفيض الأفقي: بنود المحتوى تنكمش والجداول تمرر داخل حاوياتها */

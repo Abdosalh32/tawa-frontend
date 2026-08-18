@@ -166,24 +166,58 @@
 
 /* أداة المعاينة التطويرية داخل الشاشات — حد متقطع متعمد كي لا تُقرأ جزءاً من الشاشة */
 .dev-fieldset {
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-card);
-  padding: var(--space-sm) var(--space-lg) var(--space-md);
+  /* أثاث تطوير لا منتج: سطر رفيع خافت لا صندوق متصدر (تدقيق بصري — مشكلة #1) */
+  border: none;
+  border-block-start: 1px dashed var(--border-default);
+  border-radius: 0;
+  padding: 2px 0 0;
   margin: 0;
   min-inline-size: 0; /* fieldset الافتراضي min-content — يسبب فيضاً أفقياً في الهاتف */
+  opacity: 0.65;
+  transition: opacity var(--motion-fast);
+}
+
+.dev-fieldset:hover,
+.dev-fieldset:focus-within {
+  opacity: 1;
 }
 
 .dev-fieldset legend {
-  font-size: var(--type-caption);
-  font-weight: 600;
-  color: var(--text-secondary);
-  padding-inline: var(--space-xs);
+  /* float يجعل الوسم والخيارات سطراً واحداً */
+  float: inline-start;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding-inline-end: var(--space-md);
+  line-height: 24px;
 }
 
 .dev-fieldset__options {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-lg);
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.dev-fieldset .tw-check input[type='radio'],
+.dev-fieldset .tw-check input[type='checkbox'] {
+  width: 13px;
+  height: 13px;
+  margin-block-start: 0;
+}
+
+.dev-fieldset .tw-check {
+  align-items: center;
+}
+
+.dev-fieldset .tw-check__label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.dev-fieldset .tw-btn {
+  padding-block: 2px;
+  font-size: 12px;
 }
 
 /* إطارات معاينة الهيكل — الهيكل يستجيب لعرض الإطار (Container queries) */
@@ -216,5 +250,23 @@
 
   .demo-card {
     padding: var(--space-lg);
+  }
+}
+
+@media (max-width: 639px) {
+  /* على الجوال: الأداة سطر واحد يُمرَّر أفقياً — لا تلتهم أول شاشة */
+  .dev-fieldset legend {
+    float: none;
+    line-height: 1.4;
+  }
+
+  .dev-fieldset__options {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-block-end: 2px;
+  }
+
+  .dev-fieldset .tw-check__label {
+    white-space: nowrap;
   }
 }

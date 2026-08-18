@@ -8,11 +8,11 @@
 :root {
   color-scheme: light;
 
-  /* ── الأسطح ─────────────────────────────── */
-  --surface-page: #f9f9f7;
-  --surface-card: #fcfcfb;
+  /* ── الأسطح: طبقات مُدرَكة لا «أبيض على أبيض» (توقيع ٣ في الاتجاه الفني) ── */
+  --surface-page: #f2f2ef;
+  --surface-card: #ffffff;
   --surface-raised: #ffffff;
-  --surface-sunken: #f0efec;
+  --surface-sunken: #ebebe6;
 
   /* ── النص ───────────────────────────────── */
   --text-primary: #0b0b0b;
@@ -21,17 +21,21 @@
   --text-on-accent: #ffffff;
 
   /* ── الحدود ─────────────────────────────── */
-  --border-default: rgba(11, 11, 11, 0.1);
+  --border-default: #e3e3de;   /* بنيوية: حدود الأسطح */
   --border-strong: rgba(11, 11, 11, 0.22);
-  --border-subtle: #f0efec;
+  --border-subtle: #eeeeea;    /* داخلية: فواصل الصفوف */
 
   /* ── لون الهوية (accent.current) ─────────
      المعاينة تستخدم أزرق التاجر افتراضاً.
      لوحة المدير تعيد تعريف الثلاثي بـ #4a3aa7/#2b2263/#e9e6f9،
      والستورفرونت يصبغه لون التاجر (accent.store — قرار D6 معلّق). */
-  --accent: #2a78d6;
-  --accent-strong: #1c5cab;
-  --accent-soft: #cde2fb;
+  --accent: #2563c4;
+  --accent-strong: #1a4d9e;
+  --accent-soft: #dbe7f9;
+  /* حبر توا (توقيع ١): الأفعال الأساسية — الأزرق أعلاه للروابط والنشط والتركيز حصراً */
+  --ink: #132639;
+  --ink-strong: #0a1826;
+  --ink-soft: #e7ebef;
   --accent-admin: #4a3aa7;
   --accent-admin-strong: #2b2263;
   --accent-admin-soft: #e9e6f9;
@@ -63,11 +67,12 @@
   /* IBM Plex Sans Arabic (قرار 17 أغسطس 2026) مع سلسلة نظام احتياطية */
   --font-family: "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
   --type-display: 30px; /* لحظات كبرى: رقم التتبع، شاشات المعالج */
-  --type-h1: 23px;      /* عنوان الصفحة — واحد لكل شاشة */
-  --type-h2: 18px;      /* عنوان بطاقة/قسم */
-  --type-h3: 16px;      /* عنوان فرعي */
+  --type-h1: 24px;      /* عنوان الصفحة — واحد لكل شاشة، وزن 700 */
+  --type-h2: 17px;      /* عنوان بطاقة/قسم */
+  --type-h3: 15px;      /* عنوان فرعي — وزن 600 يميزه عن الجسم */
   --type-body: 15px;    /* النص الأساسي وخلايا الجداول */
   --type-caption: 13px; /* نص مساعد، رؤوس جداول، تسميات ثانوية */
+  --weight-data: 600;   /* «الأرقام أولاً» (توقيع ٤): كل رقم تشغيلي */
   --line-height-body: 1.6;  /* حد أدنى ملزم للنص العربي */
   --line-height-heading: 1.3;
 
@@ -81,8 +86,8 @@
   --space-3xl: 48px;
 
   /* ── الزوايا ────────────────────────────── */
-  --radius-card: 12px;
-  --radius-control: 10px;
+  --radius-card: 10px;
+  --radius-control: 6px;
   --radius-pill: 999px;
 
   /* ── الارتفاع ───────────────────────────── */
@@ -93,4 +98,10 @@
   /* ── الحركة ─────────────────────────────── */
   --motion-fast: 120ms ease;
   --motion-base: 180ms ease;
+
+  /* ── الكثافة التشغيلية والبنية ──────────── */
+  --content-max: 1200px;   /* عرض المحتوى الأقصى — لا امتداد لانهائي */
+  --control-h: 36px;       /* ارتفاع عناصر التحكم الموحد (sm: 30px) */
+  --row-h: 48px;           /* صف الجدول: مريح-مضغوط */
+  --thread: 3px;           /* «خيط توا» (توقيع ٢): علامة النشط والمهم جهة البداية */
 }

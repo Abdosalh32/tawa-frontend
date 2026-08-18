@@ -45,12 +45,13 @@
 }
 
 .tw-btn--primary {
-  background: var(--accent);
+  /* حبر توا (توقيع ١) — الأزرق محجوز للروابط والنشط */
+  background: var(--ink);
   color: var(--text-on-accent);
 }
 
 .tw-btn--primary:hover:enabled {
-  background: var(--accent-strong);
+  background: var(--ink-strong);
 }
 
 .tw-btn--secondary {
