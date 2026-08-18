@@ -77,8 +77,8 @@ export function OtpActivationForm({ phone, notify, onBackToLogin, bindSubmit }: 
         submit()
       }}
     >
-      <h1 style={{ fontSize: 'var(--type-h2)' }}>تفعيل الحساب</h1>
-      <p style={{ fontSize: 'var(--type-caption)', color: 'var(--text-secondary)' }}>
+      <h1 className="auth-title">تفعيل الحساب</h1>
+      <p className="auth-subtitle">
         أدخل الرمز المُرسل برسالة نصية إلى هاتفك المنتهي بـ <span className="numeric">{lastDigits(phone)}</span>{' '}
         لتأكيد ملكية الرقم (1.1.2)
       </p>
@@ -159,8 +159,8 @@ export function ForgotPasswordForm({
         submit()
       }}
     >
-      <h1 style={{ fontSize: 'var(--type-h2)' }}>استعادة كلمة المرور</h1>
-      <p style={{ fontSize: 'var(--type-caption)', color: 'var(--text-secondary)' }}>
+      <h1 className="auth-title">استعادة كلمة المرور</h1>
+      <p className="auth-subtitle">
         أدخل بريدك أو هاتفك وسنرسل لك رابطاً آمناً مؤقتاً لإعادة ضبط كلمة المرور (1.1.4)
       </p>
       <Input
@@ -226,7 +226,7 @@ export function ResetPasswordForm({ notify, onBackToLogin, bindSubmit }: Recover
         submit()
       }}
     >
-      <h1 style={{ fontSize: 'var(--type-h2)' }}>تعيين كلمة مرور جديدة</h1>
+      <h1 className="auth-title">تعيين كلمة مرور جديدة</h1>
       <div className="auth-form" style={{ gap: 'var(--space-sm)' }}>
         <PasswordInput
           label="كلمة المرور الجديدة"

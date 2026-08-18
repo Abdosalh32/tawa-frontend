@@ -117,7 +117,7 @@ export function MerchantAuth() {
             submitLogin()
           }}
         >
-          <h1 style={{ fontSize: 'var(--type-h2)' }}>تسجيل دخول التاجر</h1>
+          <h1 className="auth-title">تسجيل دخول التاجر</h1>
           <Input
             label="البريد الإلكتروني أو رقم الهاتف"
             ltr
@@ -195,7 +195,7 @@ export function MerchantAuth() {
             submitRegistration()
           }}
         >
-          <h1 style={{ fontSize: 'var(--type-h2)' }}>إنشاء حساب تاجر جديد</h1>
+          <h1 className="auth-title">إنشاء حساب تاجر جديد</h1>
           <Input
             label="الاسم الكامل"
             autoComplete="name"
