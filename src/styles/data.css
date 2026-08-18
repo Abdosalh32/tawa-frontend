@@ -50,8 +50,26 @@
 .tw-filterbar__filters {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: center;
   gap: var(--space-md);
+}
+
+/* الفلتر أداة خفيفة لا نموذج (تدقيق #16): التسمية بجوار الأداة بسطر واحد */
+.tw-filterbar__filters .tw-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.tw-filterbar__filters .tw-field__label {
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tw-filterbar__filters .tw-select-wrap select.tw-control {
+  padding-block: 5px;
+  font-size: var(--type-caption);
 }
 
 .tw-filterbar__actions {
@@ -84,25 +102,38 @@
   text-align: start;
   font-size: var(--type-caption);
   font-weight: 600;
-  color: var(--text-secondary);
-  padding: var(--space-md) var(--space-lg);
+  color: var(--text-muted);
+  height: 40px;
+  padding: 0 var(--space-lg);
   border-block-end: 1px solid var(--border-default);
+  background: color-mix(in srgb, var(--surface-sunken) 40%, transparent);
   white-space: nowrap;
 }
 
 .tw-table td {
-  padding: var(--space-md) var(--space-lg);
+  /* كثافة تشغيلية: صف 48px (الاتجاه الفني §5) */
+  height: var(--row-h);
+  padding: 0 var(--space-lg);
   border-block-end: 1px solid var(--border-subtle);
   vertical-align: middle;
   white-space: nowrap; /* بيانات مضغوطة — التمرير الأفقي داخل الحاوية بدل الالتفاف */
+}
+
+/* «الأرقام أولاً» (توقيع ٤): الرقم بطل الخلية */
+.tw-table td .numeric {
+  font-weight: var(--weight-data);
 }
 
 .tw-table tbody tr:last-child td {
   border-block-end: none;
 }
 
+.tw-table tbody tr {
+  transition: background var(--motion-fast);
+}
+
 .tw-table tbody tr:hover {
-  background: var(--surface-page);
+  background: color-mix(in srgb, var(--surface-sunken) 45%, transparent);
 }
 
 .tw-table tbody tr.is-selected {

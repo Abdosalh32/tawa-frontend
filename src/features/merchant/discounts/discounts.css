@@ -7,3 +7,9 @@
 .disc-period {
   white-space: nowrap;
 }
+
+/* نوع الخصم — صفة هادئة لا شارة */
+.dlist-type {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}

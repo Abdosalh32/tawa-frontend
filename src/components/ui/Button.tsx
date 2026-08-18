@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react'
 import { cx } from './cx'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'quiet'
 export type ButtonSize = 'md' | 'sm'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

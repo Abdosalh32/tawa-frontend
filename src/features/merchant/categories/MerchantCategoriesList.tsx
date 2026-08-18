@@ -16,6 +16,7 @@ import {
   SearchField,
   Select,
   Skeleton,
+  StatusText,
   Switch,
   Textarea,
   Toast,
@@ -214,7 +215,7 @@ export function MerchantCategoriesList() {
       key: 'status',
       header: 'الحالة',
       cell: (row) =>
-        row.isActive ? <Badge variant="success">مفعّل</Badge> : <Badge variant="neutral">موقوف</Badge>,
+        row.isActive ? <StatusText variant="success">مفعّل</StatusText> : <StatusText variant="neutral">موقوف</StatusText>,
     },
     { key: 'createdAt', header: 'أُنشئ في', cell: (row) => row.createdAt },
     {
@@ -222,12 +223,12 @@ export function MerchantCategoriesList() {
       header: 'الإجراءات',
       cell: (row) => (
         <span className="clist-actions">
-          <Button variant="secondary" size="sm" aria-label={`تعديل التصنيف ${row.name}`} onClick={() => openEdit(row)}>
+          <Button variant="quiet" size="sm" aria-label={`تعديل التصنيف ${row.name}`} onClick={() => openEdit(row)}>
             تعديل
           </Button>
           {row.parentId === null && (
             <Button
-              variant="ghost"
+              variant="quiet"
               size="sm"
               aria-label={`إضافة تصنيف فرعي تحت ${row.name}`}
               onClick={() => openCreate(row.id)}
@@ -235,7 +236,7 @@ export function MerchantCategoriesList() {
               + فرعي
             </Button>
           )}
-          <Button variant="ghost" size="sm" aria-label={`حذف التصنيف ${row.name}`} onClick={() => setDeleteId(row.id)}>
+          <Button variant="quiet" size="sm" aria-label={`حذف التصنيف ${row.name}`} onClick={() => setDeleteId(row.id)}>
             حذف
           </Button>
         </span>

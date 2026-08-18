@@ -858,3 +858,47 @@ textarea.tw-control {
   color: var(--status-success-text);
   font-weight: 700;
 }
+
+/* ═══════════════ StatusText — نقطة الحالة (توقيع ٥) ═══════════════ */
+
+.tw-statustext {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.tw-statustext__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  flex: none;
+}
+
+.tw-statustext--neutral .tw-statustext__dot { background: var(--text-muted); }
+.tw-statustext--success .tw-statustext__dot { background: var(--status-success); }
+.tw-statustext--warning .tw-statustext__dot { background: var(--status-warning); }
+.tw-statustext--progress .tw-statustext__dot { background: var(--status-progress); }
+.tw-statustext--error .tw-statustext__dot { background: var(--status-critical); }
+.tw-statustext--info .tw-statustext__dot { background: var(--status-info); }
+
+.tw-statustext--error { color: var(--status-critical-text); }
+
+/* «فعل الصف الهادئ» (تدقيق #7): نص هادئ يشتد عند الإشارة — لا زر حدودي مكرر */
+.tw-btn--quiet {
+  background: transparent;
+  color: var(--text-secondary);
+  padding-inline: var(--space-sm);
+  font-weight: 600;
+}
+
+.tw-btn--quiet:hover:enabled {
+  background: var(--surface-sunken);
+  color: var(--accent-strong);
+}
+
+.tw-table tbody tr:hover .tw-btn--quiet {
+  color: var(--accent-strong);
+}

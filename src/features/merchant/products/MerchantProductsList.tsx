@@ -12,6 +12,7 @@ import {
   Pagination,
   Radio,
   SearchField,
+  StatusText,
   Select,
   Topbar,
 } from '../../../components/ui'
@@ -95,7 +96,8 @@ const COLUMNS: ReadonlyArray<DataTableColumn<MerchantProduct>> = [
   {
     key: 'status',
     header: 'الحالة',
-    cell: (row) => <Badge variant={PRODUCT_STATUS[row.status].variant}>{PRODUCT_STATUS[row.status].label}</Badge>,
+    /* نقطة الحالة (توقيع ٥): كبسولة الصف محجوزة لتنبيه المخزون الفعلي */
+    cell: (row) => <StatusText variant={PRODUCT_STATUS[row.status].variant}>{PRODUCT_STATUS[row.status].label}</StatusText>,
   },
   { key: 'updatedAt', header: 'آخر تحديث', cell: (row) => row.updatedAt },
 ]
@@ -106,7 +108,7 @@ function actionsColumn(onEdit: (id: string) => void): DataTableColumn<MerchantPr
     key: 'actions',
     header: 'الإجراء',
     cell: (row) => (
-      <Button variant="secondary" size="sm" aria-label={`تعديل المنتج ${row.name}`} onClick={() => onEdit(row.id)}>
+      <Button variant="quiet" size="sm" aria-label={`تعديل المنتج ${row.name}`} onClick={() => onEdit(row.id)}>
         تعديل
       </Button>
     ),

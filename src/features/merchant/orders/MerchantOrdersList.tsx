@@ -12,6 +12,7 @@ import {
   Pagination,
   Radio,
   SearchField,
+  StatusText,
   Select,
   Tabs,
   Topbar,
@@ -63,7 +64,8 @@ const COLUMNS: ReadonlyArray<DataTableColumn<MerchantOrder>> = [
   {
     key: 'payment',
     header: 'الدفع',
-    cell: (row) => <Badge variant={PAYMENT_STATUS[row.payment].variant}>{PAYMENT_STATUS[row.payment].label}</Badge>,
+    /* نقطة الحالة (توقيع ٥): حالة ثانوية — نقطة + نص هادئ */
+    cell: (row) => <StatusText variant={PAYMENT_STATUS[row.payment].variant}>{PAYMENT_STATUS[row.payment].label}</StatusText>,
   },
   {
     key: 'status',
@@ -74,7 +76,7 @@ const COLUMNS: ReadonlyArray<DataTableColumn<MerchantOrder>> = [
     key: 'fulfillment',
     header: 'التجهيز',
     cell: (row) => (
-      <Badge variant={FULFILLMENT_STATUS[row.fulfillment].variant}>{FULFILLMENT_STATUS[row.fulfillment].label}</Badge>
+      <StatusText variant={FULFILLMENT_STATUS[row.fulfillment].variant}>{FULFILLMENT_STATUS[row.fulfillment].label}</StatusText>
     ),
   },
 ]
@@ -85,7 +87,7 @@ function actionsColumn(onView: (id: string) => void): DataTableColumn<MerchantOr
     key: 'actions',
     header: 'الإجراء',
     cell: (row) => (
-      <Button variant="secondary" size="sm" aria-label={`عرض الطلب ${row.id}`} onClick={() => onView(row.id)}>
+      <Button variant="quiet" size="sm" aria-label={`عرض الطلب ${row.id}`} onClick={() => onView(row.id)}>
         عرض الطلب
       </Button>
     ),

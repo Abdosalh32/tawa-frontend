@@ -11,6 +11,7 @@ import {
   PageHeader,
   Radio,
   Skeleton,
+  StatusText,
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
@@ -31,7 +32,8 @@ const orderColumns = (onView: (id: string) => void): ReadonlyArray<DataTableColu
   {
     key: 'payment',
     header: 'الدفع',
-    cell: (row) => <Badge variant={PAYMENT_STATUS[row.payment].variant}>{PAYMENT_STATUS[row.payment].label}</Badge>,
+    /* نقطة الحالة (توقيع ٥): الكبسولة لحالة الطلب وحدها */
+    cell: (row) => <StatusText variant={PAYMENT_STATUS[row.payment].variant}>{PAYMENT_STATUS[row.payment].label}</StatusText>,
   },
   {
     key: 'status',
@@ -42,7 +44,7 @@ const orderColumns = (onView: (id: string) => void): ReadonlyArray<DataTableColu
     key: 'actions',
     header: 'الإجراء',
     cell: (row) => (
-      <Button variant="secondary" size="sm" aria-label={`عرض الطلب ${row.id}`} onClick={() => onView(row.id)}>
+      <Button variant="quiet" size="sm" aria-label={`عرض الطلب ${row.id}`} onClick={() => onView(row.id)}>
         عرض الطلب
       </Button>
     ),

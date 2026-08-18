@@ -174,10 +174,9 @@ export function MerchantDiscountsList() {
     {
       key: 'type',
       header: 'النوع',
+      /* النوع صفة لا حالة — نص هادئ (توقيع ٥: الكبسولة لحالة الخصم وحدها) */
       cell: (row) => (
-        <Badge variant={row.type === 'percentage' ? 'info' : 'neutral'} dot={false}>
-          {row.type === 'percentage' ? 'نسبة مئوية' : 'مبلغ ثابت'}
-        </Badge>
+        <span className="dlist-type">{row.type === 'percentage' ? 'نسبة مئوية' : 'مبلغ ثابت'}</span>
       ),
     },
     { key: 'value', header: 'القيمة', cell: (row) => <span className="numeric">{describeDiscountValue(row)}</span> },
@@ -213,7 +212,7 @@ export function MerchantDiscountsList() {
       key: 'actions',
       header: 'الإجراء',
       cell: (row) => (
-        <Button variant="ghost" size="sm" aria-label={`حذف الخصم ${row.code}`} onClick={() => setDeleteId(row.id)}>
+        <Button variant="quiet" size="sm" aria-label={`حذف الخصم ${row.code}`} onClick={() => setDeleteId(row.id)}>
           حذف
         </Button>
       ),

@@ -91,7 +91,7 @@ const COLUMNS: ReadonlyArray<DataTableColumn<InventoryRow>> = [
     key: 'actions',
     header: 'الإجراء',
     cell: (row) => (
-      <Button variant="secondary" size="sm" aria-label={`تحديث كمية ${row.product}${row.variant ? ` — ${row.variant}` : ''}`}>
+      <Button variant="quiet" size="sm" aria-label={`تحديث كمية ${row.product}${row.variant ? ` — ${row.variant}` : ''}`}>
         تحديث الكمية
       </Button>
     ),
