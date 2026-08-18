@@ -403,6 +403,8 @@ function ProductFormBody({ mode }: { mode: FormMode }) {
         </div>
       </div>
 
+      {/* شريط الفعل نظيف (تدقيق #19) — لا نص تطويري بجوار الأزرار؛
+          الصدق التطويري تحمله رسالة الحفظ نفسها */}
       <div className="pform-footer">
         <Button variant="primary" type="submit">
           حفظ المنتج
@@ -411,7 +413,6 @@ function ProductFormBody({ mode }: { mode: FormMode }) {
           حفظ كمسودة
         </Button>
         <Button variant="ghost">إلغاء</Button>
-        <span className="pform-footer__note">معاينة تطويرية — لا حفظ فعلياً</span>
       </div>
 
       {toast && <Toast variant="success" message={toast} floating onClose={() => setToast(null)} />}

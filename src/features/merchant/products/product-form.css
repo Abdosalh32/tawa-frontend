@@ -38,6 +38,11 @@
 
 .pform-card > h2 {
   font-size: var(--type-h3);
+  /* خيط توا (توقيع ٢): عنوان القسم معلَّم لا مجرد نص أول */
+  border-inline-start: var(--thread) solid var(--accent);
+  padding-inline-start: var(--space-sm);
+  margin-inline-start: calc(-1 * var(--space-sm));
+  line-height: 1.2;
 }
 
 .pform-card__hint {
@@ -134,12 +139,6 @@ tr.is-removed .pform-combo-label {
   margin-block-end: calc(-1 * var(--space-xl));
   background: var(--surface-raised);
   border-block-start: 1px solid var(--border-default);
-}
-
-.pform-footer__note {
-  font-size: var(--type-caption);
-  color: var(--text-muted);
-  margin-inline-start: auto;
 }
 
 /* المخزون الصافي (1.4.9) */

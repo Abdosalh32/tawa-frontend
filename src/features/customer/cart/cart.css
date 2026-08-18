@@ -6,6 +6,9 @@
   display: grid;
   gap: var(--space-xl);
   align-content: start;
+  /* السلة مركّزة لا مبعثرة (تدقيق #12): عرض مقيّد موسّط */
+  width: min(1080px, 100%);
+  margin-inline: auto;
 }
 
 @container (min-width: 960px) {
@@ -27,8 +30,11 @@
 }
 
 .crt-lines {
-  display: grid;
-  gap: var(--space-md);
+  /* طبقات لا بطاقات: سطح واحد وفواصل داخلية */
+  background: var(--sf-surface);
+  border: 1px solid color-mix(in srgb, var(--sf-text) 10%, transparent);
+  border-radius: var(--radius-card);
+  overflow: hidden;
 }
 
 .crt-line {
@@ -36,9 +42,6 @@
   grid-template-columns: 56px minmax(0, 1fr) auto;
   gap: var(--space-md);
   align-items: center;
-  background: var(--sf-surface);
-  border: 1px solid color-mix(in srgb, var(--sf-text) 10%, transparent);
-  border-radius: var(--radius-card);
   padding: var(--space-md);
 }
 
@@ -223,4 +226,9 @@
 .crt-discount__amount {
   color: var(--status-success-text);
   font-weight: 700;
+}
+
+
+.crt-line + .crt-line {
+  border-block-start: 1px solid color-mix(in srgb, var(--sf-text) 8%, transparent);
 }
