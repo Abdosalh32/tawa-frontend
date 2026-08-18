@@ -5,7 +5,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   EmptyState,
   ErrorState,
@@ -19,6 +18,7 @@ import {
   Skeleton,
   Topbar,
 } from '../../../components/ui'
+import { AdminBreadcrumbs } from '../AdminBreadcrumbs'
 import { AdminSidebar } from '../AdminSidebar'
 import { AUDIT_RECORDS, OPERATION_META } from './mock-data'
 import type { AuditOperation, AuditRecord } from './mock-data'
@@ -92,7 +92,7 @@ export function AdminAudit() {
             قراءة فقط
           </Badge>
         }
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'سجل التدقيق' }]} />}
+        breadcrumbs={<AdminBreadcrumbs items={[{ label: 'الرئيسية', to: '/admin' }, { label: 'سجل التدقيق' }]} />}
         secondaryActions={<Button variant="ghost">تصدير السجل</Button>}
       />
 

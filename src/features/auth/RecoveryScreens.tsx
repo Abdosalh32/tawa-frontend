@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { Alert, Button, Input, OtpInput } from '../../components/ui'
 import { PasswordInput, StrengthMeter } from './PasswordField'
 import { validateOtp, validateRecoveryIdentifier, validateResetPassword } from './auth-validation'
@@ -25,6 +26,7 @@ function lastDigits(phone: string): string {
 /* ═══════════ 1) تفعيل الحساب OTP (1.1.2) ═══════════ */
 
 export function OtpActivationForm({ phone, notify, onBackToLogin, bindSubmit }: RecoveryScreenProps & { phone: string }) {
+  const navigate = useNavigate()
   const [code, setCode] = useState('')
   const [error, setError] = useState<string | undefined>()
   const [activated, setActivated] = useState(false)
@@ -52,12 +54,16 @@ export function OtpActivationForm({ phone, notify, onBackToLogin, bindSubmit }: 
     return (
       <div className="auth-form">
         <Alert variant="success" title="تم تفعيل الحساب (معاينة محلية)">
-          الخطوة الموثقة التالية: معالج إعداد المتجر — الاسم واللغة وحجز النطاق الفرعي فور التسجيل (1.2.1) — يُبنى في مرحلة
-          لاحقة.
+          الخطوة الموثقة التالية: معالج إعداد المتجر — الاسم واللغة وحجز النطاق الفرعي فور التسجيل (1.2.1).
         </Alert>
-        <Button variant="primary" onClick={onBackToLogin}>
-          العودة لتسجيل الدخول
-        </Button>
+        <div className="auth-row">
+          <Button variant="primary" onClick={() => navigate('/setup')}>
+            الانتقال لإعداد متجرك
+          </Button>
+          <Button variant="secondary" onClick={onBackToLogin}>
+            العودة لتسجيل الدخول
+          </Button>
+        </div>
       </div>
     )
   }

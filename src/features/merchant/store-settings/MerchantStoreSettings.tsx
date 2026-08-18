@@ -4,7 +4,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   Input,
@@ -18,6 +17,7 @@ import {
 } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
 import { STORE_STATUS } from '../../../types/status'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -137,7 +137,7 @@ export function MerchantStoreSettings() {
         title="إعدادات المتجر"
         description="بيانات المتجر ولغته ونطاقه وحالة النشر — النشر يتاح بعد الاعتماد واستيفاء المتطلبات (1.2.4)"
         meta={<Badge variant={LIFECYCLE_META[lifecycle].variant}>{LIFECYCLE_META[lifecycle].label}</Badge>}
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'إعدادات المتجر' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'إعدادات المتجر' }]} />}
       />
 
       <fieldset className="dev-fieldset">

@@ -4,7 +4,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   IconButton,
   Input,
@@ -18,6 +17,7 @@ import {
   Topbar,
 } from '../../../components/ui'
 import { useNavigate } from 'react-router'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -444,7 +444,7 @@ export function MerchantProductForm({ mode }: { mode: FormMode }) {
         title={effectiveMode === 'create' ? 'إضافة منتج' : 'تعديل منتج'}
         description={effectiveMode === 'create' ? 'أدخل بيانات المنتج ومتغيراته — المنشور يظهر للزبائن فور الحفظ' : 'عدّل بيانات «قميص قطني رجالي» ومتغيراته ومخزونه'}
         breadcrumbs={
-          <Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المنتجات' }, { label: effectiveMode === 'create' ? 'إضافة منتج' : 'تعديل منتج' }]} />
+          <MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'المنتجات', to: 'products' }, { label: effectiveMode === 'create' ? 'إضافة منتج' : 'تعديل منتج' }]} />
         }
       />
 

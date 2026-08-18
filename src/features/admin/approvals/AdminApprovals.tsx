@@ -5,7 +5,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   DataTable,
@@ -22,6 +21,7 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { ScrollGlyph } from '../../../components/ui/icons'
 import { APPROVAL_STATUS } from '../../../types/status'
+import { AdminBreadcrumbs } from '../AdminBreadcrumbs'
 import { AdminSidebar } from '../AdminSidebar'
 import { APPROVAL_REQUESTS } from './mock-data'
 import type { ApprovalRequest } from './mock-data'
@@ -144,11 +144,11 @@ export function AdminApprovals() {
         description="اعتماد التاجر يفعّل حسابه رسمياً ويتيح له نشر متجره؛ الرفض يتطلب سبباً يظهر له ليصحّح ويعيد التقديم"
         meta={view !== 'review' && <Badge variant="warning">{countOf('pending')} بانتظار المراجعة</Badge>}
         breadcrumbs={
-          <Breadcrumbs
+          <AdminBreadcrumbs
             items={
               view === 'review'
-                ? [{ label: 'الرئيسية' }, { label: 'طلبات الاعتماد', onSelect: () => setView('queue') }, { label: 'مراجعة الطلب' }]
-                : [{ label: 'الرئيسية' }, { label: 'طلبات الاعتماد' }]
+                ? [{ label: 'الرئيسية', to: '/admin' }, { label: 'طلبات الاعتماد', onSelect: () => setView('queue') }, { label: 'مراجعة الطلب' }]
+                : [{ label: 'الرئيسية', to: '/admin' }, { label: 'طلبات الاعتماد' }]
             }
           />
         }

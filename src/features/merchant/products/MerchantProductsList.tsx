@@ -4,7 +4,6 @@ import './products.css'
 import {
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   DataTable,
   EmptyState,
@@ -20,6 +19,7 @@ import type { DataTableColumn } from '../../../components/ui'
 import { PlusGlyph, TagGlyph } from '../../../components/ui/icons'
 import { PRODUCT_STATUS, STOCK_STATUS } from '../../../types/status'
 import type { ProductStatus } from '../../../types/status'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -201,7 +201,7 @@ export function MerchantProductsList() {
             <span className="numeric">{source.length}</span> منتجات
           </Badge>
         }
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المنتجات' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'المنتجات' }]} />}
         primaryAction={
           <Button variant="primary" icon={<PlusGlyph />} onClick={() => navigate(`/merchant/${store.id}/products/new`)}>
             إضافة منتج

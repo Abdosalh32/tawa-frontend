@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import './store-setup.css'
 import { Alert, Badge, Button, Field, Input, Radio, Select, Stepper, Toast, fieldDescribedBy } from '../../../components/ui'
 import { TagGlyph } from '../../../components/ui/icons'
@@ -69,6 +70,7 @@ function LanguageCards({ value, onChange }: { value: StoreLanguage; onChange: (l
 }
 
 export function MerchantStoreSetupWizard() {
+  const navigate = useNavigate()
   /* الافتراضي: الخطوة الأولى */
   const [view, setView] = useState<WizardView>('info')
   const [setup, setSetup] = useState<StoreSetupState>(emptySetup)
@@ -266,7 +268,7 @@ export function MerchantStoreSetupWizard() {
                 يصبح النشر متاحاً بعد اعتماد الإدارة واستيفاء متطلبات النشر (1.2.4) — هذه معاينة محلية، لم يُنشأ متجر
                 فعلياً.
               </Alert>
-              <Button variant="primary">الذهاب إلى لوحة التحكم</Button>
+              <Button variant="primary" onClick={() => navigate('/')}>الذهاب إلى لوحة التحكم</Button>
             </div>
           )}
         </div>

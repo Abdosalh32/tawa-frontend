@@ -5,7 +5,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   DataTable,
@@ -24,6 +23,7 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { MERCHANT_STATUS, STORE_STATUS } from '../../../types/status'
 import type { MerchantStatus, StoreStatus } from '../../../types/status'
+import { AdminBreadcrumbs } from '../AdminBreadcrumbs'
 import { AdminSidebar } from '../AdminSidebar'
 import { ADMIN_STORES } from './mock-data'
 import type { AdminStore } from './mock-data'
@@ -171,7 +171,7 @@ export function AdminStores() {
             <span className="numeric">{stores.length}</span> متجراً
           </Badge>
         }
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المتاجر' }]} />}
+        breadcrumbs={<AdminBreadcrumbs items={[{ label: 'الرئيسية', to: '/admin' }, { label: 'المتاجر' }]} />}
       />
 
       <fieldset className="dev-fieldset">

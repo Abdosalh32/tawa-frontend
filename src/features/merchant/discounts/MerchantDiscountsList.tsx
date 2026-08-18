@@ -4,7 +4,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   DataTable,
@@ -26,6 +25,7 @@ import { PlusGlyph } from '../../../components/ui/icons'
 import { DISCOUNT_STATUS } from '../../../types/status'
 import { describeDiscountValue } from '../../../types/discount'
 import type { DiscountType } from '../../../types/discount'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -236,7 +236,7 @@ export function MerchantDiscountsList() {
       <PageHeader
         title="الخصومات"
         description="أكواد خصم يكتبها الزبون في سلته — مبلغ ثابت أو نسبة مئوية بسقف، مع حد أدنى للطلب وفترة سريان وحد استخدامات"
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'الخصومات' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'الخصومات' }]} />}
         primaryAction={
           <Button variant="primary" icon={<PlusGlyph />} onClick={() => setCreateOpen(true)}>
             خصم جديد

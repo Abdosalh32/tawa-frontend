@@ -5,7 +5,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   DataTable,
@@ -22,6 +21,7 @@ import {
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { PlusGlyph } from '../../../components/ui/icons'
+import { AdminBreadcrumbs } from '../AdminBreadcrumbs'
 import { AdminSidebar } from '../AdminSidebar'
 import { MANUAL_RENEWALS, RENEWAL_MERCHANTS, SUBSCRIPTION_PLANS } from './mock-data'
 import type { ManualRenewal, SubscriptionPlan } from './mock-data'
@@ -176,7 +176,7 @@ export function AdminPlans() {
       <PageHeader
         title="باقات الاشتراك"
         description="خطط المنصة بحدودها وأسعارها؛ أرشفة الباقة تمنع التقديم الجديد مع بقاء المشتركين الحاليين"
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'باقات الاشتراك' }]} />}
+        breadcrumbs={<AdminBreadcrumbs items={[{ label: 'الرئيسية', to: '/admin' }, { label: 'باقات الاشتراك' }]} />}
         primaryAction={
           <Button variant="primary" icon={<PlusGlyph />}>
             باقة جديدة

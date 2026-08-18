@@ -4,7 +4,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   DataTable,
   EmptyState,
@@ -22,6 +21,7 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { InfoGlyph } from '../../../components/ui/icons'
 import { STOCK_STATUS } from '../../../types/status'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -173,7 +173,7 @@ export function MerchantInventoryList() {
       <PageHeader
         title="المخزون"
         description="المتاح للبيع = الكمية الكلية − المحجوز مؤقتاً لسلات نشطة؛ التعديل اليدوي يعيد ضبط الكميات بعد الجرد"
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المخزون' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'المخزون' }]} />}
       />
 
       <fieldset className="dev-fieldset">

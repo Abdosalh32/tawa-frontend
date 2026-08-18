@@ -5,7 +5,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   EmptyState,
   ErrorState,
@@ -23,6 +22,7 @@ import {
 import { TagGlyph } from '../../../components/ui/icons'
 import { MODERATION_STATUS } from '../../../types/status'
 import type { ModerationStatus } from '../../../types/status'
+import { AdminBreadcrumbs } from '../AdminBreadcrumbs'
 import { AdminSidebar } from '../AdminSidebar'
 import { MODERATION_PRODUCTS, VIOLATION_REASONS, repeatOffenders } from './mock-data'
 import type { ModerationProduct } from './mock-data'
@@ -121,7 +121,7 @@ export function AdminModeration() {
         title="فحص المنتجات"
         description="رقابة على منتجات كل المتاجر لضمان خلو المنصة من المنتجات المحظورة؛ حظر المنتج يزيله فوراً ويُشعر التاجر بالدليل"
         meta={<Badge variant="warning">{pendingCount} بانتظار الفحص</Badge>}
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'فحص المنتجات' }]} />}
+        breadcrumbs={<AdminBreadcrumbs items={[{ label: 'الرئيسية', to: '/admin' }, { label: 'فحص المنتجات' }]} />}
       />
 
       <fieldset className="dev-fieldset">

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { Alert, Button, Checkbox, Input, Radio, Toast } from '../../components/ui'
 import { AuthLayout } from './AuthLayout'
 import { PasswordInput, StrengthMeter } from './PasswordField'
@@ -12,6 +13,7 @@ const EMPTY_LOGIN: LoginFormState = { identifier: '', password: '', remember: fa
 const EMPTY_REGISTRATION: RegistrationFormState = { name: '', email: '', phone: '', password: '', termsAccepted: false }
 
 export function MerchantAuth() {
+  const navigate = useNavigate()
   /* الافتراضي: تسجيل الدخول */
   const [mode, setMode] = useState<AuthMode>('login')
   const [login, setLogin] = useState<LoginFormState>(EMPTY_LOGIN)
@@ -42,7 +44,8 @@ export function MerchantAuth() {
       focusSummary()
       return
     }
-    setToast('تم التحقق من البيانات محلياً — تسجيل الدخول الفعلي يتصل مع الربط الخلفي')
+    /* لا جلسة فعلية بعد — الدخول المحلي الناجح ينقل للوحة مباشرة */
+    navigate('/')
   }
 
   const submitRegistration = () => {

@@ -25,6 +25,7 @@ function formatPrice(value: number): string {
 }
 
 function ProductBody({ product }: { product: DetailProduct }) {
+  const navigate = useNavigate()
   const hasVariants = (product.axes?.length ?? 0) > 0
   const [size, setSize] = useState<string | undefined>()
   const [type, setType] = useState<string | undefined>()
@@ -83,7 +84,14 @@ function ProductBody({ product }: { product: DetailProduct }) {
   return (
     <main className="pd-main">
       <div className="pd-breadcrumbs-row">
-        <Breadcrumbs items={[{ label: 'الرئيسية' }, { label: product.categoryLabel }, { label: product.name }]} />
+        {/* التصنيف يقود للتصفح — تصفية التصنيف في العنوان تُبنى مع ربط الـ API */}
+        <Breadcrumbs
+          items={[
+            { label: 'الرئيسية', onSelect: () => navigate('/shop') },
+            { label: product.categoryLabel, onSelect: () => navigate('/shop') },
+            { label: product.name },
+          ]}
+        />
       </div>
 
       <div className="pd-gallery">

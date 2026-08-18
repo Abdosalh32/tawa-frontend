@@ -4,7 +4,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   DataTable,
@@ -22,6 +21,7 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { PlusGlyph } from '../../../components/ui/icons'
 import { STAFF_STATUS } from '../../../types/status'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -240,7 +240,7 @@ export function MerchantTeam() {
       <PageHeader
         title="فريق العمل"
         description="ادعُ موظفيك بالبريد وأسند لكل منهم دوراً محدد الصلاحيات؛ التعطيل يسحب الوصول فوراً"
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'فريق العمل' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'فريق العمل' }]} />}
         primaryAction={
           <Button variant="primary" icon={<PlusGlyph />} onClick={() => setInviteOpen(true)}>
             دعوة موظف

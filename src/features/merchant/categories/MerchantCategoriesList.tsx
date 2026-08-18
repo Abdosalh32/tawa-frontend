@@ -4,7 +4,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   DataTable,
@@ -24,6 +23,7 @@ import {
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
 import { FolderTreeGlyph, PlusGlyph } from '../../../components/ui/icons'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -261,7 +261,7 @@ export function MerchantCategoriesList() {
             <span className="numeric">{categories.length}</span> تصنيفات
           </Badge>
         }
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'التصنيفات' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'التصنيفات' }]} />}
         primaryAction={
           <Button variant="primary" icon={<PlusGlyph />} onClick={() => openCreate()}>
             تصنيف جديد

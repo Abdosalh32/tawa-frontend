@@ -5,7 +5,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   ErrorState,
@@ -17,6 +16,7 @@ import {
   Toast,
   Topbar,
 } from '../../../components/ui'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -289,7 +289,7 @@ export function MerchantAppearance() {
       <PageHeader
         title="المظهر والقوالب"
         description="ثبّت القوالب كمسودّات، خصّص ألوانها وترتيب أقسامها، ثم انشر واحداً كقالب متجرك"
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'المظهر والقوالب' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'المظهر والقوالب' }]} />}
       />
 
       <fieldset className="dev-fieldset">

@@ -4,7 +4,6 @@ import {
   Alert,
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   ConfirmDialog,
   EmptyState,
@@ -20,7 +19,8 @@ import {
 } from '../../../components/ui'
 import { FULFILLMENT_STATUS, ORDER_FLOW, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { OrderStatus } from '../../../types/status'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -254,6 +254,7 @@ export function MerchantOrderDetail() {
   /* الطلب يخصّ متجراً واحداً (D5) — معرفه من العنوان، والمجهول أو التابع لمتجر آخر
      يقابل 404 من /stores/{id}/orders/{order} */
   const { orderId } = useParams()
+  const navigate = useNavigate()
   const store = useActiveStore()
   const orderFound = store.hasSeedData && orderId === ORDER_DETAIL.id
   const effectiveView: ScreenView = view === 'normal' && !orderFound ? 'not-found' : view
@@ -274,7 +275,7 @@ export function MerchantOrderDetail() {
       <PageHeader
         title={`الطلب ${ORDER_DETAIL.id}`}
         description={`أُنشئ ${ORDER_DETAIL.createdAt} — ${ORDER_DETAIL.items.length} عناصر`}
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'الطلبات' }, { label: 'تفاصيل الطلب' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'الطلبات', to: 'orders' }, { label: 'تفاصيل الطلب' }]} />}
       />
 
       <fieldset className="dev-fieldset">
@@ -306,7 +307,7 @@ export function MerchantOrderDetail() {
                 ? `لا طلب بالمعرف «${orderId ?? ''}» في هذا المتجر — تأكد من الرقم، فقد يكون الرابط قديماً. (المعاينة المحلية تعرض الطلب ${ORDER_DETAIL.id} فقط)`
                 : `هذا الطلب لا يخصّ «${store.name}» — كل طلب يتبع المتجر الذي أُنشئ فيه.`
             }
-            action={<Button variant="secondary">العودة إلى الطلبات</Button>}
+            action={<Button variant="secondary" onClick={() => navigate(`/merchant/${store.id}/orders`)}>العودة إلى الطلبات</Button>}
           />
         </div>
       ) : (

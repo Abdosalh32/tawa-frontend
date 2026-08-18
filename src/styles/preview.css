@@ -105,13 +105,55 @@
 
 .dev-bar {
   flex: none;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-lg);
   background: var(--surface-sunken);
   border-block-end: 1px solid var(--border-default);
+}
+
+.dev-bar__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 6px var(--space-lg);
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  list-style: none;
+}
+
+.dev-bar__summary::-webkit-details-marker {
+  display: none;
+}
+
+.dev-bar__tag {
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.dev-bar__current {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dev-bar__hint {
+  margin-inline-start: auto;
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.dev-bar__hint::after {
+  content: ' ▾';
+}
+
+.dev-bar[open] .dev-bar__hint::after {
+  content: ' ▴';
+}
+
+.dev-bar__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg) var(--space-md);
   font-size: var(--type-caption);
   color: var(--text-secondary);
 }

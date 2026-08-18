@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect } from 'react'
-import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useParams } from 'react-router'
+import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useLocation, useParams } from 'react-router'
 import './styles/preview.css'
 import { EmptyState, LoadingState } from './components/ui'
 import { cx } from './components/ui/cx'
@@ -69,20 +69,33 @@ const DEV_LINKS: ReadonlyArray<{ to: string; label: string; merchant?: boolean }
 function DevBar() {
   /* روابط التاجر تتبع المتجر النشط كي لا يقفز الشريط بين المتاجر */
   const store = useActiveStore()
+  const location = useLocation()
+  const hrefOf = (item: (typeof DEV_LINKS)[number]) => (item.merchant ? `/merchant/${store.id}/${item.to}` : item.to)
+  /* تسمية الشاشة الحالية للملخص — أطول مطابقة بادئة تفوز (orders/TW… تتبع «تفاصيل طلب») */
+  const current = DEV_LINKS.filter((item) => location.pathname.startsWith(hrefOf(item))).sort(
+    (a, b) => hrefOf(b).length - hrefOf(a).length,
+  )[0]
+
   return (
-    <div className="dev-bar">
-      <span>عرض تطويري:</span>
-      {DEV_LINKS.map((item) => (
-        <NavLink
-          key={item.label}
-          to={item.merchant ? `/merchant/${store.id}/${item.to}` : item.to}
-          end={item.to === 'products' || item.to === 'orders' || item.to === '/admin' || item.to === '/shop'}
-          className={({ isActive }) => cx('tw-btn', 'tw-btn--sm', isActive ? 'tw-btn--primary' : 'tw-btn--secondary')}
-        >
-          {item.label}
-        </NavLink>
-      ))}
-    </div>
+    <details className="dev-bar">
+      <summary className="dev-bar__summary">
+        <span className="dev-bar__tag">عرض تطويري</span>
+        <span className="dev-bar__current">{current?.label ?? location.pathname}</span>
+        <span className="dev-bar__hint">كل الشاشات</span>
+      </summary>
+      <div className="dev-bar__links">
+        {DEV_LINKS.map((item) => (
+          <NavLink
+            key={item.label}
+            to={hrefOf(item)}
+            end={item.to === 'products' || item.to === 'orders' || item.to === '/admin' || item.to === '/shop'}
+            className={({ isActive }) => cx('tw-btn', 'tw-btn--sm', isActive ? 'tw-btn--primary' : 'tw-btn--secondary')}
+          >
+            {item.label}
+          </NavLink>
+        ))}
+      </div>
+    </details>
   )
 }
 

@@ -4,7 +4,6 @@ import './orders.css'
 import {
   AppShell,
   Badge,
-  Breadcrumbs,
   Button,
   DataTable,
   EmptyState,
@@ -20,6 +19,7 @@ import {
 import type { DataTableColumn } from '../../../components/ui'
 import { FULFILLMENT_STATUS, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { FulfillmentStatus, OrderStatus, PaymentStatus } from '../../../types/status'
+import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
 import { MerchantSidebar } from '../MerchantSidebar'
 import { StoreSwitcher } from '../StoreSwitcher'
 import { useActiveStore } from '../store-context'
@@ -182,7 +182,7 @@ export function MerchantOrdersList() {
       <PageHeader
         title="الطلبات"
         description="تابع طلبات زبائنك وانقل حالاتها: مؤكد ← قيد التجهيز ← جاهز للتسليم ← مسلّم؛ الإلغاء يعيد الكميات للمخزون تلقائياً"
-        breadcrumbs={<Breadcrumbs items={[{ label: 'الرئيسية' }, { label: 'الطلبات' }]} />}
+        breadcrumbs={<MerchantBreadcrumbs items={[{ label: 'الرئيسية', to: 'overview' }, { label: 'الطلبات' }]} />}
       />
 
       <fieldset className="dev-fieldset">
