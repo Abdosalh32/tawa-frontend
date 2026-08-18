@@ -43,13 +43,15 @@
     align-content: center;
     padding: var(--space-3xl);
     border-radius: var(--radius-card);
-    background: linear-gradient(160deg, var(--accent-soft), var(--surface-card));
+    /* حبر توا لا تدرجات (الاتجاه الفني §4): لوحة هوية هادئة واثقة */
+    background: var(--ink);
+    color: #ffffff;
   }
 }
 
 .auth-promo__title {
   font-size: var(--type-h1);
-  color: var(--accent-strong);
+  color: #ffffff;
 }
 
 .auth-features {
@@ -106,10 +108,17 @@
 }
 
 .auth-brand__logo {
-  font-size: var(--type-display);
+  /* علامة توا: حرف على مربع حبر — هوية لا نص أزرق عائم */
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: var(--type-h1);
   font-weight: 700;
-  color: var(--accent-strong);
-  line-height: var(--line-height-heading);
+  line-height: 1;
 }
 
 .auth-brand__tagline {
@@ -192,4 +201,18 @@
 .auth-strength__label {
   font-size: var(--type-caption);
   color: var(--text-secondary);
+}
+
+
+.auth-promo .auth-feature__icon {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.auth-promo .auth-feature__hint {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.auth-promo .auth-feature__name {
+  color: #ffffff;
 }

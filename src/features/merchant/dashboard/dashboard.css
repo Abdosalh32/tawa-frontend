@@ -5,61 +5,6 @@
   height: 100%;
 }
 
-/* ═══ «ماذا تغيّر؟» — شريط مؤشرات واحد بفواصل داخلية، لا 4 بطاقات متساوية ═══ */
-
-.dash-metrics {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  background: var(--surface-card);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-}
-
-.dash-metric {
-  display: grid;
-  gap: 2px;
-  align-content: start;
-  padding: var(--space-lg);
-  border-inline-start: 1px solid var(--border-subtle);
-}
-
-.dash-metric:first-child {
-  border-inline-start: none;
-}
-
-.dash-metric__label {
-  font-size: var(--type-caption);
-  color: var(--text-secondary);
-}
-
-/* «الأرقام أولاً» (توقيع ٤): الرقم بطل الخلية */
-.dash-metric__value {
-  font-size: 26px;
-  font-weight: var(--weight-data);
-  line-height: 1.2;
-}
-
-.dash-metric__hint {
-  font-size: var(--type-caption);
-  color: var(--text-muted);
-}
-
-/* التحذير لا يساوي الخبر السعيد — علامة هادئة لا بطاقة ملونة */
-.dash-metric--warning .dash-metric__label::before {
-  content: '';
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-pill);
-  background: var(--status-warning);
-  margin-inline-end: 6px;
-}
-
-.dash-metric--warning .dash-metric__hint {
-  color: var(--status-warning-text);
-}
-
 /* ═══ الأقسام ═══ */
 
 .dash-section {

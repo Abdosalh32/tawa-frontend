@@ -17,6 +17,7 @@ import {
   Radio,
   SearchField,
   Skeleton,
+  StatusText,
   Toast,
   Topbar,
 } from '../../../components/ui'
@@ -122,7 +123,8 @@ export function AdminStores() {
     {
       key: 'status',
       header: 'حالة المتجر',
-      cell: (row) => <Badge variant={STORE_STATUS[row.status].variant}>{STORE_STATUS[row.status].label}</Badge>,
+      /* نقطة الحالة (توقيع ٥): الكبسولة لحالة التاجر — القرار الإداري الفعلي */
+      cell: (row) => <StatusText variant={STORE_STATUS[row.status].variant}>{STORE_STATUS[row.status].label}</StatusText>,
     },
     {
       key: 'merchantStatus',

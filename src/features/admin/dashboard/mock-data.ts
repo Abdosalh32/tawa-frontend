@@ -23,16 +23,48 @@ export const ADMIN_METRICS: readonly AdminMetric[] = [
 /** «مواقع تحتاج انتباهك» (برومت 16) — بنود بأولوية وزر سريع */
 export interface AttentionItem {
   key: string
+  severity: 'critical' | 'warning' | 'info'
   label: string
+  why: string
   actionLabel: string
-  tone: 'warning' | 'negative' | 'neutral'
+  /** مسار الفعل داخل لوحة المدير */
+  to: string
 }
 
+/* بنود «يحتاج انتباهك» بنمط توا: ماذا/لماذا/ماذا أفعل — بترتيب الخطورة */
 export const ATTENTION_ITEMS: readonly AttentionItem[] = [
-  { key: 'approvals', label: '5 طلبات اعتماد بانتظار المراجعة', actionLabel: 'مراجعة الطلبات', tone: 'warning' },
-  { key: 'moderation', label: '12 منتجاً بانتظار الفحص', actionLabel: 'فحص المنتجات', tone: 'warning' },
-  { key: 'suspended', label: 'متجران معلّقان بانتظار معالجة', actionLabel: 'عرض المتاجر', tone: 'negative' },
-  { key: 'subscriptions', label: '3 اشتراكات تنتهي هذا الأسبوع', actionLabel: 'عرض الباقات', tone: 'neutral' },
+  {
+    key: 'suspended',
+    severity: 'critical',
+    label: 'متجران معلّقان بانتظار معالجة',
+    why: 'تاجران موقوفان عن البيع حتى يُحسم وضعاهما',
+    actionLabel: 'عرض المتاجر',
+    to: '/admin/stores',
+  },
+  {
+    key: 'approvals',
+    severity: 'warning',
+    label: '5 طلبات اعتماد بانتظار المراجعة',
+    why: 'أقدمها منذ 3 أيام — تجار جدد ينتظرون الانطلاق',
+    actionLabel: 'مراجعة الطلبات',
+    to: '/admin/approvals',
+  },
+  {
+    key: 'moderation',
+    severity: 'warning',
+    label: '12 منتجاً بانتظار الفحص',
+    why: 'لا تظهر للزبائن قبل اعتمادها',
+    actionLabel: 'فحص المنتجات',
+    to: '/admin/moderation',
+  },
+  {
+    key: 'subscriptions',
+    severity: 'info',
+    label: '3 اشتراكات تنتهي هذا الأسبوع',
+    why: 'تواصل استباقي يمنع انقطاع متاجرها',
+    actionLabel: 'عرض الباقات',
+    to: '/admin/plans',
+  },
 ]
 
 /** أحدث المتاجر المسجلة بحالاتها (برومت 16) */

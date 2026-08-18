@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import '../admin.css'
 import './admin-dashboard.css'
 import {
   Alert,
   AppShell,
+  AttentionList,
   Badge,
   Breadcrumbs,
   Button,
@@ -12,7 +14,6 @@ import {
   PageHeader,
   Radio,
   Skeleton,
-  SummaryCard,
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
@@ -43,6 +44,7 @@ const STORE_COLUMNS: ReadonlyArray<DataTableColumn<RecentStore>> = [
 ]
 
 export function AdminDashboard() {
+  const navigate = useNavigate()
   const [view, setView] = useState<ScreenView>('normal')
 
   return (
@@ -94,46 +96,37 @@ export function AdminDashboard() {
         </div>
       ) : (
         <>
-          <div className="adash-metrics">
+          <section className="tw-metrics" aria-label="مؤشرات المنصة">
             {ADMIN_METRICS.map((metric) => (
-              <SummaryCard
-                key={metric.key}
-                label={metric.label}
-                value={<span className="numeric">{metric.value}</span>}
-                tone={metric.tone}
-                change={metric.change}
-              />
+              <div className={`tw-metric${metric.tone === 'warning' ? ' tw-metric--warning' : ''}`} key={metric.key}>
+                <span className="tw-metric__label">{metric.label}</span>
+                <span className="tw-metric__value numeric">{metric.value}</span>
+                {metric.change && <span className="tw-metric__hint">{metric.change}</span>}
+              </div>
             ))}
-          </div>
+          </section>
 
           <div className="admin-columns">
             <div style={{ display: 'grid', gap: 'var(--space-xl)', minWidth: 0 }}>
-              <section className="admin-card" aria-labelledby="adash-attention">
+              <section style={{ display: 'grid', gap: 'var(--space-md)', minWidth: 0 }} aria-labelledby="adash-attention">
                 <h2 id="adash-attention">يحتاج انتباهك</h2>
-                <ul className="adash-attention">
-                  {ATTENTION_ITEMS.map((item) => (
-                    <li className="adash-attention__item" key={item.key}>
-                      <span className="adash-attention__text">
-                        <Badge
-                          variant={item.tone === 'negative' ? 'error' : item.tone === 'warning' ? 'warning' : 'neutral'}
-                          dot={false}
-                        >
-                          {item.tone === 'negative' ? 'عالي' : item.tone === 'warning' ? 'متوسط' : 'عادي'}
-                        </Badge>
-                        {item.label}
-                      </span>
-                      <Button variant="secondary" size="sm">
-                        {item.actionLabel}
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
+                {/* نمط توا الموحد (توقيع ٢) — الأفعال تتنقل فعلاً */}
+                <AttentionList
+                  items={ATTENTION_ITEMS.map((item) => ({
+                    id: item.key,
+                    severity: item.severity,
+                    title: item.label,
+                    why: item.why,
+                    actionLabel: item.actionLabel,
+                    onAction: () => navigate(item.to),
+                  }))}
+                />
               </section>
 
               <section style={{ display: 'grid', gap: 'var(--space-md)', minWidth: 0 }} aria-labelledby="adash-stores">
                 <div className="adash-section-head">
                   <h2 id="adash-stores">آخر المتاجر المسجلة</h2>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/admin/stores')}>
                     عرض كل المتاجر
                   </Button>
                 </div>

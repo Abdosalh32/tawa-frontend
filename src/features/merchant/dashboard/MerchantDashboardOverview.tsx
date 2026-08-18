@@ -134,15 +134,15 @@ export function MerchantDashboardOverview() {
       {loading ? (
         <Skeleton variant="rect" height={92} />
       ) : (
-        <section className="dash-metrics" aria-label="ملخص اليوم">
+        <section className="tw-metrics" aria-label="ملخص اليوم">
           {metrics.map((metric) => (
             <div
-              className={`dash-metric${metric.tone === 'warning' ? ' dash-metric--warning' : ''}`}
+              className={`tw-metric${metric.tone === 'warning' ? ' tw-metric--warning' : ''}`}
               key={metric.key}
             >
-              <span className="dash-metric__label">{metric.label}</span>
-              <span className="dash-metric__value numeric">{metric.value}</span>
-              {metric.change && <span className="dash-metric__hint">{metric.change}</span>}
+              <span className="tw-metric__label">{metric.label}</span>
+              <span className="tw-metric__value numeric">{metric.value}</span>
+              {metric.change && <span className="tw-metric__hint">{metric.change}</span>}
             </div>
           ))}
         </section>

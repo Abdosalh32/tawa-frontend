@@ -902,3 +902,114 @@ textarea.tw-control {
 .tw-table tbody tr:hover .tw-btn--quiet {
   color: var(--accent-strong);
 }
+
+/* ═══════════════ شريط المؤشرات (نمط توا — «ماذا تغيّر؟») ═══════════════ */
+
+/* ═══ شريط مؤشرات واحد بفواصل داخلية، لا 4 بطاقات متساوية ═══ */
+
+.tw-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.tw-metric {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  padding: var(--space-lg);
+  border-inline-start: 1px solid var(--border-subtle);
+}
+
+.tw-metric:first-child {
+  border-inline-start: none;
+}
+
+.tw-metric__label {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* «الأرقام أولاً» (توقيع ٤): الرقم بطل الخلية */
+.tw-metric__value {
+  font-size: 26px;
+  font-weight: var(--weight-data);
+  line-height: 1.2;
+}
+
+.tw-metric__hint {
+  font-size: var(--type-caption);
+  color: var(--text-muted);
+}
+
+/* التحذير لا يساوي الخبر السعيد — علامة هادئة لا بطاقة ملونة */
+.tw-metric--warning .tw-metric__label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--status-warning);
+  margin-inline-end: 6px;
+}
+
+.tw-metric--warning .tw-metric__hint {
+  color: var(--status-warning-text);
+}
+
+
+/* ═══════════════ الحركة الدقيقة (المرحلة J — سبب ← أثر) ═══════════════ */
+
+/* ضغطة الزر محسوسة */
+.tw-btn:active:enabled,
+.tw-iconbtn:active:enabled {
+  transform: translateY(1px);
+}
+
+/* الدرج ينزلق من حافته (اليسار في RTL) */
+@keyframes tw-drawer-in {
+  from {
+    transform: translateX(calc(-1 * var(--drawer-slide, 24px)));
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+[dir='rtl'] .tw-drawer,
+.tw-drawer {
+  animation: tw-drawer-in var(--motion-base) both;
+}
+
+/* الحوار يظهر بثقة هادئة */
+@keyframes tw-pop-in {
+  from {
+    transform: translateY(6px) scale(0.985);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.tw-modal {
+  animation: tw-pop-in var(--motion-base) both;
+}
+
+.tw-modal-backdrop {
+  animation: tw-screen-enter var(--motion-fast) both;
+}
+
+/* القائمة المنسدلة تنبثق من زرها */
+.tw-menu__list {
+  animation: tw-pop-in var(--motion-fast) both;
+  transform-origin: top;
+}
+
+/* الشارات والنقاط لا تتحرك — البيانات ثابتة الوقار */
