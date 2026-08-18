@@ -1,9 +1,12 @@
 import { Suspense, lazy, useEffect } from 'react'
-import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useLocation, useParams } from 'react-router'
+import { BrowserRouter, Navigate, NavLink, Outlet, Route, Routes, useLocation, useNavigate, useParams } from 'react-router'
+import { QueryClientProvider } from '@tanstack/react-query'
 import './styles/preview.css'
 import { EmptyState, LoadingState } from './components/ui'
 import { cx } from './components/ui/cx'
 import { MERCHANT_STORES, setActiveStoreId, useActiveStore } from './features/merchant/store-context'
+import { setUnauthorizedHandler } from './lib/apiClient'
+import { queryClient } from './lib/queryClient'
 
 /*
  * جذر التطبيق — توجيه فعلي بعناوين URL (react-router).
@@ -145,48 +148,69 @@ function NotFound() {
   )
 }
 
+/**
+ * انتهاء الجلسة (401) يقع داخل معترض Axios خارج شجرة الراوتر،
+ * فنسجّل هنا معالجاً يستعمل تنقّل الراوتر بدل إعادة تحميل الصفحة —
+ * فتبقى الحالة والرسائل ظاهرة للمستخدم بدل وميض صفحة كاملة.
+ */
+function ApiSessionBridge() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      if (location.pathname !== '/auth') {
+        navigate('/auth', { replace: true })
+      }
+    })
+  }, [navigate, location.pathname])
+  return null
+}
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<DevRootLayout />}>
-          <Route path="/" element={<Navigate to={`/merchant/${MERCHANT_STORES[0].id}/overview`} replace />} />
-          <Route path="/auth" element={<MerchantAuth />} />
-          <Route path="/setup" element={<MerchantStoreSetupWizard />} />
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ApiSessionBridge />
+        <Routes>
+          <Route element={<DevRootLayout />}>
+            <Route path="/" element={<Navigate to={`/merchant/${MERCHANT_STORES[0].id}/overview`} replace />} />
+            <Route path="/auth" element={<MerchantAuth />} />
+            <Route path="/setup" element={<MerchantStoreSetupWizard />} />
 
-          <Route path="/merchant/:storeId" element={<MerchantStoreLayout />}>
-            <Route index element={<Navigate to="overview" replace />} />
-            <Route path="overview" element={<MerchantDashboardOverview />} />
-            <Route path="products" element={<MerchantProductsList />} />
-            <Route path="products/new" element={<MerchantProductForm mode="create" />} />
-            <Route path="products/:productId/edit" element={<MerchantProductForm mode="edit" />} />
-            <Route path="categories" element={<MerchantCategoriesList />} />
-            <Route path="inventory" element={<MerchantInventoryList />} />
-            <Route path="orders" element={<MerchantOrdersList />} />
-            <Route path="orders/:orderId" element={<MerchantOrderDetail />} />
-            <Route path="discounts" element={<MerchantDiscountsList />} />
-            <Route path="appearance" element={<MerchantAppearance />} />
-            <Route path="team" element={<MerchantTeam />} />
-            <Route path="settings" element={<MerchantStoreSettings />} />
+            <Route path="/merchant/:storeId" element={<MerchantStoreLayout />}>
+              <Route index element={<Navigate to="overview" replace />} />
+              <Route path="overview" element={<MerchantDashboardOverview />} />
+              <Route path="products" element={<MerchantProductsList />} />
+              <Route path="products/new" element={<MerchantProductForm mode="create" />} />
+              <Route path="products/:productId/edit" element={<MerchantProductForm mode="edit" />} />
+              <Route path="categories" element={<MerchantCategoriesList />} />
+              <Route path="inventory" element={<MerchantInventoryList />} />
+              <Route path="orders" element={<MerchantOrdersList />} />
+              <Route path="orders/:orderId" element={<MerchantOrderDetail />} />
+              <Route path="discounts" element={<MerchantDiscountsList />} />
+              <Route path="appearance" element={<MerchantAppearance />} />
+              <Route path="team" element={<MerchantTeam />} />
+              <Route path="settings" element={<MerchantStoreSettings />} />
+            </Route>
+
+            <Route path="/shop" element={<CustomerStorefrontBrowse />} />
+            <Route path="/shop/products/:productId" element={<CustomerProductDetail />} />
+            <Route path="/shop/cart" element={<CustomerCart />} />
+            <Route path="/shop/checkout" element={<CustomerCheckout />} />
+            <Route path="/shop/tracking" element={<CustomerOrderTracking />} />
+
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/approvals" element={<AdminApprovals />} />
+            <Route path="/admin/stores" element={<AdminStores />} />
+            <Route path="/admin/moderation" element={<AdminModeration />} />
+            <Route path="/admin/plans" element={<AdminPlans />} />
+            <Route path="/admin/audit" element={<AdminAudit />} />
+
+            <Route path="/design-system" element={<DesignSystemPreview />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
-
-          <Route path="/shop" element={<CustomerStorefrontBrowse />} />
-          <Route path="/shop/products/:productId" element={<CustomerProductDetail />} />
-          <Route path="/shop/cart" element={<CustomerCart />} />
-          <Route path="/shop/checkout" element={<CustomerCheckout />} />
-          <Route path="/shop/tracking" element={<CustomerOrderTracking />} />
-
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/approvals" element={<AdminApprovals />} />
-          <Route path="/admin/stores" element={<AdminStores />} />
-          <Route path="/admin/moderation" element={<AdminModeration />} />
-          <Route path="/admin/plans" element={<AdminPlans />} />
-          <Route path="/admin/audit" element={<AdminAudit />} />
-
-          <Route path="/design-system" element={<DesignSystemPreview />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   )
 }
