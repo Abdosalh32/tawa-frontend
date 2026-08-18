@@ -43,7 +43,7 @@
   background: var(--surface-raised);
   border-block-end: 1px solid var(--border-default);
   padding-inline: var(--space-lg);
-  min-height: 60px;
+  min-height: 52px;
 }
 
 .tw-shell__topbar > .tw-topbar {
@@ -136,7 +136,9 @@
 }
 
 .tw-sidebar__brand {
-  padding-inline: var(--space-sm);
+  padding: var(--space-sm);
+  border-block-end: 1px solid var(--border-subtle);
+  margin-block-end: var(--space-xs);
 }
 
 .tw-sidebar__nav {
@@ -167,8 +169,10 @@
   align-items: center;
   gap: var(--space-sm);
   width: 100%;
-  padding: 8px var(--space-sm);
+  padding: 7px var(--space-sm);
   border: none;
+  /* خيط توا (توقيع ٢): شفاف افتراضاً ويتلون عند النشاط — لا قفز تخطيط */
+  border-inline-start: var(--thread) solid transparent;
   border-radius: var(--radius-control);
   background: transparent;
   color: var(--text-secondary);
@@ -184,9 +188,16 @@
 }
 
 .tw-side-item.is-active {
-  background: var(--accent-soft);
-  color: var(--accent-strong);
+  border-inline-start-color: var(--accent);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  background: color-mix(in srgb, var(--accent-soft) 45%, transparent);
+  color: var(--text-primary);
   font-weight: 600;
+}
+
+.tw-side-item.is-active .tw-side-item__icon {
+  color: var(--accent-strong);
 }
 
 .tw-side-item:disabled {
@@ -211,15 +222,22 @@
   flex: none;
   min-width: 18px;
   height: 18px;
-  padding-inline: 5px;
+  padding-inline: 6px;
   display: grid;
   place-items: center;
   border-radius: var(--radius-pill);
-  background: var(--status-critical);
-  color: var(--text-on-accent);
+  /* عدّاد معلوماتي هادئ — الأحمر محجوز للحرج فعلاً (نقطة الحالة، الاتجاه §4) */
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
   font-size: 11px;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   direction: ltr;
+}
+
+.tw-side-item.is-active .tw-side-item__count {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .tw-sidebar--collapsed .tw-sidebar__brand,
@@ -250,8 +268,10 @@
 }
 
 .tw-topbar__title {
-  font-size: var(--type-h3);
-  font-weight: 700;
+  /* تسمية سياق لا عنواناً — عنوان الصفحة الحقيقي هو h1 في المحتوى */
+  font-size: var(--type-caption);
+  font-weight: 600;
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -367,8 +387,10 @@
 }
 
 .tw-pagehead__description {
-  color: var(--text-secondary);
+  /* يخدم العنوان ولا ينافسه (الاتجاه الفني §3) */
+  color: var(--text-muted);
   font-size: var(--type-caption);
+  max-width: 68ch;
 }
 
 .tw-pagehead__actions {

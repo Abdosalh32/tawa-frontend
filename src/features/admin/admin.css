@@ -1,13 +1,39 @@
 /* عناصر مشتركة بين شاشات لوحة الإدارة — Tokens حصراً
    (سياق admin في AppShell يعيد توجيه accent للبنفسجي) */
 
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.admin-brand__mark {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--accent-admin-strong);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: var(--type-h3);
+}
+
+.admin-brand__text {
+  display: grid;
+}
+
 .admin-brand__name {
   font-weight: 700;
+  font-size: var(--type-body);
+  line-height: 1.3;
 }
 
 .admin-brand__sub {
-  font-size: var(--type-caption);
+  font-size: 11px;
   color: var(--text-muted);
+  line-height: 1.3;
 }
 
 .admin-shell {
