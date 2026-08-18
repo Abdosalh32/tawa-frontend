@@ -19,6 +19,7 @@ import {
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
+import { useTableSort } from '../../../components/ui'
 import { InfoGlyph } from '../../../components/ui/icons'
 import { STOCK_STATUS } from '../../../types/status'
 import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
@@ -57,7 +58,7 @@ const COLUMNS: ReadonlyArray<DataTableColumn<InventoryRow>> = [
     ),
   },
   { key: 'sku', header: 'SKU', numeric: true, cell: (row) => row.sku },
-  { key: 'total', header: 'الكلي', numeric: true, cell: (row) => String(row.total) },
+  { key: 'total', header: 'الكلي', numeric: true, sortable: true, cell: (row) => String(row.total) },
   {
     key: 'reserved',
     header: (
@@ -76,6 +77,7 @@ const COLUMNS: ReadonlyArray<DataTableColumn<InventoryRow>> = [
   {
     key: 'available',
     header: 'المتاح للبيع',
+    sortable: true,
     cell: (row) => <span className="numeric inv-available">{availableOf(row)}</span>,
   },
   { key: 'threshold', header: 'حد التنبيه', numeric: true, cell: (row) => String(row.threshold) },
@@ -99,6 +101,10 @@ const COLUMNS: ReadonlyArray<DataTableColumn<InventoryRow>> = [
 ]
 
 export function MerchantInventoryList() {
+  const { sort, onSortChange, sortRows } = useTableSort<InventoryRow>({
+    total: (row) => row.total,
+    available: (row) => availableOf(row),
+  })
   const [view, setView] = useState<ScreenView>('normal')
   const [search, setSearch] = useState('')
   const [stockFilter, setStockFilter] = useState<StockFilter>('all')
@@ -126,7 +132,7 @@ export function MerchantInventoryList() {
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
-  const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+  const pageRows = sortRows(filtered).slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   /** لا مخزون إطلاقاً — بأداة المعاينة أو لأن المتجر النشط بلا منتجات */
   const noStock = view === 'empty' || source.length === 0
@@ -256,6 +262,8 @@ export function MerchantInventoryList() {
         columns={COLUMNS}
         rows={rows}
         rowKey={(row) => row.id}
+        sort={sort}
+        onSortChange={onSortChange}
         loading={loading}
         error={view === 'error' ? 'تعذّر جلب بيانات المخزون — تحقق من اتصالك ثم أعد المحاولة.' : undefined}
         onRetry={() => setView('normal')}

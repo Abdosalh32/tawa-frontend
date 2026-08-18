@@ -21,6 +21,7 @@ import {
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
+import { useTableSort } from '../../../components/ui'
 import { PlusGlyph } from '../../../components/ui/icons'
 import { DISCOUNT_STATUS } from '../../../types/status'
 import { describeDiscountValue } from '../../../types/discount'
@@ -86,6 +87,10 @@ function validateDraft(draft: NewDiscount, existing: readonly MerchantDiscount[]
 }
 
 export function MerchantDiscountsList() {
+  const { sort, onSortChange, sortRows } = useTableSort<MerchantDiscount>({
+    min: (row) => row.minOrderAmount,
+    usage: (row) => row.usedCount,
+  })
   const [view, setView] = useState<ScreenView>('normal')
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
@@ -133,7 +138,7 @@ export function MerchantDiscountsList() {
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
-  const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+  const pageRows = sortRows(filtered).slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
   /** لا أكواد إطلاقاً — بأداة المعاينة أو لأن المتجر النشط بلا أكواد */
   const noDiscounts = view === 'empty' || discounts.length === 0
   const rows = noDiscounts ? [] : pageRows
@@ -180,10 +185,11 @@ export function MerchantDiscountsList() {
       ),
     },
     { key: 'value', header: 'القيمة', cell: (row) => <span className="numeric">{describeDiscountValue(row)}</span> },
-    { key: 'min', header: 'الحد الأدنى للطلب', numeric: true, cell: (row) => `${row.minOrderAmount} د.ل` },
+    { key: 'min', header: 'الحد الأدنى للطلب', numeric: true, sortable: true, cell: (row) => `${row.minOrderAmount} د.ل` },
     {
       key: 'usage',
       header: 'الاستخدام',
+      sortable: true,
       cell: (row) => (
         <span className="numeric">
           {row.usedCount}
@@ -336,6 +342,8 @@ export function MerchantDiscountsList() {
             columns={columns}
             rows={rows}
             rowKey={(row) => row.id}
+            sort={sort}
+            onSortChange={onSortChange}
             emptyState={
               noDiscounts ? (
                 <EmptyState

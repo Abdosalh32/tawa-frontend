@@ -18,6 +18,7 @@ import {
   Topbar,
 } from '../../../components/ui'
 import type { DataTableColumn } from '../../../components/ui'
+import { useTableSort } from '../../../components/ui'
 import { FULFILLMENT_STATUS, ORDER_STATUS, PAYMENT_STATUS } from '../../../types/status'
 import type { FulfillmentStatus, OrderStatus, PaymentStatus } from '../../../types/status'
 import { MerchantBreadcrumbs } from '../MerchantBreadcrumbs'
@@ -59,8 +60,8 @@ const COLUMNS: ReadonlyArray<DataTableColumn<MerchantOrder>> = [
     ),
   },
   { key: 'date', header: 'التاريخ', cell: (row) => row.date },
-  { key: 'items', header: 'عدد العناصر', numeric: true, cell: (row) => String(row.itemCount) },
-  { key: 'total', header: 'الإجمالي', numeric: true, cell: (row) => row.total },
+  { key: 'items', header: 'عدد العناصر', numeric: true, sortable: true, cell: (row) => String(row.itemCount) },
+  { key: 'total', header: 'الإجمالي', numeric: true, sortable: true, cell: (row) => row.total },
   {
     key: 'payment',
     header: 'الدفع',
@@ -96,6 +97,10 @@ function actionsColumn(onView: (id: string) => void): DataTableColumn<MerchantOr
 
 export function MerchantOrdersList() {
   const navigate = useNavigate()
+  const { sort, onSortChange, sortRows } = useTableSort<MerchantOrder>({
+    items: (row) => row.itemCount,
+    total: (row) => parseInt(row.total, 10),
+  })
   const [view, setView] = useState<ScreenView>('normal')
   const [statusTab, setStatusTab] = useState<StatusTab>('all')
   const [search, setSearch] = useState('')
@@ -135,7 +140,8 @@ export function MerchantOrdersList() {
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
-  const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+  /* الفرز فوق كامل النتائج المصفّاة ثم الترقيم — لا فرز داخل الصفحة وحدها */
+  const pageRows = sortRows(filtered).slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   /** لا طلبات إطلاقاً — بأداة المعاينة أو لأن المتجر النشط بلا طلبات */
   const noOrders = view === 'empty' || source.length === 0
@@ -273,6 +279,8 @@ export function MerchantOrdersList() {
         columns={[...COLUMNS, actionsColumn((id) => navigate(`/merchant/${store.id}/orders/${id}`))]}
         rows={rows}
         rowKey={(row) => row.id}
+        sort={sort}
+        onSortChange={onSortChange}
         loading={loading}
         error={view === 'error' ? 'تعذّر جلب الطلبات — تحقق من اتصالك ثم أعد المحاولة.' : undefined}
         onRetry={() => setView('normal')}

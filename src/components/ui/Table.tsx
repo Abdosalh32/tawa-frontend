@@ -1,4 +1,5 @@
 import type { ReactNode, TableHTMLAttributes, ThHTMLAttributes } from 'react'
+import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react'
 import { cx } from './cx'
 
 export type SortDirection = 'asc' | 'desc'
@@ -22,7 +23,7 @@ export function Table({ caption, children, className, ...rest }: TableProps) {
 }
 
 export interface TableHeaderCellProps extends Omit<ThHTMLAttributes<HTMLTableCellElement>, 'aria-sort'> {
-  /** حالة بصرية فقط في هذه المرحلة — منطق الفرز الفعلي لاحقاً */
+  /** الفرز المحلي عبر useTableSort — أو تحكم خارجي (خادمي) بنفس الواجهة */
   sortable?: boolean
   sortDirection?: SortDirection | null
   onSort?: () => void
@@ -37,7 +38,13 @@ export function TableHeaderCell({ sortable, sortDirection, onSort, children, ...
         <button type="button" className={cx('tw-th-sort', sortDirection != null && 'is-sorted')} onClick={onSort}>
           {children}
           <span className="tw-th-sort__arrow" aria-hidden="true">
-            {sortDirection === 'asc' ? '▲' : sortDirection === 'desc' ? '▼' : '↕'}
+            {sortDirection === 'asc' ? (
+              <ChevronUp size={14} strokeWidth={2} />
+            ) : sortDirection === 'desc' ? (
+              <ChevronDown size={14} strokeWidth={2} />
+            ) : (
+              <ChevronsUpDown size={14} strokeWidth={2} />
+            )}
           </span>
         </button>
       ) : (

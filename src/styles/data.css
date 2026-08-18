@@ -175,7 +175,20 @@
   color: var(--text-primary);
 }
 
+.tw-th-sort.is-sorted {
+  color: var(--accent-strong);
+}
+
 .tw-th-sort__arrow {
+  display: inline-flex;
+  color: var(--text-muted);
+}
+
+.tw-th-sort.is-sorted .tw-th-sort__arrow {
+  color: var(--accent-strong);
+}
+
+.tw-th-sort__arrow--legacy {
   font-size: 10px;
   color: var(--text-muted);
 }
